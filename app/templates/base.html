@@ -6,15 +6,15 @@
     <title>{% block title %}PERLOV.ai{% endblock %} - منصة العطور الذكية</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top navbar-luxury">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
-                <i class="bi bi-droplet-fill text-primary"></i>
+                <i class="bi bi-droplet-fill text-rose"></i>
                 PERLOV.ai
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary btn-sm text-white ms-2" href="{{ url_for('auth.register') }}">
+                        <a class="nav-link btn btn-rose btn-sm text-white ms-2" href="{{ url_for('auth.register') }}">
                             <i class="bi bi-person-plus"></i> تسجيل
                         </a>
                     </li>
@@ -98,7 +98,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <h5><i class="bi bi-droplet-fill text-primary"></i> PERLOV.ai</h5>
+                    <h5><i class="bi bi-droplet-fill text-rose"></i> PERLOV.ai</h5>
                     <p class="text-muted">منصة العطور الذكية - اصنع عطرك بالذكاء الاصطناعي</p>
                 </div>
                 <div class="col-md-4 mb-3">
