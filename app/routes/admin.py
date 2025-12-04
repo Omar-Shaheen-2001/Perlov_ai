@@ -1,32 +1,25 @@
 import os
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
-from flask_login import current_user
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import current_user, login_user, logout_user
 from app import db
 from app.models import User, ScentProfile, CustomPerfume, AffiliateProduct, Recommendation
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 def admin_required(f):
+    """حماية المسارات الإدارية - يجب أن يكون المستخدم مصرح ومديراً"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
-        
-        if current_user.is_authenticated and current_user.is_admin:
-            return f(*args, **kwargs)
-        
-        if session.get('admin_authenticated'):
-            return f(*args, **kwargs)
-        
-        return redirect(url_for('admin.login'))
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash('يجب أن تكون مديراً للوصول إلى هذه الصفحة', 'error')
+            return redirect(url_for('admin.login'))
+        return f(*args, **kwargs)
     return decorated_function
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated and current_user.is_admin:
-        return redirect(url_for('admin.dashboard'))
-    
-    if session.get('admin_authenticated'):
         return redirect(url_for('admin.dashboard'))
     
     if request.method == 'POST':
@@ -36,9 +29,8 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.is_admin and user.check_password(password):
-            session['admin_authenticated'] = True
-            session['admin_user_id'] = user.id
-            flash('تم الدخول إلى لوحة الإدارة', 'success')
+            login_user(user)
+            flash('تم الدخول إلى لوحة الإدارة بنجاح', 'success')
             return redirect(url_for('admin.dashboard'))
         else:
             flash('بريد أو كلمة مرور غير صحيحة', 'error')
@@ -47,7 +39,7 @@ def login():
 
 @admin_bp.route('/logout')
 def logout():
-    session.pop('admin_authenticated', None)
+    logout_user()
     flash('تم الخروج من لوحة الإدارة', 'success')
     return redirect(url_for('main.index'))
 
