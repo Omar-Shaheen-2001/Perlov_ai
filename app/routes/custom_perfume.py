@@ -42,6 +42,14 @@ def form():
         heart_notes = ai_result.get('heart_notes', [])
         base_notes = ai_result.get('base_notes', [])
         
+        ai_details = {
+            'name_meaning': ai_result.get('name_meaning', ''),
+            'longevity': ai_result.get('longevity', ''),
+            'sillage': ai_result.get('sillage', ''),
+            'best_seasons': ai_result.get('best_seasons', []),
+            'usage_recommendations': ai_result.get('usage_recommendations', '')
+        }
+        
         custom_perfume = CustomPerfume(
             user_id=current_user.id if current_user.is_authenticated else None,
             session_id=session_id,
@@ -52,7 +60,7 @@ def form():
             base_notes=', '.join(base_notes) if isinstance(base_notes, list) else str(base_notes),
             description=ai_result.get('description', ''),
             match_score=float(ai_result.get('match_score', 85)),
-            usage_recommendations=json.dumps(ai_result, ensure_ascii=False),
+            usage_recommendations=json.dumps(ai_details, ensure_ascii=False),
             occasion=occasion,
             intensity=intensity,
             budget=budget

@@ -10,6 +10,27 @@ client = OpenAI(
     base_url=AI_INTEGRATIONS_OPENAI_BASE_URL
 )
 
+def parse_ai_response(content):
+    """Safely parse AI response content, handling None and malformed JSON."""
+    if content is None:
+        return None
+    
+    result = content.strip()
+    
+    if result.startswith("```"):
+        parts = result.split("```")
+        if len(parts) > 1:
+            result = parts[1]
+            if result.startswith("json"):
+                result = result[4:]
+    
+    result = result.strip()
+    
+    try:
+        return json.loads(result)
+    except json.JSONDecodeError:
+        return None
+
 def generate_scent_dna_analysis(profile_data):
     prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
 
@@ -33,6 +54,16 @@ def generate_scent_dna_analysis(profile_data):
     "overall_analysis": "تحليل شامل في فقرة واحدة"
 }}"""
 
+    default_response = {
+        "scent_personality": "الكلاسيكي الأنيق",
+        "personality_description": "شخصية عطرية متوازنة تميل للأناقة والرقي",
+        "recommended_families": ["شرقية", "خشبية", "زهرية"],
+        "ideal_notes": ["عود", "فانيلا", "مسك", "ورد", "عنبر"],
+        "notes_to_avoid": profile_data.get('disliked_notes', '').split(',') if profile_data.get('disliked_notes') else [],
+        "season_recommendations": "مناسب لجميع الفصول مع تركيز على المساء",
+        "overall_analysis": "بناءً على تفضيلاتك، أنت تميل للعطور الكلاسيكية ذات الطابع الشرقي مع لمسات خشبية دافئة."
+    }
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -43,25 +74,16 @@ def generate_scent_dna_analysis(profile_data):
             max_completion_tokens=1000
         )
         
-        result = response.choices[0].message.content
-        if result.startswith("```"):
-            result = result.split("```")[1]
-            if result.startswith("json"):
-                result = result[4:]
-        result = result.strip()
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
         
-        return json.loads(result)
+        if parsed is None:
+            return default_response
+        
+        return parsed
     except Exception as e:
-        return {
-            "scent_personality": "الكلاسيكي الأنيق",
-            "personality_description": "شخصية عطرية متوازنة تميل للأناقة والرقي",
-            "recommended_families": ["شرقية", "خشبية", "زهرية"],
-            "ideal_notes": ["عود", "فانيلا", "مسك", "ورد", "عنبر"],
-            "notes_to_avoid": profile_data.get('disliked_notes', '').split(',') if profile_data.get('disliked_notes') else [],
-            "season_recommendations": "مناسب لجميع الفصول مع تركيز على المساء",
-            "overall_analysis": "بناءً على تفضيلاتك، أنت تميل للعطور الكلاسيكية ذات الطابع الشرقي مع لمسات خشبية دافئة.",
-            "error": str(e)
-        }
+        default_response["error"] = str(e)
+        return default_response
 
 def generate_custom_perfume(perfume_data, scent_profile=None):
     profile_context = ""
@@ -96,6 +118,20 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
     "best_seasons": ["الموسم 1", "الموسم 2"]
 }}"""
 
+    default_response = {
+        "name": "أريج الليل",
+        "name_meaning": "عطر الليالي الساحرة",
+        "top_notes": ["برغموت", "ليمون", "زنجبيل"],
+        "heart_notes": ["ورد", "ياسمين", "زعفران"],
+        "base_notes": ["عود", "مسك", "فانيلا"],
+        "description": "عطر شرقي فاخر يجمع بين الأناقة والغموض، مثالي للمناسبات الخاصة.",
+        "match_score": 90,
+        "usage_recommendations": "مثالي للمساء والمناسبات الخاصة",
+        "longevity": "8-10 ساعات",
+        "sillage": "متوسط إلى قوي",
+        "best_seasons": ["الخريف", "الشتاء"]
+    }
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -106,29 +142,16 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
             max_completion_tokens=1000
         )
         
-        result = response.choices[0].message.content
-        if result.startswith("```"):
-            result = result.split("```")[1]
-            if result.startswith("json"):
-                result = result[4:]
-        result = result.strip()
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
         
-        return json.loads(result)
+        if parsed is None:
+            return default_response
+        
+        return parsed
     except Exception as e:
-        return {
-            "name": "أريج الليل",
-            "name_meaning": "عطر الليالي الساحرة",
-            "top_notes": ["برغموت", "ليمون", "زنجبيل"],
-            "heart_notes": ["ورد", "ياسمين", "زعفران"],
-            "base_notes": ["عود", "مسك", "فانيلا"],
-            "description": "عطر شرقي فاخر يجمع بين الأناقة والغموض، مثالي للمناسبات الخاصة.",
-            "match_score": 90,
-            "usage_recommendations": "مثالي للمساء والمناسبات الخاصة",
-            "longevity": "8-10 ساعات",
-            "sillage": "متوسط إلى قوي",
-            "best_seasons": ["الخريف", "الشتاء"],
-            "error": str(e)
-        }
+        default_response["error"] = str(e)
+        return default_response
 
 def generate_recommendations(query, scent_profile=None, products=None):
     profile_context = ""
@@ -166,6 +189,28 @@ def generate_recommendations(query, scent_profile=None, products=None):
     "general_advice": "نصيحة عامة للمستخدم"
 }}"""
 
+    default_response = {
+        "recommendations": [
+            {
+                "name": "Dior Sauvage",
+                "brand": "Dior",
+                "reason": "عطر رجالي عصري وجذاب",
+                "main_notes": "برغموت، فلفل، عنبر",
+                "match_percentage": 85,
+                "best_for": "الاستخدام اليومي والمناسبات"
+            },
+            {
+                "name": "Chanel Bleu",
+                "brand": "Chanel",
+                "reason": "عطر أنيق يناسب جميع المناسبات",
+                "main_notes": "نعناع، جريب فروت، خشب الصندل",
+                "match_percentage": 82,
+                "best_for": "العمل والمناسبات الرسمية"
+            }
+        ],
+        "general_advice": "جرب العطور قبل الشراء للتأكد من ملاءمتها لبشرتك"
+    }
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -176,26 +221,16 @@ def generate_recommendations(query, scent_profile=None, products=None):
             max_completion_tokens=1500
         )
         
-        result = response.choices[0].message.content
-        if result.startswith("```"):
-            result = result.split("```")[1]
-            if result.startswith("json"):
-                result = result[4:]
-        result = result.strip()
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
         
-        return json.loads(result)
+        if parsed is None:
+            return default_response
+        
+        if 'recommendations' not in parsed or not isinstance(parsed.get('recommendations'), list):
+            return default_response
+        
+        return parsed
     except Exception as e:
-        return {
-            "recommendations": [
-                {
-                    "name": "Dior Sauvage",
-                    "brand": "Dior",
-                    "reason": "عطر رجالي عصري وجذاب",
-                    "main_notes": "برغموت، فلفل، عنبر",
-                    "match_percentage": 85,
-                    "best_for": "الاستخدام اليومي والمناسبات"
-                }
-            ],
-            "general_advice": "جرب العطور قبل الشراء للتأكد من ملاءمتها لبشرتك",
-            "error": str(e)
-        }
+        default_response["error"] = str(e)
+        return default_response
