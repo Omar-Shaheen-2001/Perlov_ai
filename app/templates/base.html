@@ -49,11 +49,13 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    {% if current_user.is_authenticated and current_user.is_admin %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.login') }}" title="لوحة الإدارة">
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}" title="لوحة الإدارة">
                             <i class="bi bi-shield-lock"></i>
                         </a>
                     </li>
+                    {% endif %}
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dashboard.index') }}">
