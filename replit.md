@@ -61,13 +61,19 @@ The app runs on port 5000 with `python main.py`
 - Default password: `admin123` (configurable via ADMIN_PASSWORD env var)
 
 ## Recent Changes
-- **Dec 4, 2025 (Latest)**: Admin Authentication System & UI Improvements
-  - Converted admin login to use email + password from User accounts
-  - Admin users can now log in via email credentials (not just password)
-  - Added admin entry button (🔒 icon) in main navbar for easy access
-  - Auto-creates default admin account: admin@perlov.ai / admin123
-  - Enhanced admin dashboard stat-cards with 4 different luxury gradients
-  - All admin pages styled with consistent luxury design system
+- **Dec 4, 2025 (Latest)**: User Management System & Dashboard Enhancements
+  - **User Management Page** (/admin/users):
+    - Search by name or email with live filtering
+    - View user statistics (total, active, locked users)
+    - Lock/unlock user accounts (toggle is_active status)
+    - Delete users with confirmation dialog
+    - View detailed user profiles with activity stats (Scent DNA, Perfumes, Recommendations)
+  - Added `is_active` field to User model for account status
+  - User detail page shows comprehensive user activity statistics
+  - Dashboard improvements: Redesigned Scent DNA card with luxury styling
+  - Fixed stat-card colors for better contrast and luxury appearance
+  - Enhanced footer with luxury gradient styling and hover effects
+  - Module card button styling: Added gold gradient for recommendations
   
 - **Dec 4, 2025**: Complete design system overhaul with exact luxury color palette
   - Updated CSS with new color variables and gradients
@@ -77,10 +83,15 @@ The app runs on port 5000 with `python main.py`
   - Enhanced glassmorphic effects and shadows
 
 ## Admin Panel Features
-- Dashboard with stats (Users, Profiles, Perfumes, Products)
-- User management
-- Affiliate product management (CRUD operations)
+- **Dashboard**: Stats (Users, Profiles, Perfumes, Products)
+- **User Management** (/admin/users):
+  - Search users by name or email
+  - View quick stats: total users, active users, locked users
+  - Lock/unlock accounts to disable/enable user access
+  - Delete users with confirmation
+  - View user detail page with activity statistics
+- **Affiliate Product Management**: CRUD operations with luxury styling
 - Luxury-themed cards and tables
-- Secure email + password authentication (no separate password)
-- Auto-seeded admin account on app startup
+- Secure email + password authentication
+- Auto-seeded admin account on app startup (admin@perlov.ai / admin123)
 

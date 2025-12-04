@@ -34,37 +34,114 @@
         
         <div class="col-md-10">
             <div class="p-4">
-                <h2 class="fw-bold mb-4">
-                    <i class="bi bi-people me-2"></i>
-                    إدارة المستخدمين
-                </h2>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">
+                        <i class="bi bi-people me-2"></i>
+                        إدارة المستخدمين
+                    </h2>
+                </div>
                 
+                <!-- إحصائيات سريعة -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-blush">
+                            <div class="stat-number">{{ stats.total_users }}</div>
+                            <div class="stat-label">إجمالي المستخدمين</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-amber">
+                            <div class="stat-number">{{ stats.active_users }}</div>
+                            <div class="stat-label">مستخدمين نشطين</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card stat-card-plum">
+                            <div class="stat-number">{{ stats.locked_users }}</div>
+                            <div class="stat-label">حسابات مقفولة</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- البحث -->
+                <div class="dashboard-card mb-4">
+                    <form method="GET" class="row g-2">
+                        <div class="col-md-8">
+                            <input type="text" name="search" class="form-control" placeholder="ابحث باسم أو بريد إلكتروني..." value="{{ search_query }}">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-gradient w-100">
+                                <i class="bi bi-search me-1"></i> بحث
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- جدول المستخدمين -->
                 <div class="dashboard-card">
                     <div class="table-responsive">
-                        <table class="table table-modern">
+                        <table class="table table-modern table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>الاسم</th>
                                     <th>البريد الإلكتروني</th>
+                                    <th>الحالة</th>
                                     <th>مدير</th>
                                     <th>تاريخ التسجيل</th>
+                                    <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for user in users %}
                                 <tr>
-                                    <td>{{ user.id }}</td>
+                                    <td><strong>{{ user.id }}</strong></td>
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.email }}</td>
                                     <td>
+                                        {% if user.is_active %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i> نشط
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-lock me-1"></i> مقفول
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
                                         {% if user.is_admin %}
-                                        <span class="badge bg-success">نعم</span>
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-shield me-1"></i> نعم
+                                        </span>
                                         {% else %}
                                         <span class="badge bg-secondary">لا</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td><small class="text-muted">{{ user.created_at.strftime('%Y-%m-%d') }}</small></td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('admin.view_user', id=user.id) }}" class="btn btn-sm btn-outline-primary" title="عرض التفاصيل">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            {% if user.id != current_user.id %}
+                                            <form method="POST" action="{{ url_for('admin.toggle_lock_user', id=user.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm {% if user.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="{% if user.is_active %}قفل{% else %}فتح{% endif %}">
+                                                    {% if user.is_active %}
+                                                    <i class="bi bi-lock"></i>
+                                                    {% else %}
+                                                    <i class="bi bi-unlock"></i>
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('admin.delete_user', id=user.id) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -72,7 +149,10 @@
                     </div>
                     
                     {% if not users %}
-                    <p class="text-center text-muted py-4">لا يوجد مستخدمين مسجلين بعد</p>
+                    <p class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        لا يوجد مستخدمين مطابقين للبحث
+                    </p>
                     {% endif %}
                 </div>
             </div>

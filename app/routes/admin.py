@@ -62,8 +62,68 @@ def dashboard():
 @admin_bp.route('/users')
 @admin_required
 def users():
-    users = User.query.order_by(User.created_at.desc()).all()
-    return render_template('admin/users.html', users=users)
+    search_query = request.args.get('search', '').strip()
+    
+    query = User.query.order_by(User.created_at.desc())
+    
+    if search_query:
+        query = query.filter(
+            (User.name.ilike(f'%{search_query}%')) |
+            (User.email.ilike(f'%{search_query}%'))
+        )
+    
+    users = query.all()
+    stats = {
+        'total_users': User.query.count(),
+        'active_users': User.query.filter_by(is_active=True).count(),
+        'locked_users': User.query.filter_by(is_active=False).count()
+    }
+    
+    return render_template('admin/users.html', users=users, search_query=search_query, stats=stats)
+
+@admin_bp.route('/users/delete/<int:id>', methods=['POST'])
+@admin_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    if user.id == current_user.id:
+        flash('لا يمكنك حذف حسابك الخاص', 'error')
+        return redirect(url_for('admin.users'))
+    
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'تم حذف المستخدم {user.name} بنجاح', 'success')
+    return redirect(url_for('admin.users'))
+
+@admin_bp.route('/users/toggle-lock/<int:id>', methods=['POST'])
+@admin_required
+def toggle_lock_user(id):
+    user = User.query.get_or_404(id)
+    if user.id == current_user.id:
+        flash('لا يمكنك قفل حسابك الخاص', 'error')
+        return redirect(url_for('admin.users'))
+    
+    user.is_active = not user.is_active
+    db.session.commit()
+    
+    action = 'فتح' if user.is_active else 'قفل'
+    flash(f'تم {action} حساب {user.name} بنجاح', 'success')
+    return redirect(url_for('admin.users'))
+
+@admin_bp.route('/users/view/<int:id>')
+@admin_required
+def view_user(id):
+    user = User.query.get_or_404(id)
+    scent_profiles = ScentProfile.query.filter_by(user_id=id).count()
+    custom_perfumes = CustomPerfume.query.filter_by(user_id=id).count()
+    recommendations = Recommendation.query.filter_by(user_id=id).count()
+    
+    stats = {
+        'scent_profiles': scent_profiles,
+        'custom_perfumes': custom_perfumes,
+        'recommendations': recommendations
+    }
+    
+    return render_template('admin/user_detail.html', user=user, stats=stats)
 
 @admin_bp.route('/products')
 @admin_required
