@@ -601,6 +601,57 @@ body {
     border-right-color: transparent;
 }
 
+.footer-luxury {
+    background: linear-gradient(135deg, #1F1F1F 0%, #3a3a3a 50%, #2a2a2a 100%);
+    color: #F7F4F6;
+    padding: 40px 0 20px;
+    margin-top: 60px;
+    border-top: 1px solid rgba(233, 201, 211, 0.2);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.footer-luxury h5 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #F7F4F6;
+    margin-bottom: 15px;
+}
+
+.footer-luxury h6 {
+    color: #E9C9D3;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.footer-text {
+    color: rgba(247, 244, 246, 0.8);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.footer-link {
+    color: rgba(247, 244, 246, 0.75);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    color: #D9A35F;
+    transform: translateX(-3px);
+}
+
+.footer-divider {
+    border-color: rgba(233, 201, 211, 0.15) !important;
+    margin: 20px 0;
+}
+
+.footer-copyright {
+    color: rgba(247, 244, 246, 0.6);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 60px 0;

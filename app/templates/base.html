@@ -101,30 +101,30 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="footer-luxury">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <h5><i class="bi bi-droplet-fill text-rose"></i> PERLOV.ai</h5>
-                    <p class="text-muted">منصة العطور الذكية - اصنع عطرك بالذكاء الاصطناعي</p>
+                    <p class="footer-text">منصة العطور الذكية - اصنع عطرك بالذكاء الاصطناعي</p>
                 </div>
                 <div class="col-md-4 mb-3">
                     <h6>روابط سريعة</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('scent_dna.form') }}" class="text-muted text-decoration-none">حمضك العطري</a></li>
-                        <li><a href="{{ url_for('custom_perfume.form') }}" class="text-muted text-decoration-none">صمّم عطرك</a></li>
-                        <li><a href="{{ url_for('recommendations.index') }}" class="text-muted text-decoration-none">توصيات العطور</a></li>
+                        <li><a href="{{ url_for('scent_dna.form') }}" class="footer-link">حمضك العطري</a></li>
+                        <li><a href="{{ url_for('custom_perfume.form') }}" class="footer-link">صمّم عطرك</a></li>
+                        <li><a href="{{ url_for('recommendations.index') }}" class="footer-link">توصيات العطور</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">
                     <h6>تواصل معنا</h6>
-                    <p class="text-muted">
+                    <p class="footer-text">
                         <i class="bi bi-envelope"></i> info@perlov.ai
                     </p>
                 </div>
             </div>
-            <hr class="border-secondary">
-            <p class="text-center text-muted mb-0">&copy; 2024 PERLOV.ai - جميع الحقوق محفوظة</p>
+            <hr class="footer-divider">
+            <p class="text-center footer-copyright">&copy; 2024 PERLOV.ai - جميع الحقوق محفوظة</p>
         </div>
     </footer>
 
