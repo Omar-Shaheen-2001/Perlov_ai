@@ -239,6 +239,15 @@ body {
     color: var(--deep-black);
 }
 
+.btn-gradient-gold {
+    background: linear-gradient(135deg, #D9A35F 0%, #E9C9D3 100%) !important;
+}
+
+.btn-gradient-gold:hover {
+    box-shadow: 0 12px 35px rgba(217, 163, 95, 0.3);
+    color: white;
+}
+
 .form-section {
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(10px);
