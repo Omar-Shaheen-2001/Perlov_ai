@@ -73,13 +73,14 @@ def users():
         )
     
     users = query.all()
+    all_users = User.query.all()
     stats = {
         'total_users': User.query.count(),
         'active_users': User.query.filter_by(is_active=True).count(),
         'locked_users': User.query.filter_by(is_active=False).count()
     }
     
-    return render_template('admin/users.html', users=users, search_query=search_query, stats=stats)
+    return render_template('admin/users.html', users=users, all_users=all_users, search_query=search_query, stats=stats)
 
 @admin_bp.route('/users/delete/<int:id>', methods=['POST'])
 @admin_required
