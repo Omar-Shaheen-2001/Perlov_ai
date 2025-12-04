@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi bi-person-circle me-2"></i> مرحباً {{ current_user.name }}</h1>
+        <p class="opacity-75">إدارة ملفك العطري الشخصي</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.profiles_count }}</div>
+                <div class="stat-label">تحليلات Scent DNA</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card" style="background: var(--secondary-gradient);">
+                <div class="stat-number">{{ stats.perfumes_count }}</div>
+                <div class="stat-label">عطور مصممة</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card" style="background: var(--gold-gradient);">
+                <div class="stat-number">{{ stats.recommendations_count }}</div>
+                <div class="stat-label">توصيات محفوظة</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-fingerprint text-primary me-2"></i>
+                    آخر تحليل Scent DNA
+                </h5>
+                {% if latest_profile %}
+                <div class="bg-light rounded-4 p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ latest_profile.scent_personality or 'شخصية عطرية' }}</h6>
+                            <small class="text-muted">{{ latest_profile.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <a href="{{ url_for('scent_dna.result', id=latest_profile.id) }}" class="btn btn-outline-primary btn-sm">عرض</a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">لم تقم بأي تحليل بعد</p>
+                {% endif %}
+                <a href="{{ url_for('scent_dna.form') }}" class="btn btn-gradient btn-sm">
+                    <i class="bi bi-plus me-1"></i> تحليل جديد
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-palette text-danger me-2"></i>
+                    آخر عطر مصمم
+                </h5>
+                {% if latest_perfume %}
+                <div class="bg-light rounded-4 p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ latest_perfume.name }}</h6>
+                            <small class="text-muted">{{ latest_perfume.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <a href="{{ url_for('custom_perfume.result', id=latest_perfume.id) }}" class="btn btn-outline-primary btn-sm">عرض</a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">لم تصمم أي عطر بعد</p>
+                {% endif %}
+                <a href="{{ url_for('custom_perfume.form') }}" class="btn btn-gradient btn-gradient-secondary btn-sm">
+                    <i class="bi bi-plus me-1"></i> صمّم عطراً جديداً
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    {% if scent_profiles %}
+    <div class="dashboard-card mb-4">
+        <h5 class="fw-bold mb-3">
+            <i class="bi bi-list-ul me-2"></i>
+            سجل تحليلات Scent DNA
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>الشخصية العطرية</th>
+                        <th>النوتات المفضلة</th>
+                        <th>التاريخ</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in scent_profiles[:5] %}
+                    <tr>
+                        <td>{{ profile.scent_personality or 'غير محدد' }}</td>
+                        <td>{{ profile.favorite_notes[:40] }}...</td>
+                        <td>{{ profile.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('scent_dna.result', id=profile.id) }}" class="btn btn-sm btn-outline-primary">عرض</a>
+                            <a href="{{ url_for('custom_perfume.form', scent_profile_id=profile.id) }}" class="btn btn-sm btn-outline-secondary">صمّم عطراً</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if custom_perfumes %}
+    <div class="dashboard-card">
+        <h5 class="fw-bold mb-3">
+            <i class="bi bi-collection me-2"></i>
+            سجل العطور المصممة
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>اسم العطر</th>
+                        <th>المناسبة</th>
+                        <th>نسبة التوافق</th>
+                        <th>التاريخ</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for perfume in custom_perfumes[:5] %}
+                    <tr>
+                        <td>{{ perfume.name }}</td>
+                        <td>{{ perfume.occasion }}</td>
+                        <td><span class="badge bg-primary">{{ perfume.match_score | int }}%</span></td>
+                        <td>{{ perfume.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('custom_perfume.result', id=perfume.id) }}" class="btn btn-sm btn-outline-primary">عرض</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

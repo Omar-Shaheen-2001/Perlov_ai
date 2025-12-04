@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}الرئيسية{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">اصنع عطرك بالذكاء الاصطناعي</h1>
+        <p class="lead mb-5 opacity-75">اكتشف شخصيتك العطرية الفريدة وصمم عطرك المثالي مع PERLOV.ai</p>
+        <a href="{{ url_for('main.modules') }}" class="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold">
+            <i class="bi bi-rocket-takeoff me-2"></i>
+            ابدأ الآن
+        </a>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">ماذا نقدم لك؟</h2>
+            <p class="text-muted">ثلاث خدمات ذكية لعالم العطور</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon purple">
+                        <i class="bi bi-fingerprint"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">محلل الحمض العطري</h4>
+                    <p class="text-muted">اكتشف بصمتك العطرية الفريدة من خلال تحليل شخصيتك وتفضيلاتك بالذكاء الاصطناعي</p>
+                    <a href="{{ url_for('scent_dna.form') }}" class="btn btn-outline-primary rounded-pill mt-3">
+                        اكتشف حمضك العطري
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon pink">
+                        <i class="bi bi-palette"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">مصمم العطور الشخصي</h4>
+                    <p class="text-muted">صمم عطرك الخاص بناءً على ذوقك ومناسباتك مع تركيبة فريدة من نوتات عطرية مختارة</p>
+                    <a href="{{ url_for('custom_perfume.form') }}" class="btn btn-outline-primary rounded-pill mt-3">
+                        صمم عطرك الآن
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon gold">
+                        <i class="bi bi-stars"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">توصيات العطور الذكية</h4>
+                    <p class="text-muted">احصل على توصيات عطور جاهزة للشراء تناسب ذوقك مع روابط مباشرة للمتاجر</p>
+                    <a href="{{ url_for('recommendations.index') }}" class="btn btn-outline-primary rounded-pill mt-3">
+                        احصل على توصيات
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-4">كيف يعمل PERLOV.ai؟</h2>
+                <div class="d-flex mb-4">
+                    <div class="me-3">
+                        <span class="badge bg-primary rounded-circle p-3 fs-5">1</span>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">أجب على الأسئلة</h5>
+                        <p class="text-muted">أجب على بعض الأسئلة البسيطة عن شخصيتك وتفضيلاتك العطرية</p>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="me-3">
+                        <span class="badge bg-primary rounded-circle p-3 fs-5">2</span>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">تحليل الذكاء الاصطناعي</h5>
+                        <p class="text-muted">يقوم نظامنا الذكي بتحليل إجاباتك وفهم شخصيتك العطرية</p>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="me-3">
+                        <span class="badge bg-primary rounded-circle p-3 fs-5">3</span>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">احصل على نتائجك</h5>
+                        <p class="text-muted">استلم تحليلك الشخصي أو عطرك المصمم خصيصاً لك</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <div class="position-relative">
+                    <div class="feature-icon purple mx-auto" style="width: 200px; height: 200px; font-size: 5rem;">
+                        <i class="bi bi-magic"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">ابدأ رحلتك العطرية الآن</h2>
+        <p class="text-muted mb-4">انضم إلى آلاف المستخدمين الذين اكتشفوا عطورهم المثالية</p>
+        <a href="{{ url_for('main.modules') }}" class="btn btn-gradient btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>
+            استكشف الموديولات
+        </a>
+    </div>
+</section>
+{% endblock %}

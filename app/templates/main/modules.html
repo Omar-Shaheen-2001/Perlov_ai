@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}الموديولات{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>اختر خدمتك</h1>
+        <p class="opacity-75">ثلاث طرق ذكية لاكتشاف عالم العطور</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="{{ url_for('scent_dna.form') }}" class="module-card">
+                <div class="module-icon purple">
+                    <i class="bi bi-fingerprint"></i>
+                </div>
+                <h3 class="fw-bold text-center mb-3">حمضك العطري</h3>
+                <p class="text-muted text-center mb-4">
+                    اكتشف شخصيتك العطرية الفريدة من خلال تحليل ذكي لتفضيلاتك ونمط حياتك
+                </p>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> تحليل الشخصية العطرية</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> النوتات المثالية لك</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> توصيات مخصصة</li>
+                </ul>
+                <div class="text-center mt-4">
+                    <span class="btn btn-gradient">ابدأ التحليل</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-4">
+            <a href="{{ url_for('custom_perfume.form') }}" class="module-card">
+                <div class="module-icon pink">
+                    <i class="bi bi-palette"></i>
+                </div>
+                <h3 class="fw-bold text-center mb-3">صمّم عطرك</h3>
+                <p class="text-muted text-center mb-4">
+                    دع الذكاء الاصطناعي يصمم لك عطراً فريداً بناءً على ذوقك ومناسباتك
+                </p>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> تركيبة عطرية مخصصة</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> اسم عطر إبداعي</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> توصيات الاستخدام</li>
+                </ul>
+                <div class="text-center mt-4">
+                    <span class="btn btn-gradient btn-gradient-secondary">صمم الآن</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-4">
+            <a href="{{ url_for('recommendations.index') }}" class="module-card">
+                <div class="module-icon gold">
+                    <i class="bi bi-stars"></i>
+                </div>
+                <h3 class="fw-bold text-center mb-3">توصيات العطور</h3>
+                <p class="text-muted text-center mb-4">
+                    احصل على توصيات لعطور جاهزة للشراء تناسب ذوقك مع روابط مباشرة
+                </p>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> عطور من ماركات عالمية</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> مطابقة ذكية</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> روابط شراء مباشرة</li>
+                </ul>
+                <div class="text-center mt-4">
+                    <span class="btn btn-gradient" style="background: var(--gold-gradient);">احصل على توصيات</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{% if product %}تعديل منتج{% else %}إضافة منتج{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 admin-sidebar">
+            <h5 class="text-white px-3 py-3 mb-0">
+                <i class="bi bi-gear me-2"></i>
+                لوحة الإدارة
+            </h5>
+            <hr class="border-secondary mx-3">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>
+                    الرئيسية
+                </a>
+                <a class="nav-link" href="{{ url_for('admin.users') }}">
+                    <i class="bi bi-people"></i>
+                    المستخدمين
+                </a>
+                <a class="nav-link active" href="{{ url_for('admin.products') }}">
+                    <i class="bi bi-box-seam"></i>
+                    منتجات الأفلييت
+                </a>
+                <hr class="border-secondary mx-3">
+                <a class="nav-link" href="{{ url_for('admin.logout') }}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    خروج
+                </a>
+            </nav>
+        </div>
+        
+        <div class="col-md-10">
+            <div class="p-4">
+                <h2 class="fw-bold mb-4">
+                    <i class="bi bi-{% if product %}pencil{% else %}plus{% endif %} me-2"></i>
+                    {% if product %}تعديل منتج{% else %}إضافة منتج جديد{% endif %}
+                </h2>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="form-section">
+                            <form method="POST">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">اسم المنتج</label>
+                                        <input type="text" name="name" class="form-control" value="{{ product.name if product else '' }}" required>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">الماركة</label>
+                                        <input type="text" name="brand" class="form-control" value="{{ product.brand if product else '' }}" required>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label class="form-label">النوتات الرئيسية</label>
+                                        <input type="text" name="main_notes" class="form-control" value="{{ product.main_notes if product else '' }}" placeholder="مثال: عود، مسك، فانيلا">
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label class="form-label">الوصف</label>
+                                        <textarea name="description" class="form-control" rows="3">{{ product.description if product else '' }}</textarea>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">رابط الشراء</label>
+                                        <input type="url" name="url" class="form-control" value="{{ product.url if product else '' }}">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">السعر</label>
+                                        <input type="text" name="price_text" class="form-control" value="{{ product.price_text if product else '' }}" placeholder="مثال: $100 - $150">
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label class="form-label">رابط الصورة</label>
+                                        <input type="url" name="image_url" class="form-control" value="{{ product.image_url if product else '' }}">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">الجنس</label>
+                                        <select name="gender" class="form-select">
+                                            <option value="">اختر</option>
+                                            <option value="رجالي" {% if product and product.gender == 'رجالي' %}selected{% endif %}>رجالي</option>
+                                            <option value="نسائي" {% if product and product.gender == 'نسائي' %}selected{% endif %}>نسائي</option>
+                                            <option value="للجنسين" {% if product and product.gender == 'للجنسين' %}selected{% endif %}>للجنسين</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">الفئة</label>
+                                        <input type="text" name="category" class="form-control" value="{{ product.category if product else '' }}" placeholder="مثال: شرقي، خشبي، زهري">
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex gap-3 mt-4">
+                                    <button type="submit" class="btn btn-gradient">
+                                        <i class="bi bi-check me-2"></i>
+                                        {% if product %}حفظ التعديلات{% else %}إضافة المنتج{% endif %}
+                                    </button>
+                                    <a href="{{ url_for('admin.products') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x me-2"></i>
+                                        إلغاء
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

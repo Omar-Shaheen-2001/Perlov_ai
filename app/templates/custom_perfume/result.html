@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ perfume.name }} - عطرك الشخصي{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi bi-palette me-2"></i> عطرك الشخصي</h1>
+        <p class="opacity-75">تم تصميم عطر فريد خصيصاً لك</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="result-card">
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2">{{ perfume.name }}</h2>
+                        {% if details.get('name_meaning') %}
+                        <p class="text-muted mb-0">{{ details.get('name_meaning') }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="match-score">
+                            {{ perfume.match_score | int }}
+                        </div>
+                        <p class="text-muted mt-2 mb-0">نسبة التوافق</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="notes-section h-100">
+                            <h5 class="notes-title">
+                                <i class="bi bi-arrow-up-circle text-warning"></i>
+                                النوتات العليا
+                            </h5>
+                            <p class="text-muted small mb-2">تظهر أولاً وتدوم 15-30 دقيقة</p>
+                            <div class="notes-list">
+                                {% for note in perfume.top_notes.split(',') %}
+                                <span class="note-badge top">{{ note.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="notes-section h-100">
+                            <h5 class="notes-title">
+                                <i class="bi bi-heart text-danger"></i>
+                                نوتات القلب
+                            </h5>
+                            <p class="text-muted small mb-2">جوهر العطر وتدوم 2-4 ساعات</p>
+                            <div class="notes-list">
+                                {% for note in perfume.heart_notes.split(',') %}
+                                <span class="note-badge heart">{{ note.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="notes-section h-100">
+                            <h5 class="notes-title">
+                                <i class="bi bi-arrow-down-circle text-success"></i>
+                                النوتات القاعدية
+                            </h5>
+                            <p class="text-muted small mb-2">الأساس وتدوم 6+ ساعات</p>
+                            <div class="notes-list">
+                                {% for note in perfume.base_notes.split(',') %}
+                                <span class="note-badge base">{{ note.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-light rounded-4 p-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-chat-quote text-primary me-2"></i>
+                        وصف العطر
+                    </h5>
+                    <p class="mb-0">{{ perfume.description }}</p>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    {% if details.get('longevity') %}
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded-4">
+                            <i class="bi bi-clock fs-3 text-primary"></i>
+                            <h6 class="fw-bold mt-2 mb-1">مدة الثبات</h6>
+                            <p class="text-muted mb-0">{{ details.get('longevity') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if details.get('sillage') %}
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded-4">
+                            <i class="bi bi-wind fs-3 text-primary"></i>
+                            <h6 class="fw-bold mt-2 mb-1">قوة الانتشار</h6>
+                            <p class="text-muted mb-0">{{ details.get('sillage') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if details.get('best_seasons') %}
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded-4">
+                            <i class="bi bi-calendar-event fs-3 text-primary"></i>
+                            <h6 class="fw-bold mt-2 mb-1">أفضل المواسم</h6>
+                            <p class="text-muted mb-0">{{ details.get('best_seasons') | join(', ') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if details.get('usage_recommendations') %}
+                <div class="alert alert-info">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    <strong>نصيحة الاستخدام:</strong> {{ details.get('usage_recommendations') }}
+                </div>
+                {% endif %}
+                
+                {% if similar_products %}
+                <hr class="my-5">
+                <h4 class="fw-bold mb-4">
+                    <i class="bi bi-stars text-warning me-2"></i>
+                    عطور جاهزة قريبة من هذا النمط
+                </h4>
+                <div class="row g-4">
+                    {% for product in similar_products %}
+                    <div class="col-md-3">
+                        <div class="product-card">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400'">
+                            <div class="card-body">
+                                <p class="brand mb-1">{{ product.brand }}</p>
+                                <h6 class="fw-bold mb-2">{{ product.name }}</h6>
+                                <p class="price mb-2">{{ product.price_text }}</p>
+                                <a href="{{ product.url }}" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-cart me-1"></i> اشترِ الآن
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="row g-3 mt-4">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('custom_perfume.form') }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-arrow-repeat me-2"></i>
+                            صمّم عطراً آخر
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('recommendations.index') }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-stars me-2"></i>
+                            توصيات أخرى
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-gradient w-100 py-3" disabled>
+                            <i class="bi bi-file-pdf me-2"></i>
+                            تحميل PDF (قريباً)
+                        </button>
+                    </div>
+                </div>
+                
+                {% if not current_user.is_authenticated %}
+                <div class="alert alert-warning mt-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <a href="{{ url_for('auth.register') }}" class="alert-link">سجل حسابك</a> لحفظ عطورك المصممة والوصول إليها لاحقاً
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة الإدارة{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 admin-sidebar">
+            <h5 class="text-white px-3 py-3 mb-0">
+                <i class="bi bi-gear me-2"></i>
+                لوحة الإدارة
+            </h5>
+            <hr class="border-secondary mx-3">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>
+                    الرئيسية
+                </a>
+                <a class="nav-link" href="{{ url_for('admin.users') }}">
+                    <i class="bi bi-people"></i>
+                    المستخدمين
+                </a>
+                <a class="nav-link" href="{{ url_for('admin.products') }}">
+                    <i class="bi bi-box-seam"></i>
+                    منتجات الأفلييت
+                </a>
+                <hr class="border-secondary mx-3">
+                <a class="nav-link" href="{{ url_for('admin.logout') }}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    خروج
+                </a>
+            </nav>
+        </div>
+        
+        <div class="col-md-10">
+            <div class="p-4">
+                <h2 class="fw-bold mb-4">لوحة التحكم الإدارية</h2>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <i class="bi bi-people fs-1 d-block mb-2"></i>
+                            <div class="stat-number">{{ stats.users_count }}</div>
+                            <div class="stat-label">المستخدمين</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: var(--secondary-gradient);">
+                            <i class="bi bi-fingerprint fs-1 d-block mb-2"></i>
+                            <div class="stat-number">{{ stats.profiles_count }}</div>
+                            <div class="stat-label">تحليلات Scent DNA</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: var(--gold-gradient);">
+                            <i class="bi bi-palette fs-1 d-block mb-2"></i>
+                            <div class="stat-number">{{ stats.perfumes_count }}</div>
+                            <div class="stat-label">عطور مصممة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: var(--dark-gradient);">
+                            <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                            <div class="stat-number">{{ stats.products_count }}</div>
+                            <div class="stat-label">منتجات الأفلييت</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-person-plus text-primary me-2"></i>
+                                آخر المستخدمين المسجلين
+                            </h5>
+                            {% if recent_users %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>الاسم</th>
+                                            <th>البريد</th>
+                                            <th>التاريخ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in recent_users %}
+                                        <tr>
+                                            <td>{{ user.name }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">لا يوجد مستخدمين بعد</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-palette text-danger me-2"></i>
+                                آخر العطور المصممة
+                            </h5>
+                            {% if recent_perfumes %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم العطر</th>
+                                            <th>المناسبة</th>
+                                            <th>التاريخ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for perfume in recent_perfumes %}
+                                        <tr>
+                                            <td>{{ perfume.name }}</td>
+                                            <td>{{ perfume.occasion }}</td>
+                                            <td>{{ perfume.created_at.strftime('%Y-%m-%d') }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">لا توجد عطور مصممة بعد</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

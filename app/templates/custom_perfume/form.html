@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}صمّم عطرك{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi bi-palette me-2"></i> صمّم عطرك الشخصي</h1>
+        <p class="opacity-75">دع الذكاء الاصطناعي يصنع لك عطراً فريداً</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% if scent_profile %}
+            <div class="alert alert-success mb-4">
+                <i class="bi bi-check-circle me-2"></i>
+                سيتم استخدام بصمتك العطرية "{{ scent_profile.scent_personality }}" لتصميم عطر مثالي لك
+            </div>
+            {% endif %}
+            
+            <div class="form-section">
+                <form method="POST" id="perfumeForm">
+                    {% if scent_profile %}
+                    <input type="hidden" name="scent_profile_id" value="{{ scent_profile.id }}">
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label">مناسبة استخدام العطر</label>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <input type="radio" class="btn-check" name="occasion" id="morning" value="صباحي" required>
+                                <label class="btn btn-outline-primary w-100 py-3" for="morning">
+                                    <i class="bi bi-sunrise d-block fs-4 mb-1"></i>
+                                    صباحي
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input type="radio" class="btn-check" name="occasion" id="evening" value="مسائي">
+                                <label class="btn btn-outline-primary w-100 py-3" for="evening">
+                                    <i class="bi bi-moon-stars d-block fs-4 mb-1"></i>
+                                    مسائي
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input type="radio" class="btn-check" name="occasion" id="work" value="للعمل">
+                                <label class="btn btn-outline-primary w-100 py-3" for="work">
+                                    <i class="bi bi-briefcase d-block fs-4 mb-1"></i>
+                                    للعمل
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input type="radio" class="btn-check" name="occasion" id="special" value="مناسبة خاصة">
+                                <label class="btn btn-outline-primary w-100 py-3" for="special">
+                                    <i class="bi bi-star d-block fs-4 mb-1"></i>
+                                    مناسبة خاصة
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">درجة الثبات المطلوبة</label>
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <input type="radio" class="btn-check" name="intensity" id="light" value="خفيف" required>
+                                <label class="btn btn-outline-primary w-100 py-3" for="light">
+                                    <i class="bi bi-droplet d-block fs-4 mb-1"></i>
+                                    خفيف
+                                </label>
+                            </div>
+                            <div class="col-4">
+                                <input type="radio" class="btn-check" name="intensity" id="medium" value="متوسط">
+                                <label class="btn btn-outline-primary w-100 py-3" for="medium">
+                                    <i class="bi bi-droplet-half d-block fs-4 mb-1"></i>
+                                    متوسط
+                                </label>
+                            </div>
+                            <div class="col-4">
+                                <input type="radio" class="btn-check" name="intensity" id="strong" value="قوي">
+                                <label class="btn btn-outline-primary w-100 py-3" for="strong">
+                                    <i class="bi bi-droplet-fill d-block fs-4 mb-1"></i>
+                                    قوي
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">الميزانية التقريبية</label>
+                        <select name="budget" class="form-select" required>
+                            <option value="">اختر ميزانيتك</option>
+                            <option value="اقتصادية">اقتصادية (أقل من $50)</option>
+                            <option value="متوسطة">متوسطة ($50 - $150)</option>
+                            <option value="فاخرة">فاخرة ($150 - $300)</option>
+                            <option value="حصرية">حصرية (أكثر من $300)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-gradient btn-gradient-secondary w-100 py-3" id="submitBtn">
+                        <i class="bi bi-magic me-2"></i>
+                        صمّم عطري الآن
+                    </button>
+                    
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">جاري التحميل...</span>
+                        </div>
+                        <p class="mt-3 text-muted">جاري تصميم عطرك الشخصي...</p>
+                    </div>
+                </form>
+                
+                {% if not scent_profile %}
+                <hr class="my-4">
+                <p class="text-center text-muted">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    للحصول على نتائج أفضل، 
+                    <a href="{{ url_for('scent_dna.form') }}">حلل بصمتك العطرية أولاً</a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('perfumeForm').addEventListener('submit', function() {
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('loadingSpinner').classList.add('show');
+});
+</script>
+{% endblock %}

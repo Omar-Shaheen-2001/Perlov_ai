@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}حمضك العطري{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi bi-fingerprint me-2"></i> اكتشف حمضك العطري</h1>
+        <p class="opacity-75">أجب على الأسئلة التالية لنكتشف شخصيتك العطرية الفريدة</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-section">
+                <form method="POST" id="scentDnaForm">
+                    <div class="mb-4">
+                        <label class="form-label">الجنس</label>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="gender" id="male" value="ذكر" required>
+                                <label class="btn btn-outline-primary w-100 py-3" for="male">
+                                    <i class="bi bi-gender-male me-2"></i> ذكر
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="gender" id="female" value="أنثى">
+                                <label class="btn btn-outline-primary w-100 py-3" for="female">
+                                    <i class="bi bi-gender-female me-2"></i> أنثى
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">الفئة العمرية</label>
+                        <select name="age_range" class="form-select" required>
+                            <option value="">اختر فئتك العمرية</option>
+                            <option value="18-25">18 - 25 سنة</option>
+                            <option value="26-35">26 - 35 سنة</option>
+                            <option value="36-45">36 - 45 سنة</option>
+                            <option value="46-55">46 - 55 سنة</option>
+                            <option value="55+">55 سنة فأكثر</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">ما الذي يصف شخصيتك أكثر؟</label>
+                        <select name="personality_type" class="form-select" required>
+                            <option value="">اختر نوع شخصيتك</option>
+                            <option value="رومانسي">رومانسي - عاطفي وحالم</option>
+                            <option value="كلاسيكي">كلاسيكي - أنيق وتقليدي</option>
+                            <option value="مغامر">مغامر - جريء ومتحمس</option>
+                            <option value="هادئ">هادئ - مريح ومتزن</option>
+                            <option value="عصري">عصري - متجدد ومواكب</option>
+                            <option value="غامض">غامض - ساحر وملفت</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">الروائح التي تفضلها (اختر عدة خيارات)</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="عود" id="note1">
+                                <label for="note1">عود</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="مسك" id="note2">
+                                <label for="note2">مسك</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="عنبر" id="note3">
+                                <label for="note3">عنبر</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="فانيلا" id="note4">
+                                <label for="note4">فانيلا</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="ورد" id="note5">
+                                <label for="note5">ورد</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="ياسمين" id="note6">
+                                <label for="note6">ياسمين</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="حمضيات" id="note7">
+                                <label for="note7">حمضيات</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="أخشاب" id="note8">
+                                <label for="note8">أخشاب</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="توابل" id="note9">
+                                <label for="note9">توابل</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="زعفران" id="note10">
+                                <label for="note10">زعفران</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="بخور" id="note11">
+                                <label for="note11">بخور</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="favorite_notes" value="فواكه" id="note12">
+                                <label for="note12">فواكه</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">الروائح التي لا تحبها (اختياري)</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="عود" id="dnote1">
+                                <label for="dnote1">عود</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="مسك ثقيل" id="dnote2">
+                                <label for="dnote2">مسك ثقيل</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="حمضيات حادة" id="dnote3">
+                                <label for="dnote3">حمضيات حادة</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="روائح حيوانية" id="dnote4">
+                                <label for="dnote4">روائح حيوانية</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="بودري" id="dnote5">
+                                <label for="dnote5">بودري</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="disliked_notes" value="حلو جداً" id="dnote6">
+                                <label for="dnote6">حلو جداً</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">المناخ / الطقس</label>
+                        <select name="climate" class="form-select" required>
+                            <option value="">اختر مناخك</option>
+                            <option value="حار">حار - صيف طويل</option>
+                            <option value="معتدل">معتدل - ربيعي وخريفي</option>
+                            <option value="بارد">بارد - شتاء طويل</option>
+                            <option value="متنوع">متنوع - أربعة فصول واضحة</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">نوع بشرتك</label>
+                        <select name="skin_type" class="form-select" required>
+                            <option value="">اختر نوع بشرتك</option>
+                            <option value="عادية">عادية</option>
+                            <option value="دهنية">دهنية</option>
+                            <option value="جافة">جافة</option>
+                            <option value="مختلطة">مختلطة</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-gradient w-100 py-3" id="submitBtn">
+                        <i class="bi bi-magic me-2"></i>
+                        تحليل بصمتي العطرية
+                    </button>
+                    
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">جاري التحميل...</span>
+                        </div>
+                        <p class="mt-3 text-muted">جاري تحليل بصمتك العطرية...</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('scentDnaForm').addEventListener('submit', function() {
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('loadingSpinner').classList.add('show');
+});
+</script>
+{% endblock %}

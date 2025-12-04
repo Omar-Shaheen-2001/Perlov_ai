@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}نتيجة حمضك العطري{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi bi-fingerprint me-2"></i> بصمتك العطرية</h1>
+        <p class="opacity-75">اكتشف شخصيتك العطرية الفريدة</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="result-card">
+                <div class="result-header">
+                    <span class="personality-badge">
+                        <i class="bi bi-stars me-2"></i>
+                        {{ analysis.get('scent_personality', profile.scent_personality or 'الشخصية العطرية') }}
+                    </span>
+                    <p class="text-muted mb-0">{{ analysis.get('personality_description', 'تم تحليل شخصيتك العطرية بنجاح') }}</p>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="notes-section">
+                            <h5 class="notes-title">
+                                <i class="bi bi-heart-fill text-danger"></i>
+                                النوتات المثالية لك
+                            </h5>
+                            <div class="notes-list">
+                                {% if analysis.get('ideal_notes') %}
+                                    {% for note in analysis.get('ideal_notes', []) %}
+                                    <span class="note-badge top">{{ note }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for note in profile.favorite_notes.split(',') if profile.favorite_notes %}
+                                    <span class="note-badge top">{{ note.strip() }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="notes-section">
+                            <h5 class="notes-title">
+                                <i class="bi bi-collection text-primary"></i>
+                                العائلات العطرية المناسبة
+                            </h5>
+                            <div class="notes-list">
+                                {% for family in analysis.get('recommended_families', ['شرقية', 'خشبية', 'زهرية']) %}
+                                <span class="note-badge heart">{{ family }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if analysis.get('notes_to_avoid') %}
+                <div class="notes-section mt-4">
+                    <h5 class="notes-title">
+                        <i class="bi bi-x-circle text-warning"></i>
+                        نوتات يُفضل تجنبها
+                    </h5>
+                    <div class="notes-list">
+                        {% for note in analysis.get('notes_to_avoid', []) %}
+                        <span class="note-badge base">{{ note }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="bg-light rounded-4 p-4 mt-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-chat-quote text-primary me-2"></i>
+                        التحليل الشامل
+                    </h5>
+                    <p class="mb-0">{{ analysis.get('overall_analysis', 'بناءً على تفضيلاتك، تم تحديد شخصيتك العطرية الفريدة.') }}</p>
+                </div>
+                
+                {% if analysis.get('season_recommendations') %}
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    <strong>توصية موسمية:</strong> {{ analysis.get('season_recommendations') }}
+                </div>
+                {% endif %}
+                
+                <div class="row g-3 mt-4">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('custom_perfume.form', scent_profile_id=profile.id) }}" class="btn btn-gradient w-100 py-3">
+                            <i class="bi bi-palette me-2"></i>
+                            صمّم عطري بناءً على هذا التحليل
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('recommendations.index') }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-stars me-2"></i>
+                            احصل على توصيات عطور
+                        </a>
+                    </div>
+                </div>
+                
+                {% if not current_user.is_authenticated %}
+                <div class="alert alert-warning mt-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <a href="{{ url_for('auth.register') }}" class="alert-link">سجل حسابك</a> لحفظ نتائجك والوصول إليها لاحقاً
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
