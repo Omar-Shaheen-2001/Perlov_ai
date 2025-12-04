@@ -1,0 +1,379 @@
+أنت الآن تعمل كمبرمج فل ستاك (Full-Stack Senior Developer) ومهندس نظم، ومطلوب منك بناء منصة ويب متكاملة باسم PERLOV.ai على Replit.
+
+أريد منك أن تقوم بكل شيء داخل هذا الريبو:
+تصميم الهيكل البرمجي، إنشاء الملفات، كتابة الكود، إعداد قاعدة البيانات، وواجهات الـ Frontend، بحيث يكون الناتج MVP جاهز للعمل يمكنني تجربته على Replit مباشرة.
+
+1⃣ هدف المنصّة (High-Level Overview)
+
+منصّة PERLOV.ai هي منصة عطور ذكية تعمل بالذكاء الاصطناعي، وظيفتها:
+
+تحليل تفضيلات المستخدم العطرية (Scent DNA Analyzer).
+
+تصميم عطر شخصي للمستخدم (AI Custom Perfume Creator).
+
+إعطاء توصيات عطور جاهزة للشراء مع روابط أفلييت (AI Scent Recommender + Affiliate).
+
+إنشاء ملف عطري رقمي دائم للمستخدم (Digital Scent Twin).
+
+تمكين مالكي البراندات من تصميم خط عطور خاص بهم (AI Private Label Builder).
+
+نريد MVP مبسّط يطبق الجوهر الأساسي لهذه النقاط، مع قابلية التوسّع لاحقًا.
+
+2⃣ التقنيات المطلوبة (Tech Stack)
+
+استخدم التقنيات التالية (إلّا إذا ذكرتُ لك تعديلًا لاحقًا):
+
+Backend:
+
+Python + FastAPI أو Flask (اختر واحدًا واذكره بوضوح في الـ README).
+
+Frontend:
+
+HTML + TailwindCSS + قليل من JavaScript (أو React بسيط إذا كان أسهل لك).
+
+Database:
+
+SQLite (مضمن مع Replit) عبر SQLAlchemy أو ORM مناسب.
+
+AI Integration:
+
+استدعاء OpenAI API عبر متغير بيئة OPENAI_API_KEY.
+
+Auth:
+
+نظام تسجيل دخول بسيط (email + password) باستخدام جلسات (sessions) أو JWT مبسط.
+
+هيكل المشروع يجب أن يكون منظمًا مثلًا:
+
+app/main.py أو main.py
+
+app/models.py
+
+app/routes/
+
+app/templates/
+
+app/static/
+
+README.md
+
+واشرح في README كيفية تشغيل المشروع على Replit.
+
+3⃣ نماذج البيانات (Data Models)
+
+صمّم جداول قاعدة البيانات كالتالي (يمكنك التعديل لكن لا تُهمل الفكرة الأساسية):
+
+User
+
+id
+
+name
+
+email (unique)
+
+password_hash
+
+created_at
+
+ScentProfile (بصمة المستخدم العطرية Scent DNA)
+
+id
+
+user_id (FK → User)
+
+personality_type (نصي)
+
+favorite_notes (JSON أو نص)
+
+disliked_notes (JSON أو نص)
+
+climate (city / country / weather_text)
+
+skin_type (normal/oily/dry)
+
+created_at
+
+CustomPerfume (نتيجة تصميم العطر الشخصي)
+
+id
+
+user_id
+
+name
+
+top_notes (text)
+
+heart_notes (text)
+
+base_notes (text)
+
+description (text)
+
+match_score (float)
+
+usage_recommendations (text)
+
+created_at
+
+AffiliateProduct (العطور المرتبطة بالأفلييت)
+
+id
+
+name
+
+brand
+
+main_notes (text)
+
+url (رابط الشراء)
+
+price_text
+
+image_url (يمكن أن يكون placeholder)
+
+Recommendation (توصيات العطور للمستخدم)
+
+id
+
+user_id
+
+scent_profile_id (اختياري)
+
+recommendations_json (list of product ids + scores)
+
+created_at
+
+PrivateLabelProject
+
+id
+
+user_id
+
+brand_name
+
+target_audience
+
+num_scents
+
+style (luxury / youth / oud / fresh…)
+
+ai_report (text / JSON)
+
+created_at
+
+يمكنك إضافة جداول مساعدة إذا احتجت.
+
+4⃣ صفحات الواجهة (Frontend Pages)
+4.1 الصفحة الرئيسية /
+
+محتواها الأساسي:
+
+هيدر بسيط فيه Logo و روابط: (الرئيسية – الموديولات – تسجيل الدخول / حسابي).
+
+عنوان: “اصنع عطرك بالذكاء الاصطناعي”.
+
+زر واضح: [ابدأ الآن] ينقل إلى صفحة اختيار الموديول.
+
+ثلاثة كروت توضح:
+
+Scent DNA Analyzer
+
+AI Custom Perfume Creator
+
+AI Scent Recommender
+
+4.2 صفحة اختيار الموديول /modules
+
+ثلاث بطاقات كبيرة:
+
+بطاقة "صمّم عطرك" → رابط إلى /custom-perfume.
+
+بطاقة "حمضك العطري" → رابط إلى /scent-dna.
+
+بطاقة "توصيات العطور" → رابط إلى /recommendations.
+
+4.3 صفحة نموذج حمضك العطري /scent-dna
+
+نموذج بسيط من عدة أسئلة (يمكن 6–10):
+
+الجنس – العمر – الشخصية (خيارات).
+
+تفضيلات الروائح (حمضيات، فانيلا، عنبر، أخشاب، عود… إلخ).
+
+الروائح المكروهة.
+
+نوع البشرة.
+
+المدينة أو المناخ (حار/معتدل/بارد).
+
+عند الإرسال:
+
+تحفظ البيانات في DB ضمن ScentProfile.
+
+يتم استدعاء OpenAI عبر prompt في الـ Backend لصياغة تحليل Scent DNA (يُخزّن في نفس السجل كنص أو تعليق).
+
+يعاد توجيه المستخدم لصفحة نتيجة Scent DNA.
+
+4.4 صفحة نتيجة Scent DNA /scent-dna/result/<id>
+
+تعرض:
+
+نوع الشخصية العطرية (مثلاً: “العاطفي – الكلاسيكي – الحيوي”).
+
+النوتات المفضلة.
+
+نص تحليل قصير من AI.
+
+زر: [صمّم عطري بناءً على هذا التحليل] ينقل إلى /custom-perfume?scent_profile_id=....
+
+4.5 صفحة تصميم العطر /custom-perfume
+
+نموذج بسيط:
+
+استخدام العطر (صباح / مساء / عمل / مناسبة).
+
+درجة الثبات المطلوبة (خفيف – متوسط – قوي).
+
+الميزانية التقريبية (low/medium/high).
+
+إمكانية تمرير scent_profile_id لاستغلاله في الـ prompt.
+
+عند الإرسال:
+
+Backend ينادي OpenAI ويطلب:
+
+اسم مقترح للعطر.
+
+Top/Heart/Base notes.
+
+وصف تسويقي قصير.
+
+توصيات استخدام.
+
+تحفظ النتيجة في جدول CustomPerfume.
+
+يعاد توجيه المستخدم إلى صفحة نتيجة العطر.
+
+4.6 صفحة نتيجة العطر /custom-perfume/result/<id>
+
+تعرض:
+
+اسم العطر.
+
+النوتات العليا/الوسطى/القاعدية.
+
+الوصف.
+
+نسبة التوافق (يمكن توليدها من AI أو حساب مبسط).
+
+قسم "عطور جاهزة قريبة من هذا النمط" → يعتمد على AffiliateProduct + منطق بسيط لمطابقة النوتات، أو عبر AI.
+
+زر: [حمّل تقرير PDF لاحقًا] (احجز له مكان، يمكن الآن فقط عرض نص بدلاً من PDF فعلي لو معقّد).
+
+4.7 صفحة توصيات العطور /recommendations
+
+خيارات سريعة:
+
+إدخال بعض الكلمات مثل: "أريد عطراً يشبه Dior Sauvage" أو "عطر رسمي للعمل".
+
+النظام يستدعي OpenAI لدور "recommendation engine" ويعيد قائمة عطور (يمكن مطابقتها مع AffiliateProduct إن أمكن).
+
+تعرض الكروت مع زر "اذهب لرابط الشراء".
+
+4.8 لوحة المستخدم /dashboard
+
+بعد تسجيل الدخول، تعرض:
+
+آخر تحليل Scent DNA.
+
+آخر عطر مصمم.
+
+زر لتكرار التحليل أو إعادة تصميم العطر.
+
+جدول بسيط بسجل النتائج (ScentProfile + CustomPerfume + Recommendations).
+
+4.9 لوحة الإدارة /admin (يمكن حماية بسيطة بكلمة مرور admin ثابتة في env)
+
+تحتوي:
+
+قائمة المستخدمين.
+
+إدارة منتجات Affiliate (إضافة / تعديل / حذف).
+
+عرض إحصائيات بسيطة (عدد المستخدمين – عدد العطور المصممة).
+
+5⃣ الـ User Flow المطلوب (مختصر)
+
+المستخدم يزور الصفحة الرئيسية → يضغط "ابدأ الآن".
+
+ينتقل إلى صفحة الموديولات → يختار Scent DNA أو Custom Perfume.
+
+يملأ النموذج → يتم حفظ البيانات → استدعاء OpenAI → عرض النتائج.
+
+من صفحة النتائج يمكنه:
+
+تصميم عطره.
+
+أو الحصول على توصيات جاهزة + روابط أفلييت.
+
+يمكنه إنشاء حساب (Register/Login) لحفظ النتائج والوصول إليها من الـ Dashboard.
+
+اجعل تجربة الاستخدام بسيطة قدر الإمكان، ولا تشترط التسجيل من البداية (يمكن أن تطلبه فقط عند حفظ النتائج أو العودة لها لاحقًا).
+
+6⃣ التكامل مع OpenAI (AI Logic)
+
+اكتب في الـ Backend توابع (functions) واضحة مثل:
+
+generate_scent_dna_analysis(profile_data):
+
+تستقبل بيانات النموذج.
+
+تبني prompt منظم.
+
+تنادي OpenAI.
+
+تعيد نص التحليل.
+
+generate_custom_perfume(profile_data, scent_dna_text_optional)
+
+generate_recommendations(user_query, scent_profile_optional)
+
+استعمل متغير بيئة OPENAI_API_KEY، ولا تضع المفتاح مباشرًا في الكود.
+
+استخدم نمط برومبت منظم (role + instructions + examples) بقدر الإمكان.
+
+7⃣ تصميم الواجهة (UI/UX Guidelines)
+
+استخدم TailwindCSS أو CSS بسيط لعمل واجهة نظيفة Minimal.
+
+اجعل الأزرار والبطاقات واضحة بعناوين عربية مفهومة.
+
+احرص على الـ RTL (اتجاه من اليمين إلى اليسار) في CSS للواجهة العربية.
+
+استعمل Layout موحّد (Navbar + Container + Footer).
+
+لا نحتاج إلى تصميم معقد؛ المهم أن:
+
+كل صفحة واضحة.
+
+التنقل بين الخطوات سهل.
+
+الكود منظم وقابل للتوسعة.
+
+8⃣ أمور إضافية مهمّة
+
+اكتب ملف README.md يشرح:
+
+الفكرة.
+
+التقنيات المستخدمة.
+
+كيفية التشغيل على Replit (خطوات تشغيل السيرفر).
+
+كيفية إعداد متغير البيئة OPENAI_API_KEY.
+
+أضف بعض بيانات AffiliateProduct تجريبية (Seed Data) داخل سكربت تهيئة أو عند أول تشغيل.
+
+تأكد من أن الكود قابل للتجربة مباشرة على Replit (Run button واحد يشغل السيرفر).
+
+راعِ تنظيم الكود في ملفات وفصول، وعدم وضع كل شيء في ملف واحد ضخم.
