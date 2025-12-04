@@ -125,15 +125,40 @@
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             {% if user.id != current_user.id %}
+                                            {% if user.is_active %}
+                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#lockModal{{ user.id }}" title="قفل">
+                                                <i class="bi bi-lock"></i>
+                                            </button>
+                                            <!-- مودال القفل -->
+                                            <div class="modal fade" id="lockModal{{ user.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">قفل حساب {{ user.name }}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form method="POST" action="{{ url_for('admin.toggle_lock_user', id=user.id) }}">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label for="reason{{ user.id }}" class="form-label">سبب القفل <span class="text-danger">*</span></label>
+                                                                    <textarea class="form-control" id="reason{{ user.id }}" name="lock_reason" rows="3" placeholder="مثال: سوء الاستخدام، محتوى غير مناسب، إلخ" required></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                                                <button type="submit" class="btn btn-danger">قفل الحساب</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
                                             <form method="POST" action="{{ url_for('admin.toggle_lock_user', id=user.id) }}" class="d-inline">
-                                                <button type="submit" class="btn btn-sm {% if user.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="{% if user.is_active %}قفل{% else %}فتح{% endif %}">
-                                                    {% if user.is_active %}
-                                                    <i class="bi bi-lock"></i>
-                                                    {% else %}
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="فتح">
                                                     <i class="bi bi-unlock"></i>
-                                                    {% endif %}
                                                 </button>
                                             </form>
+                                            {% endif %}
                                             <form method="POST" action="{{ url_for('admin.delete_user', id=user.id) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
                                                     <i class="bi bi-trash"></i>

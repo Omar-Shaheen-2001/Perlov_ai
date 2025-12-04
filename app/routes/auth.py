@@ -19,6 +19,12 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
+            if not user.is_active:
+                flash('عذراً، تم قفل حسابك.', 'error')
+                if user.lock_reason:
+                    flash(f'السبب: {user.lock_reason}', 'info')
+                return redirect(url_for('auth.login'))
+            
             login_user(user, remember=remember)
             next_page = request.args.get('next')
             flash('تم تسجيل الدخول بنجاح!', 'success')

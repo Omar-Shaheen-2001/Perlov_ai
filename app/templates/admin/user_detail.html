@@ -91,6 +91,16 @@
                                 </div>
                             </div>
                             
+                            {% if not user.is_active and user.lock_reason %}
+                            <div class="mb-3">
+                                <label class="text-muted small">سبب القفل</label>
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    {{ user.lock_reason }}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
                             <div class="mb-3">
                                 <label class="text-muted small">تاريخ التسجيل</label>
                                 <p class="fw-bold">{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</p>

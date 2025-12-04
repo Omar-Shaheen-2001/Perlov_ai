@@ -102,10 +102,16 @@ def toggle_lock_user(id):
         flash('لا يمكنك قفل حسابك الخاص', 'error')
         return redirect(url_for('admin.users'))
     
-    user.is_active = not user.is_active
-    db.session.commit()
+    if user.is_active:
+        user.is_active = False
+        user.lock_reason = request.form.get('lock_reason', 'تم قفل الحساب من قبل المسؤول')
+        action = 'قفل'
+    else:
+        user.is_active = True
+        user.lock_reason = None
+        action = 'فتح'
     
-    action = 'فتح' if user.is_active else 'قفل'
+    db.session.commit()
     flash(f'تم {action} حساب {user.name} بنجاح', 'success')
     return redirect(url_for('admin.users'))
 
