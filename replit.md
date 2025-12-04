@@ -61,6 +61,14 @@ The app runs on port 5000 with `python main.py`
 - Default password: `admin123` (configurable via ADMIN_PASSWORD env var)
 
 ## Recent Changes
+- **Dec 4, 2025 (Latest)**: Admin Authentication System & UI Improvements
+  - Converted admin login to use email + password from User accounts
+  - Admin users can now log in via email credentials (not just password)
+  - Added admin entry button (🔒 icon) in main navbar for easy access
+  - Auto-creates default admin account: admin@perlov.ai / admin123
+  - Enhanced admin dashboard stat-cards with 4 different luxury gradients
+  - All admin pages styled with consistent luxury design system
+  
 - **Dec 4, 2025**: Complete design system overhaul with exact luxury color palette
   - Updated CSS with new color variables and gradients
   - Redesigned admin dashboard stat-cards with luxury gradients
@@ -73,4 +81,6 @@ The app runs on port 5000 with `python main.py`
 - User management
 - Affiliate product management (CRUD operations)
 - Luxury-themed cards and tables
+- Secure email + password authentication (no separate password)
+- Auto-seeded admin account on app startup
 
