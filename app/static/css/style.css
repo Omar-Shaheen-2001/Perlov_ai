@@ -455,12 +455,17 @@ body {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);
     color: white;
     border-radius: 25px;
     padding: 25px;
     text-align: center;
-    box-shadow: 0 15px 40px rgba(179, 122, 148, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 .stat-card .stat-number {
@@ -472,6 +477,32 @@ body {
 .stat-card .stat-label {
     font-size: 0.9rem;
     opacity: 0.9;
+}
+
+.stat-card-blush {
+    background: linear-gradient(135deg, #E9C9D3 0%, #B37A94 100%);
+}
+
+.stat-card-plum {
+    background: linear-gradient(135deg, #B37A94 0%, #9B6878 100%);
+}
+
+.stat-card-amber {
+    background: linear-gradient(135deg, #D9A35F 0%, #C18A45 100%);
+}
+
+.stat-card-pearl {
+    background: linear-gradient(135deg, #F7F4F6 0%, #E9C9D3 100%);
+    color: var(--deep-black);
+}
+
+.stat-card-pearl .stat-number,
+.stat-card-pearl .stat-label {
+    color: var(--deep-black);
+}
+
+.stat-card-pearl {
+    box-shadow: 0 15px 40px rgba(233, 201, 211, 0.25);
 }
 
 .admin-sidebar {
