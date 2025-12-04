@@ -30,15 +30,18 @@ def login():
         return redirect(url_for('admin.dashboard'))
     
     if request.method == 'POST':
+        email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
-        admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
         
-        if password == admin_password:
+        user = User.query.filter_by(email=email).first()
+        
+        if user and user.is_admin and user.check_password(password):
             session['admin_authenticated'] = True
+            session['admin_user_id'] = user.id
             flash('تم الدخول إلى لوحة الإدارة', 'success')
             return redirect(url_for('admin.dashboard'))
         else:
-            flash('كلمة المرور غير صحيحة', 'error')
+            flash('بريد أو كلمة مرور غير صحيحة', 'error')
     
     return render_template('admin/login.html')
 

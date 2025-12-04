@@ -1,5 +1,15 @@
 from app import db
-from app.models import AffiliateProduct
+from app.models import User, AffiliateProduct
+
+def seed_admin_user():
+    """إنشاء حساب مدير افتراضي"""
+    admin = User.query.filter_by(email='admin@perlov.ai').first()
+    if not admin:
+        admin = User(name='مدير النظام', email='admin@perlov.ai', is_admin=True)
+        admin.set_password('admin123')
+        db.session.add(admin)
+        db.session.commit()
+        print("✓ تم إنشاء حساب المدير: admin@perlov.ai")
 
 def seed_affiliate_products():
     if AffiliateProduct.query.first():

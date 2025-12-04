@@ -42,7 +42,8 @@ def create_app():
     
     with app.app_context():
         db.create_all()
-        from app.seed_data import seed_affiliate_products
+        from app.seed_data import seed_admin_user, seed_affiliate_products
+        seed_admin_user()
         seed_affiliate_products()
     
     return app
