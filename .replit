@@ -44,3 +44,4 @@ externalPort = 3001
 
 [deployment]
 deploymentTarget = "autoscale"
+run = ["python", "main.py"]
