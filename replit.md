@@ -103,7 +103,7 @@ main.py                 # Entry point
 ### Digital & Creative
 17. **Digital Twin** (/digital-twin) - Permanent digital scent identity
 18. **Oil Mixer** (/oil-mixer) - Custom note blending
-19. **Marketplace** (/marketplace) - Browse oils, notes, bottles
+19. **Marketplace** (/marketplace) - Real products from verified stores with AI-powered search
 
 ## Key Features Implemented
 
@@ -158,6 +158,13 @@ python main.py
 - **Database**: Seeding only in development (not production)
 
 ## Recent Changes (Dec 5, 2025)
+- **Real Marketplace Implementation**:
+  - 45+ real products from verified stores (Sephora, FragranceNet, FragranceX, Notino, Macy's, etc.)
+  - 6 product categories: عطور نسائية, رجالية, يونيسكس, زيوت, نوتات, عبوات
+  - AI-powered search with hybrid approach (curated database + AI suggestions)
+  - Accurate data source tracking (curated_database, ai_suggestions, or mixed)
+  - All products include real purchase URLs from verified international stores
+- Fixed mobile navbar-toggler icon color (Velvet Plum instead of white)
 - Added 18 comprehensive perfume analysis modules
 - Created 15 new route files with robust AI fallbacks
 - Created 15 new template directories with forms
