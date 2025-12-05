@@ -1,7 +1,7 @@
-# PERLOV.ai - AI Perfume Platform
+# PERLOV - منصة محبي العطور
 
 ## Overview
-PERLOV.ai is an AI-powered perfume platform built with Flask that offers:
+PERLOV is a premium perfume discovery platform built with Flask that offers:
 - Scent DNA Analysis - Discover your unique fragrance personality
 - Custom Perfume Creator - Design personalized perfumes with AI
 - AI Recommendations - Get perfume suggestions with affiliate links
@@ -16,16 +16,25 @@ PERLOV.ai is an AI-powered perfume platform built with Flask that offers:
 ```
 app/
 ├── __init__.py         # Flask app factory
-├── models.py           # SQLAlchemy models
+├── models.py           # SQLAlchemy models (User, ScentDNA, CustomPerfume, etc.)
 ├── ai_service.py       # OpenAI integration
-├── seed_data.py        # Affiliate product seeds
-├── routes/             # All route blueprints
-├── templates/          # Jinja2 templates
-└── static/css/         # Stylesheets
+├── seed_data.py        # Affiliate product seeds & admin user
+├── routes/             # Blueprint routes
+│   ├── auth.py         # Login/Register
+│   ├── main.py         # Home & modules
+│   ├── admin.py        # Admin dashboard & user management
+│   ├── scent_dna.py    # Scent DNA analyzer
+│   ├── custom_perfume.py # Custom perfume designer
+│   ├── recommendations.py # AI recommendations
+│   └── dashboard.py    # User dashboard
+├── templates/          # Jinja2 HTML templates
+└── static/
+    ├── css/style.css   # Luxury styling
+    └── images/         # Assets (logos, etc)
 main.py                 # Entry point
 ```
 
-## Design System (Updated Dec 4, 2025)
+## Design System
 
 ### Luxury Color Palette
 - **Blush Rose** (#E9C9D3) - Primary feminine accent
@@ -46,52 +55,68 @@ main.py                 # Entry point
 - Subtle shadows with color-matched opacity
 - Smooth hover animations & transitions
 
-### Key Features
-- Arabic RTL interface with Bootstrap 5
+## Key Features Implemented
+
+### User Management System (Latest)
+- **User Management Page** (/admin/users):
+  - Search by name or email with live filtering
+  - View user statistics (total, active, locked users)
+  - Lock/unlock user accounts with mandatory reason tracking
+  - Delete users with confirmation dialog
+  - View detailed user profiles with activity stats (Scent DNA, Perfumes, Recommendations)
+- Lock reason displayed to locked users on login
+- Account status toggle with is_active field
+- User detail page shows comprehensive activity statistics
+
+### Admin Panel
+- **Dashboard**: Stats (Users, Profiles, Perfumes, Products)
+- **User Management**: Search, lock/unlock, delete, view details
+- **Affiliate Product Management**: CRUD operations
+- **Luxury-themed cards and tables**
+- **Secure admin authentication** (email + password)
+- **Auto-seeded admin account** on app startup (admin@perlov.ai / admin123)
+
+### Authentication & Security
 - Session-based auth with Flask-Login
-- AI-powered scent analysis and perfume creation
-- Admin panel for product management
-- Luxury feminine aesthetic throughout
+- Locked user prevention with lock reason display
+- Password hashing with werkzeug
+- Admin-only route protection
+
+### Frontend
+- **RTL Arabic Interface** with Bootstrap 5
+- **Responsive Design** for all devices
+- **Hero Section** with tagline: "PERLOV منصة محبي العطور"
+- **Feature Cards** for modules (Scent DNA, Custom Perfume, Recommendations)
+- **Luxury Footer** with links and copyright
 
 ## Running the App
-The app runs on port 5000 with `python main.py`
+```bash
+python main.py
+# App runs on http://0.0.0.0:5000
+```
 
 ## Admin Access
-- URL: `/admin`
-- Default password: `admin123` (configurable via ADMIN_PASSWORD env var)
+- **URL**: `/admin`
+- **Default Credentials**: admin@perlov.ai / admin123
+- **Password Configuration**: Via ADMIN_PASSWORD env var
 
-## Recent Changes
-- **Dec 4, 2025 (Latest)**: User Management System & Dashboard Enhancements
-  - **User Management Page** (/admin/users):
-    - Search by name or email with live filtering
-    - View user statistics (total, active, locked users)
-    - Lock/unlock user accounts (toggle is_active status)
-    - Delete users with confirmation dialog
-    - View detailed user profiles with activity stats (Scent DNA, Perfumes, Recommendations)
-  - Added `is_active` field to User model for account status
-  - User detail page shows comprehensive user activity statistics
-  - Dashboard improvements: Redesigned Scent DNA card with luxury styling
-  - Fixed stat-card colors for better contrast and luxury appearance
-  - Enhanced footer with luxury gradient styling and hover effects
-  - Module card button styling: Added gold gradient for recommendations
-  
-- **Dec 4, 2025**: Complete design system overhaul with exact luxury color palette
-  - Updated CSS with new color variables and gradients
-  - Redesigned admin dashboard stat-cards with luxury gradients
-  - All cards, forms, buttons styled with new palette
-  - Pearl Mist card for light contrast on dashboards
-  - Enhanced glassmorphic effects and shadows
+## Deployment
+- **Target**: Autoscale
+- **Run Command**: `python main.py`
+- **Port**: 0.0.0.0:5000 (required for Autoscale)
+- **Health Check**: / endpoint returns 200 immediately
+- **Database**: Seeding only in development (not production)
 
-## Admin Panel Features
-- **Dashboard**: Stats (Users, Profiles, Perfumes, Products)
-- **User Management** (/admin/users):
-  - Search users by name or email
-  - View quick stats: total users, active users, locked users
-  - Lock/unlock accounts to disable/enable user access
-  - Delete users with confirmation
-  - View user detail page with activity statistics
-- **Affiliate Product Management**: CRUD operations with luxury styling
-- Luxury-themed cards and tables
-- Secure email + password authentication
-- Auto-seeded admin account on app startup (admin@perlov.ai / admin123)
+## Recent Changes (Dec 5, 2025)
+- Changed brand name from "PERLOV.ai" to "PERLOV"
+- Updated tagline to "منصة محبي العطور" (Perfume Lovers Platform)
+- All PERLOV.ai references changed to PERLOV throughout app
+- Logo integration setup (custom logo in navbar)
+- Page title and footer updated with new branding
+- Deployment configuration validated and working
 
+## User Preferences
+- Arabic-first design with RTL support
+- Luxury feminine aesthetic throughout
+- Exact hex color palette adherence
+- Modern, clean typography choices
