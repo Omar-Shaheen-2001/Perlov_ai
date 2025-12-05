@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}عطرك التكيّفي{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>عطرك التكيّفي</h1>
+        <p class="opacity-75">عطور تتغير بتغيّر يومك ومزاجك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">الوضع الحالي</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-clock me-2"></i>الوقت الحالي</label>
+                                <input type="time" class="form-control form-control-lg rounded-3" id="current_time" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-thermometer me-2"></i>حرارة جسمك الآن</label>
+                                <select class="form-select form-select-lg rounded-3" id="body_temp">
+                                    <option value="باردة">باردة</option>
+                                    <option value="معتدلة" selected>معتدلة</option>
+                                    <option value="دافئة">دافئة</option>
+                                    <option value="حارة">حارة</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-activity me-2"></i>نشاطك الحالي</label>
+                                <select class="form-select form-select-lg rounded-3" id="activity">
+                                    <option value="استرخاء">استرخاء</option>
+                                    <option value="عادي" selected>عادي</option>
+                                    <option value="نشط">نشط</option>
+                                    <option value="رياضة">رياضة</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-arrow-repeat me-2"></i>اكتشف عطرك الآن
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">توصية اللحظة</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>تحديث الوضع
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('current_time').value = new Date().toTimeString().slice(0,5);
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        current_time: document.getElementById('current_time').value,
+        body_temp: document.getElementById('body_temp').value,
+        activity: document.getElementById('activity').value
+    };
+    fetch('{{ url_for("adaptive.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
+                <div class="card-body py-4 text-white">
+                    <span class="badge bg-white text-dark mb-2">${a.current_recommendation.time_period}</span>
+                    <h3 class="fw-bold">${a.current_recommendation.perfume}</h3>
+                    <p class="mb-0 opacity-75">${a.current_recommendation.reason}</p>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <div class="card rounded-4 border-0 h-100" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 235, 59, 0.2) 100%);">
+                        <div class="card-body">
+                            <h6 class="fw-bold"><i class="bi bi-sun me-2"></i>عطر الصباح</h6>
+                            <p class="fw-bold mb-1">${a.morning_perfume.name}</p>
+                            <small class="text-muted">${a.morning_perfume.type}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card rounded-4 border-0 h-100" style="background: linear-gradient(135deg, rgba(111, 66, 193, 0.2) 0%, rgba(13, 110, 253, 0.2) 100%);">
+                        <div class="card-body">
+                            <h6 class="fw-bold"><i class="bi bi-moon me-2"></i>عطر المساء</h6>
+                            <p class="fw-bold mb-1">${a.evening_perfume.name}</p>
+                            <small class="text-muted">${a.evening_perfume.type}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>نصائح تكيّفية</h5>${a.adaptive_tips.map(t => `<div class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>${t}</div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

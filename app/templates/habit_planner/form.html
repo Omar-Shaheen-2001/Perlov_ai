@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}خطتك العطرية{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>خطتك العطرية</h1>
+        <p class="opacity-75">خطة أسبوعية وشهرية لعطورك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التخطيط</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-calendar-week me-2"></i>جدولك الأسبوعي</label>
+                                <textarea class="form-control rounded-3" id="schedule" rows="3" placeholder="صف جدولك الأسبوعي: أيام العمل، الإجازات، المناسبات..." required></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-activity me-2"></i>النشاط اليومي</label>
+                                <select class="form-select form-select-lg rounded-3" id="daily_activities">
+                                    <option value="مكتبي">عمل مكتبي في الغالب</option>
+                                    <option value="متنوع">نشاط متنوع</option>
+                                    <option value="حركي">عمل حركي ونشط</option>
+                                    <option value="اجتماعي">لقاءات واجتماعات كثيرة</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-calendar-check me-2"></i>ابدأ التخطيط
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">خطتك العطرية الأسبوعية</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التخطيط
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        schedule: document.getElementById('schedule').value,
+        daily_activities: document.getElementById('daily_activities').value
+    };
+    fetch('{{ url_for("habit_planner.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        const days = Object.entries(a.weekly_plan);
+        document.getElementById('results-content').innerHTML = `
+            <div class="row g-2 mb-4">
+                ${days.map(([day, info]) => `
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card rounded-3 border-0 h-100" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.2) 0%, rgba(217, 163, 95, 0.2) 100%);">
+                        <div class="card-body text-center p-3">
+                            <h6 class="fw-bold text-primary mb-2">${day}</h6>
+                            <p class="small fw-bold mb-1">${info.perfume}</p>
+                            <small class="text-muted">${info.reason}</small>
+                        </div>
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>نصائح شهرية</h5>${a.monthly_tips.map(t => `<div class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>${t}</div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

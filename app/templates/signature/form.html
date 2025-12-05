@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}بناء العطر التوقيعي{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>بناء العطر التوقيعي</h1>
+        <p class="opacity-75">ابتكر عطرك التوقيعي الذي يمثّلك دائمًا</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التصميم</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-heart me-2"></i>الروائح التي تمثّلك</label>
+                                <textarea class="form-control rounded-3" id="representing_scents" rows="2" placeholder="مثال: العود، الورد، المسك، الفانيليا..." required></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>أسلوب حياتك</label>
+                                <select class="form-select form-select-lg rounded-3" id="lifestyle">
+                                    <option value="كلاسيكي أنيق">كلاسيكي أنيق</option>
+                                    <option value="عصري نشيط">عصري نشيط</option>
+                                    <option value="رومانسي حالم">رومانسي حالم</option>
+                                    <option value="جريء مغامر">جريء مغامر</option>
+                                    <option value="هادئ متأمل">هادئ متأمل</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-calendar-event me-2"></i>المناسبة الأساسية</label>
+                                <select class="form-select form-select-lg rounded-3" id="main_occasion">
+                                    <option value="يومي">استخدام يومي</option>
+                                    <option value="عمل">بيئة العمل</option>
+                                    <option value="مناسبات">مناسبات خاصة</option>
+                                    <option value="سهرات">سهرات ولقاءات</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-pen me-2"></i>ابنِ توقيعك
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">عطرك التوقيعي</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التصميم
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        representing_scents: document.getElementById('representing_scents').value,
+        lifestyle: document.getElementById('lifestyle').value,
+        main_occasion: document.getElementById('main_occasion').value
+    };
+    fetch('{{ url_for("signature.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.4) 0%, rgba(217, 163, 95, 0.4) 100%);">
+                <div class="card-body py-4"><h3 class="fw-bold text-white">${a.signature_name}</h3><p class="text-white opacity-75 mb-0">${a.description}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-layers me-2"></i>النوتات</h5>
+                <div class="row text-center">
+                    <div class="col-4"><span class="badge bg-warning text-dark w-100 py-2 mb-2">المقدمة</span><br>${a.notes.top.join(', ')}</div>
+                    <div class="col-4"><span class="badge bg-danger w-100 py-2 mb-2">القلب</span><br>${a.notes.heart.join(', ')}</div>
+                    <div class="col-4"><span class="badge bg-dark w-100 py-2 mb-2">القاعدة</span><br>${a.notes.base.join(', ')}</div>
+                </div></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-book me-2"></i>دليل الارتداء</h5>
+                <p><strong>المناسبة:</strong> ${a.wearing_guide.occasion}</p>
+                <p><strong>طريقة الرش:</strong> ${a.wearing_guide.application}</p>
+                <p class="mb-0"><strong>الدمج:</strong> ${a.wearing_guide.layering}</p></div>
+            </div>
+            <div class="alert alert-success rounded-4 text-center"><i class="bi bi-gem me-2"></i>${a.uniqueness}</div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}محلّل الثبات{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>محلّل الثبات والفوحان</h1>
+        <p class="opacity-75">قياس الثبات والفوحان بناءً على نوع بشرتك ومناخك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>نوع البشرة</label>
+                                <select class="form-select form-select-lg rounded-3" id="skin_type" required>
+                                    <option value="">اختر نوع بشرتك</option>
+                                    <option value="جافة">جافة</option>
+                                    <option value="دهنية">دهنية</option>
+                                    <option value="مختلطة">مختلطة</option>
+                                    <option value="عادية">عادية</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-thermometer me-2"></i>حرارة الجو</label>
+                                <select class="form-select form-select-lg rounded-3" id="weather_temp">
+                                    <option value="بارد">بارد</option>
+                                    <option value="معتدل">معتدل</option>
+                                    <option value="حار">حار</option>
+                                    <option value="حار جداً">حار جداً</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-clock me-2"></i>وقت الاستخدام</label>
+                                <select class="form-select form-select-lg rounded-3" id="usage_time">
+                                    <option value="صباحاً">صباحاً</option>
+                                    <option value="ظهراً">ظهراً</option>
+                                    <option value="مساءً">مساءً</option>
+                                    <option value="ليلاً">ليلاً</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-graph-up me-2"></i>حلّل عطرك
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        skin_type: document.getElementById('skin_type').value,
+        weather_temp: document.getElementById('weather_temp').value,
+        usage_time: document.getElementById('usage_time').value
+    };
+    fetch('{{ url_for("stability.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.2) 0%, rgba(167, 243, 208, 0.2) 100%);">
+                <div class="card-body text-center"><h5 class="fw-bold"><i class="bi bi-award me-2"></i>تقييم الثبات</h5><p class="mb-0 fs-1 fw-bold text-success">${a.stability_score}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-volume-up me-2"></i>قوة الفوحان</h5><p class="mb-0">${a.sillage_strength}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-clock me-2"></i>مدة الثبات</h5><p class="mb-0">${a.longevity_hours}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(111, 66, 193, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>نصائح زيادة الثبات</h5>${a.tips.map(t => `<div class="mb-1"><i class="bi bi-check-circle-fill text-primary me-2"></i>${t}</div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

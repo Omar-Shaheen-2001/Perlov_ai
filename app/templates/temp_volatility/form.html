@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}محرّك حرارة الجسم{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>محرّك حرارة الجسم</h1>
+        <p class="opacity-75">اختر عطرك المثالي بناءً على كيفية تطايره مع حرارة جسمك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-activity me-2"></i>مستوى النشاط اليومي</label>
+                                <select class="form-select form-select-lg rounded-3" id="activity_level" required>
+                                    <option value="">اختر مستوى نشاطك</option>
+                                    <option value="منخفض">منخفض - مكتبي</option>
+                                    <option value="متوسط">متوسط - حركة معتدلة</option>
+                                    <option value="عالي">عالي - رياضي</option>
+                                    <option value="مكثف">مكثف جداً</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-thermometer-half me-2"></i>حرارة الجسم التقريبية</label>
+                                <select class="form-select form-select-lg rounded-3" id="body_temp">
+                                    <option value="باردة">باردة</option>
+                                    <option value="معتدلة" selected>معتدلة</option>
+                                    <option value="دافئة">دافئة</option>
+                                    <option value="حارة">حارة</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-cloud-sun me-2"></i>المناخ</label>
+                                <select class="form-select form-select-lg rounded-3" id="climate">
+                                    <option value="حار جاف">حار جاف</option>
+                                    <option value="حار رطب">حار رطب</option>
+                                    <option value="معتدل">معتدل</option>
+                                    <option value="بارد">بارد</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-clock me-2"></i>الوقت المفضل للاستخدام</label>
+                                <select class="form-select form-select-lg rounded-3" id="preferred_time">
+                                    <option value="صباحاً">صباحاً</option>
+                                    <option value="ظهراً">ظهراً</option>
+                                    <option value="مساءً">مساءً</option>
+                                    <option value="ليلاً">ليلاً</option>
+                                    <option value="طوال اليوم">طوال اليوم</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-fire me-2"></i>ابدأ التحليل
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        activity_level: document.getElementById('activity_level').value,
+        body_temp: document.getElementById('body_temp').value,
+        climate: document.getElementById('climate').value,
+        preferred_time: document.getElementById('preferred_time').value
+    };
+    fetch('{{ url_for("temp_volatility.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-wind me-2"></i>معدل التطاير</h5><p class="mb-0">${a.volatility_rate}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-sun me-2"></i>الثبات في الحر</h5><p class="mb-0">${a.hot_weather_stability}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-clock me-2"></i>أفضل وقت</h5><p class="mb-0">${a.best_time}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-droplet me-2"></i>التركيز المناسب</h5><p class="mb-0">${a.recommended_concentration}</p></div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}محرّك المناخ العطري{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>محرّك المناخ العطري</h1>
+        <p class="opacity-75">اختر عطورًا مثالية لبلدك ومناخك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-geo-alt me-2"></i>البلد / المدينة</label>
+                                <input type="text" class="form-control form-control-lg rounded-3" id="country" placeholder="مثال: الرياض، دبي، القاهرة" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-thermometer me-2"></i>درجة الحرارة المعتادة</label>
+                                <select class="form-select form-select-lg rounded-3" id="temperature">
+                                    <option value="باردة جداً">باردة جداً (أقل من 10°)</option>
+                                    <option value="باردة">باردة (10-20°)</option>
+                                    <option value="معتدلة">معتدلة (20-30°)</option>
+                                    <option value="حارة">حارة (30-40°)</option>
+                                    <option value="حارة جداً">حارة جداً (أكثر من 40°)</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>مستوى الرطوبة</label>
+                                <select class="form-select form-select-lg rounded-3" id="humidity">
+                                    <option value="جاف جداً">جاف جداً</option>
+                                    <option value="جاف">جاف</option>
+                                    <option value="معتدل">معتدل</option>
+                                    <option value="رطب">رطب</option>
+                                    <option value="رطب جداً">رطب جداً</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-calendar me-2"></i>الموسم</label>
+                                <select class="form-select form-select-lg rounded-3" id="season">
+                                    <option value="صيف">صيف</option>
+                                    <option value="شتاء">شتاء</option>
+                                    <option value="ربيع">ربيع</option>
+                                    <option value="خريف">خريف</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-cloud-sun me-2"></i>ابدأ التوصيات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        country: document.getElementById('country').value,
+        temperature: document.getElementById('temperature').value,
+        humidity: document.getElementById('humidity').value,
+        season: document.getElementById('season').value
+    };
+    fetch('{{ url_for("climate.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 235, 59, 0.2) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-sun me-2"></i>عطور الصيف</h5>${a.summer_perfumes.map(p => `<div class="mb-1"><i class="bi bi-check-circle-fill text-warning me-2"></i>${p}</div>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(111, 66, 193, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-snow me-2"></i>عطور الشتاء</h5>${a.winter_perfumes.map(p => `<div class="mb-1"><i class="bi bi-check-circle-fill text-primary me-2"></i>${p}</div>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-volume-up me-2"></i>قوة الفوحان المناسبة</h5><p class="mb-0">${a.sillage_level}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>توصية خاصة</h5><p class="mb-0">${a.recommendation}</p></div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

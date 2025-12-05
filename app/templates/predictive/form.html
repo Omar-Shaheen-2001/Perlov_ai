@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}الذكاء التنبّؤي{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>الذكاء التنبّؤي</h1>
+        <p class="opacity-75">يعرف ما هي العطور التي ستعجبك في المستقبل</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-archive me-2"></i>سجل العطور الماضية</label>
+                                <textarea class="form-control rounded-3" id="past_perfumes" rows="3" placeholder="اذكر العطور التي استخدمتها سابقاً..." required></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-fingerprint me-2"></i>نتيجة Scent DNA (اختياري)</label>
+                                <textarea class="form-control rounded-3" id="scent_dna" rows="2" placeholder="إذا كنت قد أجريت تحليل الحمض العطري، اكتب النتيجة هنا"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-cart me-2"></i>سلوك الشراء</label>
+                                <select class="form-select form-select-lg rounded-3" id="buying_behavior">
+                                    <option value="اقتصادي">أفضل العطور الاقتصادية</option>
+                                    <option value="متوسط">أفضل العطور المتوسطة</option>
+                                    <option value="فاخر">أفضل العطور الفاخرة</option>
+                                    <option value="نيش">أحب عطور النيش الحصرية</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-magic me-2"></i>ابدأ التنبؤ
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">توقعات الذكاء الاصطناعي</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        past_perfumes: document.getElementById('past_perfumes').value,
+        scent_dna: document.getElementById('scent_dna').value,
+        buying_behavior: document.getElementById('buying_behavior').value
+    };
+    fetch('{{ url_for("predictive.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-trophy me-2"></i>أفضل 5 عطور مستقبلية</h5>
+                ${a.future_top5.map((p, i) => `<div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" style="background: rgba(255,255,255,0.5);"><span><strong>${i+1}.</strong> ${p.name}</span><span class="badge bg-success">${p.match}</span></div>`).join('')}
+                </div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-graph-up me-2"></i>أنماط الذوق</h5>${a.taste_patterns.map(p => `<div class="mb-1"><i class="bi bi-check-circle-fill text-warning me-2"></i>${p}</div>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-arrow-up-right me-2"></i>تحليل التطوّر</h5><p class="mb-0">${a.evolution_analysis}</p></div>
+            </div>
+            <div class="alert alert-success rounded-4"><i class="bi bi-star-fill me-2"></i><strong>الشراء القادم:</strong> ${a.next_purchase}</div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

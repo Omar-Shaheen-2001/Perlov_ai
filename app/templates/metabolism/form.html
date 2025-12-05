@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}عطرك حسب الأيض{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>عطرك حسب الأيض</h1>
+        <p class="opacity-75">توصيات عطريّة تتوافق مع معدل الأيض وحركة جسمك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-bicycle me-2"></i>مستوى النشاط الرياضي</label>
+                                <select class="form-select form-select-lg rounded-3" id="sports_level" required>
+                                    <option value="">اختر مستوى نشاطك الرياضي</option>
+                                    <option value="لا أمارس الرياضة">لا أمارس الرياضة</option>
+                                    <option value="مرة أسبوعياً">مرة أسبوعياً</option>
+                                    <option value="2-3 مرات أسبوعياً">2-3 مرات أسبوعياً</option>
+                                    <option value="يومياً">يومياً</option>
+                                    <option value="رياضي محترف">رياضي محترف</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-moon me-2"></i>ساعات النوم</label>
+                                <select class="form-select form-select-lg rounded-3" id="sleep_hours">
+                                    <option value="أقل من 5">أقل من 5 ساعات</option>
+                                    <option value="5-6">5-6 ساعات</option>
+                                    <option value="7-8" selected>7-8 ساعات</option>
+                                    <option value="أكثر من 8">أكثر من 8 ساعات</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-person-walking me-2"></i>معدل الحركة اليومية</label>
+                                <select class="form-select form-select-lg rounded-3" id="daily_movement">
+                                    <option value="جلوس معظم الوقت">جلوس معظم الوقت</option>
+                                    <option value="حركة خفيفة">حركة خفيفة</option>
+                                    <option value="حركة متوسطة">حركة متوسطة</option>
+                                    <option value="حركة كثيرة">حركة كثيرة</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-lightning me-2"></i>الطاقة العامة</label>
+                                <select class="form-select form-select-lg rounded-3" id="energy_level">
+                                    <option value="منخفضة">منخفضة</option>
+                                    <option value="متوسطة" selected>متوسطة</option>
+                                    <option value="عالية">عالية</option>
+                                    <option value="عالية جداً">عالية جداً</option>
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-heart-pulse me-2"></i>اعرف عطرك
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = {
+        sports_level: document.getElementById('sports_level').value,
+        sleep_hours: document.getElementById('sleep_hours').value,
+        daily_movement: document.getElementById('daily_movement').value,
+        energy_level: document.getElementById('energy_level').value
+    };
+    fetch('{{ url_for("metabolism.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-speedometer2 me-2"></i>نوع الأيض</h5><p class="mb-0 fs-5">${a.metabolism_type}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-fire me-2"></i>عطور قوية مناسبة</h5>${a.strong_perfumes.map(p => `<div class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>${p}</div>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-feather me-2"></i>عطور ناعمة مناسبة</h5>${a.soft_perfumes.map(p => `<div class="mb-1"><i class="bi bi-check-circle-fill text-info me-2"></i>${p}</div>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>نصائح الثبات</h5>${a.stability_factors.map(t => `<div class="mb-1"><i class="bi bi-star-fill text-warning me-2"></i>${t}</div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}سوق العطور{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>سوق العطور</h1>
+        <p class="opacity-75">اكتشف زيوت ونوتات وعبوات عطرية فاخرة</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card rounded-4 border-0 shadow-sm mb-4" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-filter me-2"></i>الفلاتر</h5>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">الفئة</label>
+                        <select class="form-select rounded-3" id="category-filter">
+                            <option value="">الكل</option>
+                            <option value="زيوت">زيوت</option>
+                            <option value="نوتات">نوتات</option>
+                            <option value="عبوات">عبوات</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">نطاق السعر</label>
+                        <select class="form-select rounded-3" id="price-filter">
+                            <option value="">الكل</option>
+                            <option value="budget">اقتصادي (أقل من $50)</option>
+                            <option value="mid">متوسط ($50-$100)</option>
+                            <option value="luxury">فاخر (أكثر من $100)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-gradient w-100 rounded-pill" id="search-btn">
+                        <i class="bi bi-search me-2"></i>بحث
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="products-grid" class="row g-4">
+                <div class="text-center py-5">
+                    <i class="bi bi-box-seam fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">اضغط على "بحث" لعرض المنتجات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function loadProducts() {
+    const category = document.getElementById('category-filter').value;
+    const price = document.getElementById('price-filter').value;
+    
+    fetch('{{ url_for("marketplace.search") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ category, price_range: price })
+    })
+    .then(r => r.json())
+    .then(result => {
+        const grid = document.getElementById('products-grid');
+        if (result.products.length === 0) {
+            grid.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">لا توجد منتجات مطابقة</p></div>';
+            return;
+        }
+        grid.innerHTML = result.products.map(p => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card rounded-4 border-0 shadow-sm h-100" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.5) 100%);">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">${p.category}</span>
+                        <h5 class="fw-bold">${p.name}</h5>
+                        <p class="text-muted small mb-2">${p.description}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-success fs-5">${p.price}</span>
+                            <span class="badge bg-secondary">${p.concentration}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <a href="${p.link}" class="btn btn-gradient w-100 rounded-pill">
+                            <i class="bi bi-cart me-2"></i>اطلب الآن
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    });
+}
+document.getElementById('search-btn').addEventListener('click', loadProducts);
+loadProducts();
+</script>
+{% endblock %}

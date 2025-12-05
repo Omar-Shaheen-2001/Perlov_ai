@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}مازج الزيوت{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>مازج الزيوت والنوتات</h1>
+        <p class="opacity-75">ادمج نوتاتك وأنشئ أكوردات عطرية فريدة</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">اختر النوتات للمزج</h2>
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold text-center mb-3">النوتات الزهرية</h6>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                    <button class="btn btn-outline-primary note-btn" data-note="الورد">الورد</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="الياسمين">الياسمين</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="زهر البرتقال">زهر البرتقال</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="اللافندر">اللافندر</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold text-center mb-3">النوتات الخشبية</h6>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                    <button class="btn btn-outline-primary note-btn" data-note="خشب الصندل">الصندل</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="الأرز">الأرز</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="العود">العود</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="خشب الورد">خشب الورد</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold text-center mb-3">النوتات الشرقية</h6>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                    <button class="btn btn-outline-primary note-btn" data-note="العنبر">العنبر</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="المسك">المسك</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="الفانيليا">الفانيليا</button>
+                                    <button class="btn btn-outline-primary note-btn" data-note="البخور">البخور</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">النوتات المختارة:</label>
+                            <div id="selected-notes" class="d-flex flex-wrap gap-2 p-3 rounded-3" style="min-height: 50px; background: #f8f9fa;"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">الطبقة المستهدفة</label>
+                            <select class="form-select form-select-lg rounded-3" id="target_layer">
+                                <option value="مقدمة">المقدمة (Top Notes)</option>
+                                <option value="قلب" selected>القلب (Heart Notes)</option>
+                                <option value="قاعدة">القاعدة (Base Notes)</option>
+                            </select>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="mix-btn">
+                                <i class="bi bi-shuffle me-2"></i>ادمج النوتات
+                            </button>
+                        </div>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">الأكورد الجديد</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>دمج جديد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+let selectedNotes = [];
+document.querySelectorAll('.note-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const note = this.dataset.note;
+        if (selectedNotes.includes(note)) {
+            selectedNotes = selectedNotes.filter(n => n !== note);
+            this.classList.remove('active', 'btn-primary');
+            this.classList.add('btn-outline-primary');
+        } else if (selectedNotes.length < 5) {
+            selectedNotes.push(note);
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('active', 'btn-primary');
+        }
+        updateSelectedDisplay();
+    });
+});
+function updateSelectedDisplay() {
+    document.getElementById('selected-notes').innerHTML = selectedNotes.map(n => 
+        `<span class="badge bg-primary">${n}</span>`
+    ).join('') || '<span class="text-muted">اختر 2-5 نوتات للدمج</span>';
+}
+updateSelectedDisplay();
+document.getElementById('mix-btn').addEventListener('click', function() {
+    if (selectedNotes.length < 2) {
+        alert('يرجى اختيار نوتتين على الأقل');
+        return;
+    }
+    fetch('{{ url_for("oil_mixer.mix") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            notes: selectedNotes,
+            target: document.getElementById('target_layer').value
+        })
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
+                <div class="card-body py-4 text-white">
+                    <h3 class="fw-bold">${a.accord_name}</h3>
+                    <p class="mb-0 opacity-75">${a.description}</p>
+                </div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                <div class="card-body">
+                    <h5 class="fw-bold"><i class="bi bi-pie-chart me-2"></i>نسب المزج</h5>
+                    <div class="row text-center">
+                        ${Object.entries(a.mixing_ratios).map(([note, ratio], i) => `
+                        <div class="col-4">
+                            <div class="p-2 rounded" style="background: rgba(179, 122, 148, ${0.3 - i*0.1})">
+                                <strong>${a.notes_used[i] || note}</strong><br>${ratio}
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body">
+                    <p><strong>الطبقة:</strong> ${a.layer_type}</p>
+                    <p class="mb-0"><strong>التوافق:</strong> ${a.compatibility}</p>
+                </div>
+            </div>
+            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-lightbulb me-2"></i>نصائح</h5>${a.tips.map(t => `<div class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>${t}</div>`).join('')}</div>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+    selectedNotes = [];
+    document.querySelectorAll('.note-btn').forEach(btn => {
+        btn.classList.remove('active', 'btn-primary');
+        btn.classList.add('btn-outline-primary');
+    });
+    updateSelectedDisplay();
+});
+</script>
+{% endblock %}

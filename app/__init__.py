@@ -24,6 +24,7 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
     
+    # Core blueprints
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
     from app.routes.scent_dna import scent_dna_bp
@@ -33,6 +34,24 @@ def create_app():
     from app.routes.admin import admin_bp
     from app.routes.bio_scent import bio_scent_bp
     
+    # New module blueprints
+    from app.routes.skin_chemistry import skin_chemistry_bp
+    from app.routes.temp_volatility import temp_volatility_bp
+    from app.routes.metabolism import metabolism_bp
+    from app.routes.climate import climate_bp
+    from app.routes.neuroscience import neuroscience_bp
+    from app.routes.stability import stability_bp
+    from app.routes.predictive import predictive_bp
+    from app.routes.scent_personality import scent_personality_bp
+    from app.routes.signature import signature_bp
+    from app.routes.occasion import occasion_bp
+    from app.routes.habit_planner import habit_planner_bp
+    from app.routes.digital_twin import digital_twin_bp
+    from app.routes.adaptive import adaptive_bp
+    from app.routes.oil_mixer import oil_mixer_bp
+    from app.routes.marketplace import marketplace_bp
+    
+    # Register core blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(scent_dna_bp)
@@ -41,6 +60,23 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(bio_scent_bp)
+    
+    # Register new module blueprints
+    app.register_blueprint(skin_chemistry_bp)
+    app.register_blueprint(temp_volatility_bp)
+    app.register_blueprint(metabolism_bp)
+    app.register_blueprint(climate_bp)
+    app.register_blueprint(neuroscience_bp)
+    app.register_blueprint(stability_bp)
+    app.register_blueprint(predictive_bp)
+    app.register_blueprint(scent_personality_bp)
+    app.register_blueprint(signature_bp)
+    app.register_blueprint(occasion_bp)
+    app.register_blueprint(habit_planner_bp)
+    app.register_blueprint(digital_twin_bp)
+    app.register_blueprint(adaptive_bp)
+    app.register_blueprint(oil_mixer_bp)
+    app.register_blueprint(marketplace_bp)
     
     with app.app_context():
         db.create_all()

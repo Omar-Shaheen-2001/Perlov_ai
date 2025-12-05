@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}توأمك العطري الرقمي{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>توأمك العطري الرقمي</h1>
+        <p class="opacity-75">إنشاء نسخة عطرية رقمية تشبهك</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">إنشاء التوأم الرقمي</h2>
+                        <p class="text-center text-muted mb-4">سيتم جمع كل بياناتك السابقة لإنشاء هوية عطرية رقمية دائمة</p>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="create-btn">
+                                <i class="bi bi-person-bounding-box me-2"></i>اعرض توأمك
+                            </button>
+                        </div>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">هويتك العطرية الرقمية</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة الإنشاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('create-btn').addEventListener('click', function() {
+    fetch('{{ url_for("digital_twin.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ all_user_data: {} })
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
+                <div class="card-body py-4 text-white">
+                    <i class="bi bi-person-badge fs-1 mb-2"></i>
+                    <h3 class="fw-bold">${a.digital_identity.name}</h3>
+                    <p class="mb-0 opacity-75">الكود: ${a.digital_identity.code}</p>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <div class="card rounded-4 border-0 h-100" style="background: rgba(179, 122, 148, 0.2);">
+                        <div class="card-body text-center"><strong>نوع الشخصية</strong><br>${a.digital_identity.personality_type}</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card rounded-4 border-0 h-100" style="background: rgba(217, 163, 95, 0.2);">
+                        <div class="card-body text-center"><strong>عائلة العطر</strong><br>${a.digital_identity.scent_family}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                <div class="card-body">
+                    <h5 class="fw-bold"><i class="bi bi-archive me-2"></i>السجل الدائم</h5>
+                    <p><strong>النوتات المفضلة:</strong> ${a.permanent_record.favorite_notes.join('، ')}</p>
+                    <p><strong>القوة المفضلة:</strong> ${a.permanent_record.preferred_intensity}</p>
+                    <p><strong>الموسم الأفضل:</strong> ${a.permanent_record.best_season}</p>
+                    <p class="mb-0"><strong>الأكوردات:</strong> ${a.permanent_record.signature_accords.join('، ')}</p>
+                </div>
+            </div>
+            <div class="alert alert-info rounded-4 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-arrow-repeat me-2"></i>تحديثات تلقائية: ${a.auto_updates ? 'مفعّلة' : 'معطّلة'}</span>
+                <span class="badge bg-success">${a.evolution_stage}</span>
+            </div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}

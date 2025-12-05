@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}شخصيتك العطرية{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>بناء الشخصية العطرية</h1>
+        <p class="opacity-75">إنشاء شخصية عطريّة كاملة بناءً على حمضك العطري</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-4">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <form id="analysis-form">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-fingerprint me-2"></i>نتيجة Scent DNA</label>
+                                <textarea class="form-control rounded-3" id="scent_dna_result" rows="4" placeholder="أدخل نتيجة تحليل الحمض العطري الخاص بك أو صف تفضيلاتك العطرية..." required></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-person-badge me-2"></i>اكشف شخصيتك
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">شخصيتك العطرية</h2>
+                        <div id="results-content"></div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const data = { scent_dna_result: document.getElementById('scent_dna_result').value };
+    fetch('{{ url_for("scent_personality.analyze") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        const a = result.analysis;
+        document.getElementById('results-content').innerHTML = `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                <div class="card-body text-center"><h5 class="fw-bold"><i class="bi bi-person-heart me-2"></i>وصف الشخصية</h5><p class="mb-0 fs-5">${a.personality_description}</p></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-star me-2"></i>نقاط القوة</h5>${a.strengths.map(s => `<span class="badge bg-warning text-dark me-2 mb-2 fs-6">${s}</span>`).join('')}</div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, ${a.scent_colors.primary}30 0%, ${a.scent_colors.secondary}30 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-palette me-2"></i>ألوان عطرك</h5>
+                <div class="d-flex gap-3">
+                    <div class="text-center"><div style="width:50px;height:50px;border-radius:50%;background:${a.scent_colors.primary}"></div><small>أساسي</small></div>
+                    <div class="text-center"><div style="width:50px;height:50px;border-radius:50%;background:${a.scent_colors.secondary}"></div><small>ثانوي</small></div>
+                    <div class="text-center"><div style="width:50px;height:50px;border-radius:50%;background:${a.scent_colors.accent}"></div><small>مميز</small></div>
+                </div></div>
+            </div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-image me-2"></i>Mood Board</h5>
+                <div class="row text-center">
+                    <div class="col-3"><strong>الأجواء</strong><br>${a.mood_board.vibes.join(', ')}</div>
+                    <div class="col-3"><strong>المناسبات</strong><br>${a.mood_board.occasions.join(', ')}</div>
+                    <div class="col-3"><strong>المواسم</strong><br>${a.mood_board.seasons.join(', ')}</div>
+                    <div class="col-3"><strong>الوقت</strong><br>${a.mood_board.time}</div>
+                </div></div>
+            </div>
+            <div class="alert alert-info rounded-4 text-center"><i class="bi bi-quote me-2"></i>${a.identity_statement}</div>
+        `;
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+});
+</script>
+{% endblock %}
