@@ -24,7 +24,7 @@ def analyze():
     - ألوان مفضلة: {favorite_colors}
     - مشاعر مفعّلة بالروائح: {emotional_triggers}
     
-    أنشئ ملفاً عصبياً عطرياً شاملاً."""
+    أنشئ ملفاً عصبياً عطرياً شاملاً مع اقتراحات عطور مناسبة."""
     
     default_analysis = {
         'neural_profile': 'شخصية عاطفية حساسة',
@@ -35,7 +35,39 @@ def analyze():
             'energy': ['النعناع', 'الليمون', 'الزنجبيل']
         },
         'color_scent_match': 'الألوان الدافئة تتوافق مع العطور الشرقية',
-        'memory_triggers': 'ذكرياتك مرتبطة بنوتات الأزهار والخشب'
+        'memory_triggers': 'ذكرياتك مرتبطة بنوتات الأزهار والخشب',
+        'recommended_perfumes': [
+            {
+                'name': 'Maison Francis Kurkdjian Baccarat Rouge 540',
+                'category': 'للسعادة والفرح',
+                'notes': 'زعفران، عنبر، أرز',
+                'why': 'يحفز مراكز السعادة في الدماغ بنوتاته الدافئة'
+            },
+            {
+                'name': 'Chanel Chance Eau Tendre',
+                'category': 'للهدوء والاسترخاء',
+                'notes': 'جريب فروت، ياسمين، مسك أبيض',
+                'why': 'يخفض التوتر ويحسن المزاج بنوتاته الناعمة'
+            },
+            {
+                'name': 'Tom Ford Oud Wood',
+                'category': 'للذكريات العميقة',
+                'notes': 'عود، خشب الورد، فانيليا',
+                'why': 'يربط بين الذكريات والمشاعر الإيجابية'
+            },
+            {
+                'name': 'Jo Malone English Pear & Freesia',
+                'category': 'للنشاط والطاقة',
+                'notes': 'كمثرى، فريزيا، مسك',
+                'why': 'ينشط الدماغ ويزيد التركيز والإنتاجية'
+            },
+            {
+                'name': 'Dior Sauvage Elixir',
+                'category': 'للثقة بالنفس',
+                'notes': 'لافندر، خشب الصندل، عنبر',
+                'why': 'يعزز الشعور بالقوة والسيطرة'
+            }
+        ]
     }
     
     try:
