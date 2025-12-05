@@ -102,6 +102,7 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         skin_type: document.getElementById('skin_type').value,
         sensitivity: document.getElementById('sensitivity').value,
@@ -109,9 +110,10 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         failed_perfumes: document.getElementById('failed_perfumes').value
     };
     if (!data.skin_type || !data.sensitivity) {
-        alert('يرجى ملء جميع الحقول المطلوبة');
+        showError('يرجى ملء جميع الحقول المطلوبة');
         return;
     }
+    showLoading(btn);
     fetch('{{ url_for("skin_chemistry.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -119,6 +121,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const analysis = result.analysis;
         document.getElementById('suitable-perfumes').innerHTML = analysis.suitable_perfumes.map(p => 
             `<div class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>${p}</div>`
@@ -130,6 +133,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         document.getElementById('recommendations').textContent = analysis.recommendations;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم تحليل كيمياء بشرتك بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

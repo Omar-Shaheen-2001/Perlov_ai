@@ -51,10 +51,12 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         schedule: document.getElementById('schedule').value,
         daily_activities: document.getElementById('daily_activities').value
     };
+    showLoading(btn);
     fetch('{{ url_for("habit_planner.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -62,6 +64,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         const days = Object.entries(a.weekly_plan);
         document.getElementById('results-content').innerHTML = `
@@ -84,6 +87,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم إنشاء خطتك العطرية بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

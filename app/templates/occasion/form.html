@@ -64,7 +64,9 @@
 <script>
 document.querySelectorAll('.occasion-btn').forEach(btn => {
     btn.addEventListener('click', function() {
+        const clickedBtn = this;
         const occasion = this.dataset.occasion;
+        showLoading(clickedBtn);
         fetch('{{ url_for("occasion.analyze") }}', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -72,6 +74,7 @@ document.querySelectorAll('.occasion-btn').forEach(btn => {
         })
         .then(r => r.json())
         .then(result => {
+            hideLoading(clickedBtn);
             const a = result.analysis;
             document.getElementById('results-content').innerHTML = `
                 <div class="alert alert-primary rounded-4 text-center mb-4"><h4 class="mb-0">مناسبة: ${occasion}</h4></div>
@@ -89,6 +92,11 @@ document.querySelectorAll('.occasion-btn').forEach(btn => {
             `;
             document.getElementById('inputs-section').classList.add('d-none');
             document.getElementById('results-section').classList.remove('d-none');
+            showSuccess('تم اختيار العطور المناسبة بنجاح!');
+        })
+        .catch(err => {
+            hideLoading(clickedBtn);
+            showError('حدث خطأ، يرجى المحاولة مرة أخرى');
         });
     });
 });

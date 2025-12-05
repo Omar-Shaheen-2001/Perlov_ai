@@ -61,11 +61,13 @@
 <script>
 document.getElementById('current_time').value = new Date().toTimeString().slice(0,5);
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         current_time: document.getElementById('current_time').value,
         body_temp: document.getElementById('body_temp').value,
         activity: document.getElementById('activity').value
     };
+    showLoading(btn);
     fetch('{{ url_for("adaptive.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -73,6 +75,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
@@ -108,6 +111,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم اكتشاف عطرك التكيّفي بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

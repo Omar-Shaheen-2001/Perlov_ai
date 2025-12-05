@@ -66,11 +66,13 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         skin_type: document.getElementById('skin_type').value,
         weather_temp: document.getElementById('weather_temp').value,
         usage_time: document.getElementById('usage_time').value
     };
+    showLoading(btn);
     fetch('{{ url_for("stability.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -78,6 +80,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.2) 0%, rgba(167, 243, 208, 0.2) 100%);">
@@ -95,6 +98,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم تحليل الثبات بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

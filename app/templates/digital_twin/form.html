@@ -37,6 +37,8 @@
 </div>
 <script>
 document.getElementById('create-btn').addEventListener('click', function() {
+    const btn = this;
+    showLoading(btn);
     fetch('{{ url_for("digital_twin.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -44,6 +46,7 @@ document.getElementById('create-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
@@ -81,6 +84,11 @@ document.getElementById('create-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم إنشاء توأمك العطري الرقمي بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

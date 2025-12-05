@@ -162,15 +162,16 @@
 
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const mood = document.getElementById('mood').value;
     const speechSpeed = document.getElementById('speech-speed').value;
     
     if (!mood) {
-        alert('من فضلك اختر حالتك المزاجية');
+        showError('من فضلك اختر حالتك المزاجية');
         return;
     }
     
-    // Simulate analysis
+    showLoading(btn);
     fetch('{{ url_for("bio_scent.analyze") }}', {
         method: 'POST',
         headers: {
@@ -184,12 +185,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
-        // Update results
+        hideLoading(btn);
         document.getElementById('detected-mood').textContent = mood;
         document.getElementById('detected-speed').textContent = speechSpeed;
         document.getElementById('skin-type').textContent = data.skin_analysis.skin_type;
         
-        // Display fragrance predictions
         const predictions = data.fragrance_predictions.map((pred, idx) => {
             return `<div class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>${pred}</div>`;
         }).join('');
@@ -197,9 +197,13 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         
         document.getElementById('sensitive-recommendations').textContent = data.sensitive_recommendations;
         
-        // Show results, hide inputs
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم التحليل الحيوي بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 

@@ -50,11 +50,13 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         scent_memories: document.getElementById('scent_memories').value,
         favorite_colors: document.getElementById('favorite_colors').value,
         emotional_triggers: document.getElementById('emotional_triggers').value
     };
+    showLoading(btn);
     fetch('{{ url_for("neuroscience.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -62,6 +64,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         let perfumesHtml = '';
         if (a.recommended_perfumes && a.recommended_perfumes.length > 0) {
@@ -106,6 +109,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم تحليل ملفك العصبي بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

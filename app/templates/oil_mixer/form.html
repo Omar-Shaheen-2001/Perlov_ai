@@ -100,9 +100,11 @@ function updateSelectedDisplay() {
 updateSelectedDisplay();
 document.getElementById('mix-btn').addEventListener('click', function() {
     if (selectedNotes.length < 2) {
-        alert('يرجى اختيار نوتتين على الأقل');
+        Swal.fire({icon: 'warning', title: 'تنبيه', text: 'يرجى اختيار نوتتين على الأقل', confirmButtonColor: '#B37A94'});
         return;
     }
+    const btn = this;
+    showLoading(btn);
     fetch('{{ url_for("oil_mixer.mix") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -113,6 +115,7 @@ document.getElementById('mix-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
@@ -146,6 +149,11 @@ document.getElementById('mix-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم دمج النوتات بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

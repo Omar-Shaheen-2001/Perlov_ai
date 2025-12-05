@@ -71,12 +71,14 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         country: document.getElementById('country').value,
         temperature: document.getElementById('temperature').value,
         humidity: document.getElementById('humidity').value,
         season: document.getElementById('season').value
     };
+    showLoading(btn);
     fetch('{{ url_for("climate.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -84,6 +86,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 235, 59, 0.2) 100%);">
@@ -101,6 +104,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم تحليل المناخ بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {

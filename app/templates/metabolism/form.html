@@ -76,12 +76,14 @@
 </div>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
+    const btn = this;
     const data = {
         sports_level: document.getElementById('sports_level').value,
         sleep_hours: document.getElementById('sleep_hours').value,
         daily_movement: document.getElementById('daily_movement').value,
         energy_level: document.getElementById('energy_level').value
     };
+    showLoading(btn);
     fetch('{{ url_for("metabolism.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -89,6 +91,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     })
     .then(r => r.json())
     .then(result => {
+        hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
@@ -106,6 +109,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         `;
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم تحليل الأيض بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
 document.getElementById('back-btn').addEventListener('click', function() {
