@@ -221,6 +221,98 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
         default_response["error"] = str(e)
         return default_response
 
+def search_real_perfume_products(search_query, category="all", price_range="all", web_search_results=None):
+    """Search for real perfume products from online stores using AI with web search data."""
+    
+    category_context = ""
+    if category and category != "all":
+        category_map = {
+            "زيوت": "perfume oils and essential oils",
+            "نوتات": "fragrance notes and raw materials",
+            "عبوات": "perfume bottles and packaging",
+            "عطور نسائية": "women's perfumes and fragrances",
+            "عطور رجالية": "men's perfumes and colognes",
+            "عطور يونيسكس": "unisex fragrances"
+        }
+        category_context = f"Focus on: {category_map.get(category, category)}"
+    
+    price_context = ""
+    if price_range and price_range != "all":
+        price_map = {
+            "budget": "under $50 USD (budget-friendly options)",
+            "mid": "between $50-$150 USD (mid-range)",
+            "luxury": "above $150 USD (luxury and niche)"
+        }
+        price_context = f"Price range: {price_map.get(price_range, price_range)}"
+
+    web_data_context = ""
+    if web_search_results:
+        web_data_context = f"""
+REAL PRODUCT DATA FROM WEB SEARCH:
+{web_search_results}
+
+Extract ONLY products that appear in the search results above. Use the exact URLs, prices, and product names from the search data.
+"""
+
+    prompt = f"""You are a perfume shopping assistant. Based on the web search results provided, extract and structure real perfume products.
+
+User is searching for: "{search_query}"
+{category_context}
+{price_context}
+{web_data_context}
+
+CRITICAL INSTRUCTIONS:
+1. ONLY use products that appear in the web search results
+2. Use EXACT URLs from the search results - do not modify or fabricate URLs
+3. Use EXACT prices shown in the search results
+4. If a product doesn't have a clear purchase URL, skip it
+
+Return ONLY valid JSON with this structure:
+{{
+    "products": [
+        {{
+            "name": "Exact product name from search",
+            "brand": "Brand name",
+            "category": "Category in Arabic (زيوت/نوتات/عبوات/عطور نسائية/عطور رجالية/عطور يونيسكس)",
+            "price": "$XX.XX (exact price from search)",
+            "original_price": "$XX.XX or null",
+            "concentration": "EDP/EDT/Parfum/Oil",
+            "size": "50ml/100ml etc",
+            "description": "Brief Arabic description",
+            "main_notes": "Notes if available",
+            "store_name": "Store name from URL",
+            "store_url": "EXACT URL from search results",
+            "rating": 4.5,
+            "image_placeholder": "emoji"
+        }}
+    ],
+    "search_summary": "Arabic summary of real results found",
+    "data_source": "web_search"
+}}
+
+If no valid products found in search results, return empty products array."""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a perfume product data extractor. Extract ONLY real products from the provided web search data. Never fabricate URLs or prices."},
+                {"role": "user", "content": prompt}
+            ],
+            max_completion_tokens=2500
+        )
+        
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
+        
+        if parsed is None:
+            return {"products": [], "search_summary": "لم يتم العثور على نتائج", "data_source": "none"}
+        
+        return parsed
+    except Exception as e:
+        return {"products": [], "search_summary": f"حدث خطأ: {str(e)}", "error": str(e), "data_source": "error"}
+
+
 def generate_recommendations(query, scent_profile=None, products=None):
     profile_context = ""
     if scent_profile:
