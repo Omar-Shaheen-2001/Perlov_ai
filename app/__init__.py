@@ -31,6 +31,7 @@ def create_app():
     from app.routes.recommendations import recommendations_bp
     from app.routes.dashboard import dashboard_bp
     from app.routes.admin import admin_bp
+    from app.routes.bio_scent import bio_scent_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -39,6 +40,7 @@ def create_app():
     app.register_blueprint(recommendations_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(bio_scent_bp)
     
     with app.app_context():
         db.create_all()

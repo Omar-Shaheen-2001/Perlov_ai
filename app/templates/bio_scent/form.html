@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Bio-Scent AI - محلل الإشارات الحيوية{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>Bio-Scent AI</h1>
+        <p class="opacity-75">محلل الإشارات الحيوية - اكتشف عطرك من خلال حيويتك</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+                <div class="card-body p-4">
+                    
+                    <!-- المدخلات -->
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        
+                        <form id="bioScent-form">
+                            <!-- الحالة المزاجية -->
+                            <div class="mb-4">
+                                <label for="mood" class="form-label fw-bold">
+                                    <i class="bi bi-emoji-smile me-2"></i>الحالة المزاجية
+                                </label>
+                                <select class="form-select rounded-3 form-select-lg" id="mood" name="mood" required>
+                                    <option value="">اختر حالتك المزاجية</option>
+                                    <option value="سعيد">سعيد 😊</option>
+                                    <option value="هادئ">هادئ 😌</option>
+                                    <option value="نشيط">نشيط ⚡</option>
+                                    <option value="حزين">حزين 😢</option>
+                                    <option value="هادي">هادي 😴</option>
+                                    <option value="متحمس">متحمس 🎉</option>
+                                </select>
+                            </div>
+
+                            <!-- تسجيل الصوت -->
+                            <div class="mb-4">
+                                <label for="voice-input" class="form-label fw-bold">
+                                    <i class="bi bi-mic me-2"></i>تسجيل صوت قصير (10-30 ثانية)
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input type="file" class="form-control rounded-3" id="voice-input" accept="audio/*" placeholder="اضغط لتسجيل صوتك">
+                                </div>
+                                <small class="text-muted d-block mt-2">تجنب الأصوات الخلفية - سيتم تحليل نبرة صوتك وسرعة كلامك</small>
+                            </div>
+
+                            <!-- صورة البشرة -->
+                            <div class="mb-4">
+                                <label for="skin-image" class="form-label fw-bold">
+                                    <i class="bi bi-image me-2"></i>صورة الوجه / البشرة
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input type="file" class="form-control rounded-3" id="skin-image" accept="image/*" placeholder="اختر صورة">
+                                </div>
+                                <small class="text-muted d-block mt-2">ستساعدنا لتحديد نوع بشرتك وحساسيتها</small>
+                            </div>
+
+                            <!-- سرعة الكلام -->
+                            <div class="mb-4">
+                                <label for="speech-speed" class="form-label fw-bold">
+                                    <i class="bi bi-speedometer2 me-2"></i>سرعة الكلام المتوقعة
+                                </label>
+                                <select class="form-select rounded-3 form-select-lg" id="speech-speed" name="speech_speed">
+                                    <option value="بطيء">بطيء جداً</option>
+                                    <option value="معتدل" selected>معتدل</option>
+                                    <option value="سريع">سريع</option>
+                                    <option value="سريع جداً">سريع جداً</option>
+                                </select>
+                                <small class="text-muted d-block mt-2">هذا يساعدنا على فهم طاقتك الشخصية</small>
+                            </div>
+
+                            <!-- زر التحليل -->
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
+                                    <i class="bi bi-play-circle me-2"></i>ابدأ التحليل الحيوي
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- النتائج -->
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        
+                        <!-- تحليل الصوت -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="bi bi-waveform text-rose me-2"></i>تحليل الصوت
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><strong>المزاج المكتشف:</strong> <span id="detected-mood">-</span></li>
+                                        <li class="mb-2"><strong>نبرة الصوت:</strong> <span id="voice-tone">دافئة وهادئة</span></li>
+                                        <li class="mb-2"><strong>سرعة الكلام:</strong> <span id="detected-speed">-</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- تحليل البشرة -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="bi bi-heart-fill text-amber me-2"></i>تحليل البشرة
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><strong>نوع البشرة:</strong> <span id="skin-type">-</span></li>
+                                        <li class="mb-2"><strong>درجة الحساسية:</strong> <span id="skin-sensitivity">متوسطة</span></li>
+                                        <li class="mb-2"><strong>التوصيات:</strong> <span id="skin-rec">تجنب الكحول العالي</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- توقعات الذوق العطري -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="bi bi-star-fill text-plum me-2"></i>توقعات الذوق العطري
+                                    </h5>
+                                    <div id="fragrance-predictions">
+                                        <p class="text-muted">جاري التحليل...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- توصيات حساسة البشرة -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="bi bi-shield-check text-success me-2"></i>توصيات حساسة للبشرة
+                                    </h5>
+                                    <p id="sensitive-recommendations" class="text-muted mb-0">
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- زر العودة -->
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-left me-2"></i>إعادة التحليل
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('analyze-btn').addEventListener('click', function() {
+    const mood = document.getElementById('mood').value;
+    const speechSpeed = document.getElementById('speech-speed').value;
+    
+    if (!mood) {
+        alert('من فضلك اختر حالتك المزاجية');
+        return;
+    }
+    
+    // Simulate analysis
+    fetch('{{ url_for("bio_scent.analyze") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mood: mood,
+            speech_speed: speechSpeed,
+            skin_type: 'معتدلة'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update results
+        document.getElementById('detected-mood').textContent = mood;
+        document.getElementById('detected-speed').textContent = speechSpeed;
+        document.getElementById('skin-type').textContent = data.skin_analysis.skin_type;
+        
+        // Display fragrance predictions
+        const predictions = data.fragrance_predictions.map((pred, idx) => {
+            return `<div class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>${pred}</div>`;
+        }).join('');
+        document.getElementById('fragrance-predictions').innerHTML = predictions;
+        
+        document.getElementById('sensitive-recommendations').textContent = data.sensitive_recommendations;
+        
+        // Show results, hide inputs
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+    });
+});
+
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+    document.getElementById('bioScent-form').reset();
+});
+</script>
+
+<style>
+.text-rose { color: #E9C9D3; }
+.text-amber { color: #D9A35F; }
+.text-plum { color: #B37A94; }
+</style>
+{% endblock %}
