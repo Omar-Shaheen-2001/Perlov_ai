@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.ai_service import get_ai_response
+from app.ai_service import get_ai_response, save_analysis_result
 from datetime import datetime
 
 adaptive_bp = Blueprint('adaptive', __name__, url_prefix='/adaptive')
@@ -31,28 +31,29 @@ def analyze():
     else:
         time_period = 'ليل'
     
-    return jsonify({
-        'success': True,
-        'analysis': {
-            'current_recommendation': {
-                'time_period': time_period,
-                'perfume': 'Dior Sauvage' if time_period in ['صباح', 'ظهر'] else 'Tom Ford Oud Wood',
-                'reason': f'مناسب لفترة {time_period} ونشاطك الحالي'
-            },
-            'morning_perfume': {
-                'name': 'Acqua di Gio',
-                'type': 'منعش ونظيف',
-                'best_for': 'العمل والنشاطات اليومية'
-            },
-            'evening_perfume': {
-                'name': 'Bleu de Chanel EDP',
-                'type': 'أنيق وجذاب',
-                'best_for': 'اللقاءات والسهرات'
-            },
-            'adaptive_tips': [
-                'غيّر عطرك حسب الوقت',
-                'استخدم عطراً خفيفاً في الحر',
-                'العطور القوية للمساء فقط'
-            ]
-        }
-    })
+    analysis = {
+        'current_recommendation': {
+            'time_period': time_period,
+            'perfume': 'Dior Sauvage' if time_period in ['صباح', 'ظهر'] else 'Tom Ford Oud Wood',
+            'reason': f'مناسب لفترة {time_period} ونشاطك الحالي'
+        },
+        'morning_perfume': {
+            'name': 'Acqua di Gio',
+            'type': 'منعش ونظيف',
+            'best_for': 'العمل والنشاطات اليومية'
+        },
+        'evening_perfume': {
+            'name': 'Bleu de Chanel EDP',
+            'type': 'أنيق وجذاب',
+            'best_for': 'اللقاءات والسهرات'
+        },
+        'adaptive_tips': [
+            'غيّر عطرك حسب الوقت',
+            'استخدم عطراً خفيفاً في الحر',
+            'العطور القوية للمساء فقط'
+        ]
+    }
+    
+    save_analysis_result('adaptive', data, analysis)
+    
+    return jsonify({'success': True, 'analysis': analysis})

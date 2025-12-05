@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
 from app import db
 from app.models import User
+from app.ai_service import save_analysis_result
 
 bio_scent_bp = Blueprint('bio_scent', __name__, url_prefix='/bio-scent', template_folder='../templates/bio_scent')
 
@@ -9,13 +10,11 @@ bio_scent_bp = Blueprint('bio_scent', __name__, url_prefix='/bio-scent', templat
 @login_required
 def form():
     if request.method == 'POST':
-        # Handle form submission
         mood = request.form.get('mood')
         voice_note = request.files.get('voice_note')
         skin_image = request.files.get('skin_image')
         speech_speed = request.form.get('speech_speed')
         
-        # Process and analyze (simplified for now)
         analysis_result = {
             'mood_analysis': f'تحليل المزاج: {mood}',
             'skin_type': 'معتدلة',
@@ -32,12 +31,10 @@ def form():
 def analyze():
     data = request.get_json()
     
-    # Simplified analysis logic
     mood = data.get('mood', '')
     speech_speed = data.get('speech_speed', 'عادية')
     skin_type = data.get('skin_type', 'معتدلة')
     
-    # Generate analysis results
     result = {
         'voice_analysis': {
             'mood': mood,
@@ -55,5 +52,7 @@ def analyze():
         ],
         'sensitive_recommendations': 'اختيار عطور بنسبة كحول منخفضة وزيوت طبيعية'
     }
+    
+    save_analysis_result('bio_scent', data, result)
     
     return jsonify(result)

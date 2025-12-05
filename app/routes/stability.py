@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.ai_service import get_ai_response
+from app.ai_service import get_ai_response, save_analysis_result
 
 stability_bp = Blueprint('stability', __name__, url_prefix='/stability')
 
@@ -47,5 +47,7 @@ def analyze():
             analysis = default_analysis
     except:
         analysis = default_analysis
+    
+    save_analysis_result('stability', data, analysis)
     
     return jsonify({'success': True, 'analysis': analysis})
