@@ -28,17 +28,21 @@ def analyze():
     
     قدم توصيات عطرية تتوافق مع معدل الأيض."""
     
+    default_analysis = {
+        'metabolism_type': 'أيض سريع',
+        'strong_perfumes': ['Dior Sauvage Elixir', 'Tom Ford Tobacco Vanille', 'Creed Aventus'],
+        'soft_perfumes': ['Jo Malone Wood Sage', 'Byredo Blanche', 'Le Labo Santal 33'],
+        'stability_factors': ['استخدم مرطب قبل العطر', 'رش على الملابس أيضاً', 'أعد الرش بعد 4 ساعات'],
+        'recommendation': 'بناءً على نشاطك العالي، تحتاج عطور قوية ذات قاعدة ثابتة'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'metabolism_type' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'metabolism_type': 'أيض سريع',
-                'strong_perfumes': ['Dior Sauvage Elixir', 'Tom Ford Tobacco Vanille', 'Creed Aventus'],
-                'soft_perfumes': ['Jo Malone Wood Sage', 'Byredo Blanche', 'Le Labo Santal 33'],
-                'stability_factors': ['استخدم مرطب قبل العطر', 'رش على الملابس أيضاً', 'أعد الرش بعد 4 ساعات'],
-                'recommendation': 'بناءً على نشاطك العالي، تحتاج عطور قوية ذات قاعدة ثابتة'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

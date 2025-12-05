@@ -26,26 +26,30 @@ def analyze():
     3. ألوان العطر المناسبة
     4. Mood Board عطري"""
     
+    default_analysis = {
+        'personality_description': 'شخصية عطرية أنيقة وجذابة، تميل للفخامة والتميز',
+        'strengths': ['الثقة بالنفس', 'الجاذبية الطبيعية', 'التفرد في الاختيار'],
+        'scent_colors': {
+            'primary': '#B37A94',
+            'secondary': '#D9A35F',
+            'accent': '#E9C9D3'
+        },
+        'mood_board': {
+            'vibes': ['فاخر', 'دافئ', 'غامض'],
+            'occasions': ['سهرات', 'مناسبات خاصة', 'لقاءات مهمة'],
+            'seasons': ['خريف', 'شتاء'],
+            'time': 'مساءً وليلاً'
+        },
+        'identity_statement': 'عطرك هو توقيعك الخاص الذي يسبقك ويبقى بعدك'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'personality_description' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'personality_description': 'شخصية عطرية أنيقة وجذابة، تميل للفخامة والتميز',
-                'strengths': ['الثقة بالنفس', 'الجاذبية الطبيعية', 'التفرد في الاختيار'],
-                'scent_colors': {
-                    'primary': '#B37A94',
-                    'secondary': '#D9A35F',
-                    'accent': '#E9C9D3'
-                },
-                'mood_board': {
-                    'vibes': ['فاخر', 'دافئ', 'غامض'],
-                    'occasions': ['سهرات', 'مناسبات خاصة', 'لقاءات مهمة'],
-                    'seasons': ['خريف', 'شتاء'],
-                    'time': 'مساءً وليلاً'
-                },
-                'identity_statement': 'عطرك هو توقيعك الخاص الذي يسبقك ويبقى بعدك'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

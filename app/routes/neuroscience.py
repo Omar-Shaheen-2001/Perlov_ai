@@ -26,21 +26,25 @@ def analyze():
     
     أنشئ ملفاً عصبياً عطرياً شاملاً."""
     
+    default_analysis = {
+        'neural_profile': 'شخصية عاطفية حساسة',
+        'mood_recommendations': ['عطور دافئة للراحة', 'حمضيات للنشاط', 'فانيليا للسعادة'],
+        'emotional_notes': {
+            'happiness': ['البرتقال', 'الياسمين', 'الفانيليا'],
+            'calm': ['اللافندر', 'خشب الصندل', 'البخور'],
+            'energy': ['النعناع', 'الليمون', 'الزنجبيل']
+        },
+        'color_scent_match': 'الألوان الدافئة تتوافق مع العطور الشرقية',
+        'memory_triggers': 'ذكرياتك مرتبطة بنوتات الأزهار والخشب'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'neural_profile' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'neural_profile': 'شخصية عاطفية حساسة',
-                'mood_recommendations': ['عطور دافئة للراحة', 'حمضيات للنشاط', 'فانيليا للسعادة'],
-                'emotional_notes': {
-                    'happiness': ['البرتقال', 'الياسمين', 'الفانيليا'],
-                    'calm': ['اللافندر', 'خشب الصندل', 'البخور'],
-                    'energy': ['النعناع', 'الليمون', 'الزنجبيل']
-                },
-                'color_scent_match': 'الألوان الدافئة تتوافق مع العطور الشرقية',
-                'memory_triggers': 'ذكرياتك مرتبطة بنوتات الأزهار والخشب'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

@@ -24,27 +24,31 @@ def mix():
     
     أنشئ أكورداً عطرياً متناسقاً."""
     
+    default_analysis = {
+        'accord_name': 'Oriental Harmony',
+        'notes_used': selected_notes if selected_notes else ['الورد', 'العنبر', 'المسك'],
+        'mixing_ratios': {
+            'note_1': '40%',
+            'note_2': '35%',
+            'note_3': '25%'
+        },
+        'description': 'أكورد شرقي دافئ يجمع بين الأناقة والغموض',
+        'layer_type': target_layer,
+        'compatibility': 'يتناسب مع قواعد خشبية وعنبرية',
+        'tips': [
+            'أضف نوتة حمضية للمقدمة',
+            'استخدم قاعدة من خشب الصندل',
+            'يمكن تخفيفه بنوتات زهرية'
+        ]
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'accord_name' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'accord_name': 'Oriental Harmony',
-                'notes_used': selected_notes if selected_notes else ['الورد', 'العنبر', 'المسك'],
-                'mixing_ratios': {
-                    'note_1': '40%',
-                    'note_2': '35%',
-                    'note_3': '25%'
-                },
-                'description': 'أكورد شرقي دافئ يجمع بين الأناقة والغموض',
-                'layer_type': target_layer,
-                'compatibility': 'يتناسب مع قواعد خشبية وعنبرية',
-                'tips': [
-                    'أضف نوتة حمضية للمقدمة',
-                    'استخدم قاعدة من خشب الصندل',
-                    'يمكن تخفيفه بنوتات زهرية'
-                ]
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

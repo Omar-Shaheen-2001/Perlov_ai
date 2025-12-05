@@ -22,27 +22,31 @@ def analyze():
     
     أنشئ توأماً عطرياً رقمياً شاملاً."""
     
+    default_analysis = {
+        'digital_identity': {
+            'name': 'عطرك الرقمي',
+            'code': 'PERLOV-' + str(current_user.id if current_user.is_authenticated else '001'),
+            'personality_type': 'الأنيق الكلاسيكي',
+            'scent_family': 'شرقي خشبي'
+        },
+        'permanent_record': {
+            'favorite_notes': ['العود', 'الورد', 'المسك'],
+            'preferred_intensity': 'متوسط إلى قوي',
+            'best_season': 'خريف وشتاء',
+            'signature_accords': ['شرقي', 'خشبي', 'حار']
+        },
+        'auto_updates': True,
+        'last_updated': 'الآن',
+        'evolution_stage': 'المرحلة الثانية - الناضج العطري'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'digital_identity' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'digital_identity': {
-                    'name': 'عطرك الرقمي',
-                    'code': 'PERLOV-' + str(current_user.id if current_user.is_authenticated else '001'),
-                    'personality_type': 'الأنيق الكلاسيكي',
-                    'scent_family': 'شرقي خشبي'
-                },
-                'permanent_record': {
-                    'favorite_notes': ['العود', 'الورد', 'المسك'],
-                    'preferred_intensity': 'متوسط إلى قوي',
-                    'best_season': 'خريف وشتاء',
-                    'signature_accords': ['شرقي', 'خشبي', 'حار']
-                },
-                'auto_updates': True,
-                'last_updated': 'الآن',
-                'evolution_stage': 'المرحلة الثانية - الناضج العطري'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

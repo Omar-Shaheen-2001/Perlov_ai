@@ -26,22 +26,26 @@ def analyze():
     
     قدم تحليلاً شاملاً للثبات والفوحان."""
     
+    default_analysis = {
+        'stability_score': '8/10',
+        'sillage_strength': 'قوي - يملأ الغرفة',
+        'longevity_hours': '6-8 ساعات',
+        'tips': [
+            'استخدم مرطب غير معطر قبل الرش',
+            'رش على نقاط النبض',
+            'لا تفرك العطر بعد الرش',
+            'خزن العطر بعيداً عن الضوء والحرارة'
+        ],
+        'best_application': 'الرقبة، المعصم، خلف الأذن'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'stability_score' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'stability_score': '8/10',
-                'sillage_strength': 'قوي - يملأ الغرفة',
-                'longevity_hours': '6-8 ساعات',
-                'tips': [
-                    'استخدم مرطب غير معطر قبل الرش',
-                    'رش على نقاط النبض',
-                    'لا تفرك العطر بعد الرش',
-                    'خزن العطر بعيداً عن الضوء والحرارة'
-                ],
-                'best_application': 'الرقبة، المعصم، خلف الأذن'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

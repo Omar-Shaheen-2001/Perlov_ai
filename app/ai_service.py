@@ -31,6 +31,28 @@ def parse_ai_response(content):
     except json.JSONDecodeError:
         return None
 
+def get_ai_response(prompt, system_message="أنت خبير عطور محترف. أجب دائمًا بصيغة JSON فقط."):
+    """Generic AI response function for all modules."""
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": prompt}
+            ],
+            max_completion_tokens=1500
+        )
+        
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
+        
+        if parsed is None:
+            return content
+        
+        return parsed
+    except Exception as e:
+        return {"error": str(e)}
+
 def generate_scent_dna_analysis(profile_data):
     prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
 

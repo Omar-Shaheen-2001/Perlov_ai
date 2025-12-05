@@ -6,92 +6,183 @@
 <div class="page-header text-center">
     <div class="container">
         <h1>اختر خدمتك</h1>
-        <p class="opacity-75">طرق ذكية متعددة لاكتشاف عالم العطور</p>
+        <p class="opacity-75">18 أداة ذكية لاكتشاف عالم العطور</p>
     </div>
 </div>
 
 <div class="container py-5">
-    <div class="row g-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('scent_dna.form') }}" class="module-card">
-                <div class="module-icon purple">
-                    <i class="bi bi-fingerprint"></i>
-                </div>
-                <h3 class="fw-bold text-center mb-3">حمضك العطري</h3>
-                <p class="text-muted text-center mb-4">
-                    اكتشف شخصيتك العطرية الفريدة من خلال تحليل ذكي لتفضيلاتك ونمط حياتك
-                </p>
-                <ul class="list-unstyled text-muted">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> تحليل الشخصية العطرية</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> النوتات المثالية لك</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> توصيات مخصصة</li>
-                </ul>
-                <div class="text-center mt-4">
-                    <span class="btn btn-gradient">ابدأ التحليل</span>
-                </div>
+    <h2 class="text-center mb-4" style="color: #B37A94;">الخدمات الأساسية</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('scent_dna.form') }}" class="module-card h-100">
+                <div class="module-icon purple"><i class="bi bi-fingerprint"></i></div>
+                <h3 class="fw-bold text-center mb-2">حمضك العطري</h3>
+                <p class="text-muted text-center small">اكتشف شخصيتك العطرية الفريدة</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">ابدأ</span></div>
             </a>
         </div>
-        
-        <div class="col-md-6">
-            <a href="{{ url_for('custom_perfume.form') }}" class="module-card">
-                <div class="module-icon pink">
-                    <i class="bi bi-palette"></i>
-                </div>
-                <h3 class="fw-bold text-center mb-3">صمّم عطرك</h3>
-                <p class="text-muted text-center mb-4">
-                    دع الذكاء الاصطناعي يصمم لك عطراً فريداً بناءً على ذوقك ومناسباتك
-                </p>
-                <ul class="list-unstyled text-muted">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> تركيبة عطرية مخصصة</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> اسم عطر إبداعي</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> توصيات الاستخدام</li>
-                </ul>
-                <div class="text-center mt-4">
-                    <span class="btn btn-gradient btn-gradient-secondary">صمم الآن</span>
-                </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('custom_perfume.form') }}" class="module-card h-100">
+                <div class="module-icon pink"><i class="bi bi-palette"></i></div>
+                <h3 class="fw-bold text-center mb-2">صمّم عطرك</h3>
+                <p class="text-muted text-center small">تركيبة عطرية مخصصة لك</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-gradient-secondary btn-sm">صمم</span></div>
             </a>
         </div>
-        
-        <div class="col-md-6">
-            <a href="{{ url_for('recommendations.index') }}" class="module-card">
-                <div class="module-icon gold">
-                    <i class="bi bi-stars"></i>
-                </div>
-                <h3 class="fw-bold text-center mb-3">توصيات العطور</h3>
-                <p class="text-muted text-center mb-4">
-                    احصل على توصيات لعطور جاهزة للشراء تناسب ذوقك مع روابط مباشرة
-                </p>
-                <ul class="list-unstyled text-muted">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> عطور من ماركات عالمية</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> مطابقة ذكية</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> روابط شراء مباشرة</li>
-                </ul>
-                <div class="text-center mt-4">
-                    <span class="btn btn-gradient btn-gradient-gold">احصل على توصيات</span>
-                </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('recommendations.index') }}" class="module-card h-100">
+                <div class="module-icon gold"><i class="bi bi-stars"></i></div>
+                <h3 class="fw-bold text-center mb-2">توصيات العطور</h3>
+                <p class="text-muted text-center small">عطور جاهزة للشراء</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-gradient-gold btn-sm">احصل</span></div>
             </a>
         </div>
     </div>
 
-    <div class="row g-4 mt-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('bio_scent.form') }}" class="module-card">
-                <div class="module-icon" style="background: linear-gradient(135deg, #B37A94 0%, #E9C9D3 100%); color: white;">
-                    <i class="bi bi-waveform"></i>
-                </div>
-                <h3 class="fw-bold text-center mb-3">Bio-Scent AI</h3>
-                <h4 class="fw-bold text-center text-muted mb-3" style="font-size: 0.95rem;">محلل الإشارات الحيوية</h4>
-                <p class="text-muted text-center mb-4">
-                    تحليل صوتك وبشرتك وسلوكك العفوي للكشف عن تفضيلاتك العطرية العميقة
-                </p>
-                <ul class="list-unstyled text-muted">
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> تحليل الصوت</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> دراسة البشرة</li>
-                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> توصيات فورية</li>
-                </ul>
-                <div class="text-center mt-4">
-                    <span class="btn btn-gradient">ابدأ التحليل الحيوي</span>
-                </div>
+    <h2 class="text-center mb-4" style="color: #D9A35F;">التحليل البيولوجي</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('bio_scent.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #B37A94 0%, #E9C9D3 100%); color: white;"><i class="bi bi-waveform"></i></div>
+                <h3 class="fw-bold text-center mb-2">Bio-Scent AI</h3>
+                <p class="text-muted text-center small">تحليل الإشارات الحيوية</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">حلّل</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('skin_chemistry.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #E9C9D3 0%, #F7F4F6 100%); color: #B37A94;"><i class="bi bi-droplet"></i></div>
+                <h3 class="fw-bold text-center mb-2">كيمياء البشرة</h3>
+                <p class="text-muted text-center small">توافق العطور مع بشرتك</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">اكتشف</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('temp_volatility.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #D9A35F 0%, #F5EBDC 100%); color: white;"><i class="bi bi-thermometer-half"></i></div>
+                <h3 class="fw-bold text-center mb-2">محرّك الحرارة</h3>
+                <p class="text-muted text-center small">تطاير العطر مع حرارة جسمك</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">حلّل</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('metabolism.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #52D395 0%, #A7F3D0 100%); color: white;"><i class="bi bi-heart-pulse"></i></div>
+                <h3 class="fw-bold text-center mb-2">عطرك حسب الأيض</h3>
+                <p class="text-muted text-center small">توصيات حسب معدل الأيض</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">اعرف</span></div>
+            </a>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4" style="color: #B37A94;">التحليل البيئي والنفسي</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('climate.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #0D6EFD 0%, #6F42C1 100%); color: white;"><i class="bi bi-cloud-sun"></i></div>
+                <h3 class="fw-bold text-center mb-2">محرّك المناخ</h3>
+                <p class="text-muted text-center small">عطور مناسبة لمناخك</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">اكتشف</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('neuroscience.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #6F42C1 0%, #E9C9D3 100%); color: white;"><i class="bi bi-brain"></i></div>
+                <h3 class="fw-bold text-center mb-2">علم الأعصاب</h3>
+                <p class="text-muted text-center small">ذكرياتك وعلاقتك بالروائح</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">حلّل</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('stability.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #FFC107 0%, #FFEB3B 100%); color: #1F1F1F;"><i class="bi bi-graph-up"></i></div>
+                <h3 class="fw-bold text-center mb-2">محلّل الثبات</h3>
+                <p class="text-muted text-center small">قياس الثبات والفوحان</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">قيّم</span></div>
+            </a>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4" style="color: #D9A35F;">الذكاء الاصطناعي المتقدم</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('predictive.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #DC3545 0%, #FD7E14 100%); color: white;"><i class="bi bi-magic"></i></div>
+                <h3 class="fw-bold text-center mb-2">الذكاء التنبّؤي</h3>
+                <p class="text-muted text-center small">تنبؤ بعطورك المستقبلية</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">تنبّأ</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('scent_personality.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%); color: white;"><i class="bi bi-person-badge"></i></div>
+                <h3 class="fw-bold text-center mb-2">شخصيتك العطرية</h3>
+                <p class="text-muted text-center small">بناء هوية عطرية كاملة</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">اكشف</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('signature.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #1F1F1F 0%, #B37A94 100%); color: white;"><i class="bi bi-pen"></i></div>
+                <h3 class="fw-bold text-center mb-2">عطرك التوقيعي</h3>
+                <p class="text-muted text-center small">ابتكر توقيعك الخاص</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">ابتكر</span></div>
+            </a>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4" style="color: #B37A94;">التخطيط والتنظيم</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('occasion.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #E9C9D3 0%, #B37A94 100%); color: white;"><i class="bi bi-calendar-heart"></i></div>
+                <h3 class="fw-bold text-center mb-2">عطر لكل مناسبة</h3>
+                <p class="text-muted text-center small">توصيات حسب المناسبة</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">اختر</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('habit_planner.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #20C997 0%, #0DCAF0 100%); color: white;"><i class="bi bi-calendar-week"></i></div>
+                <h3 class="fw-bold text-center mb-2">خطتك العطرية</h3>
+                <p class="text-muted text-center small">خطة أسبوعية وشهرية</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">خطط</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('adaptive.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #6610F2 0%, #D63384 100%); color: white;"><i class="bi bi-arrow-repeat"></i></div>
+                <h3 class="fw-bold text-center mb-2">العطر التكيّفي</h3>
+                <p class="text-muted text-center small">يتغير بتغيّر يومك</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">جرّب</span></div>
+            </a>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4" style="color: #D9A35F;">الهوية الرقمية والمزج</h2>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('digital_twin.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #0D6EFD 0%, #0DCAF0 100%); color: white;"><i class="bi bi-person-bounding-box"></i></div>
+                <h3 class="fw-bold text-center mb-2">توأمك الرقمي</h3>
+                <p class="text-muted text-center small">هوية عطرية رقمية دائمة</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">أنشئ</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('oil_mixer.form') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #D9A35F 0%, #B37A94 100%); color: white;"><i class="bi bi-shuffle"></i></div>
+                <h3 class="fw-bold text-center mb-2">مازج الزيوت</h3>
+                <p class="text-muted text-center small">ادمج نوتاتك المفضلة</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">امزج</span></div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('marketplace.index') }}" class="module-card h-100">
+                <div class="module-icon" style="background: linear-gradient(135deg, #198754 0%, #20C997 100%); color: white;"><i class="bi bi-shop"></i></div>
+                <h3 class="fw-bold text-center mb-2">سوق العطور</h3>
+                <p class="text-muted text-center small">زيوت ونوتات وعبوات</p>
+                <div class="text-center mt-3"><span class="btn btn-gradient btn-sm">تسوّق</span></div>
             </a>
         </div>
     </div>

@@ -34,18 +34,22 @@ def analyze():
     
     أجب بصيغة JSON."""
     
+    default_analysis = {
+        'volatility_rate': 'متوسط - يتطاير خلال 4-6 ساعات',
+        'hot_weather_stability': 'جيد مع تركيز EDP',
+        'cold_weather_stability': 'ممتاز مع أي تركيز',
+        'best_time': 'المساء والليل',
+        'recommended_concentration': 'EDP - Eau de Parfum',
+        'tips': 'رش على نقاط النبض للحصول على ثبات أطول'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'volatility_rate' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'volatility_rate': 'متوسط - يتطاير خلال 4-6 ساعات',
-                'hot_weather_stability': 'جيد مع تركيز EDP',
-                'cold_weather_stability': 'ممتاز مع أي تركيز',
-                'best_time': 'المساء والليل',
-                'recommended_concentration': 'EDP - Eau de Parfum',
-                'tips': 'رش على نقاط النبض للحصول على ثبات أطول'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

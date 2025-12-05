@@ -26,25 +26,29 @@ def analyze():
     
     أنشئ وصفاً كاملاً للعطر التوقيعي."""
     
+    default_analysis = {
+        'signature_name': 'Essence of You',
+        'description': 'عطر توقيعي فريد يجمع بين الأناقة والدفء، مصمم ليعكس شخصيتك الحقيقية',
+        'notes': {
+            'top': ['البرغموت', 'الفلفل الوردي'],
+            'heart': ['الورد', 'العنبر'],
+            'base': ['خشب الصندل', 'المسك الأبيض']
+        },
+        'wearing_guide': {
+            'occasion': 'كل يوم - عطرك الدائم',
+            'application': 'رش على نقاط النبض صباحاً',
+            'layering': 'يمكن دمجه مع عطر مسائي أقوى'
+        },
+        'uniqueness': 'هذا العطر صُمم خصيصاً ليكون هويتك العطرية التي لا تُنسى'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'signature_name' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'signature_name': 'Essence of You',
-                'description': 'عطر توقيعي فريد يجمع بين الأناقة والدفء، مصمم ليعكس شخصيتك الحقيقية',
-                'notes': {
-                    'top': ['البرغموت', 'الفلفل الوردي'],
-                    'heart': ['الورد', 'العنبر'],
-                    'base': ['خشب الصندل', 'المسك الأبيض']
-                },
-                'wearing_guide': {
-                    'occasion': 'كل يوم - عطرك الدائم',
-                    'application': 'رش على نقاط النبض صباحاً',
-                    'layering': 'يمكن دمجه مع عطر مسائي أقوى'
-                },
-                'uniqueness': 'هذا العطر صُمم خصيصاً ليكون هويتك العطرية التي لا تُنسى'
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

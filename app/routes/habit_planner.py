@@ -24,26 +24,30 @@ def analyze():
     
     قدم خطة 7 أيام وخطة شهرية."""
     
+    default_analysis = {
+        'weekly_plan': {
+            'السبت': {'perfume': 'Dior Sauvage', 'reason': 'بداية الأسبوع بنشاط'},
+            'الأحد': {'perfume': 'Bleu de Chanel', 'reason': 'احترافي للعمل'},
+            'الإثنين': {'perfume': 'Versace Dylan Blue', 'reason': 'منعش ونظيف'},
+            'الثلاثاء': {'perfume': 'Prada L\'Homme', 'reason': 'أنيق وهادئ'},
+            'الأربعاء': {'perfume': 'YSL Y EDP', 'reason': 'منتصف الأسبوع بقوة'},
+            'الخميس': {'perfume': 'Chanel Allure', 'reason': 'تحضير لعطلة الأسبوع'},
+            'الجمعة': {'perfume': 'Tom Ford Oud Wood', 'reason': 'فاخر ليوم الإجازة'}
+        },
+        'monthly_tips': [
+            'بدّل بين 3-4 عطور لتجنب التعود',
+            'خصص عطراً للمناسبات الخاصة',
+            'احتفظ بعطر خفيف للصيف وقوي للشتاء'
+        ]
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({'success': True, 'analysis': response})
+        if isinstance(response, dict) and 'weekly_plan' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
     except:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'weekly_plan': {
-                    'السبت': {'perfume': 'Dior Sauvage', 'reason': 'بداية الأسبوع بنشاط'},
-                    'الأحد': {'perfume': 'Bleu de Chanel', 'reason': 'احترافي للعمل'},
-                    'الإثنين': {'perfume': 'Versace Dylan Blue', 'reason': 'منعش ونظيف'},
-                    'الثلاثاء': {'perfume': 'Prada L\'Homme', 'reason': 'أنيق وهادئ'},
-                    'الأربعاء': {'perfume': 'YSL Y EDP', 'reason': 'منتصف الأسبوع بقوة'},
-                    'الخميس': {'perfume': 'Chanel Allure', 'reason': 'تحضير لعطلة الأسبوع'},
-                    'الجمعة': {'perfume': 'Tom Ford Oud Wood', 'reason': 'فاخر ليوم الإجازة'}
-                },
-                'monthly_tips': [
-                    'بدّل بين 3-4 عطور لتجنب التعود',
-                    'خصص عطراً للمناسبات الخاصة',
-                    'احتفظ بعطر خفيف للصيف وقوي للشتاء'
-                ]
-            }
-        })
+        analysis = default_analysis
+    
+    return jsonify({'success': True, 'analysis': analysis})

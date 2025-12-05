@@ -5,6 +5,7 @@ PERLOV is a premium perfume discovery platform built with Flask that offers:
 - Scent DNA Analysis - Discover your unique fragrance personality
 - Custom Perfume Creator - Design personalized perfumes with AI
 - AI Recommendations - Get perfume suggestions with affiliate links
+- 18 Comprehensive Perfume Analysis Modules
 
 ## Tech Stack
 - **Backend**: Python 3.11, Flask, SQLAlchemy, Flask-Login
@@ -15,19 +16,35 @@ PERLOV is a premium perfume discovery platform built with Flask that offers:
 ## Project Structure
 ```
 app/
-├── __init__.py         # Flask app factory
+├── __init__.py         # Flask app factory with all blueprint registrations
 ├── models.py           # SQLAlchemy models (User, ScentDNA, CustomPerfume, etc.)
-├── ai_service.py       # OpenAI integration
+├── ai_service.py       # OpenAI integration with get_ai_response helper
 ├── seed_data.py        # Affiliate product seeds & admin user
-├── routes/             # Blueprint routes
+├── routes/             # Blueprint routes (18+ modules)
 │   ├── auth.py         # Login/Register
 │   ├── main.py         # Home & modules
 │   ├── admin.py        # Admin dashboard & user management
 │   ├── scent_dna.py    # Scent DNA analyzer
 │   ├── custom_perfume.py # Custom perfume designer
 │   ├── recommendations.py # AI recommendations
-│   └── dashboard.py    # User dashboard
-├── templates/          # Jinja2 HTML templates
+│   ├── dashboard.py    # User dashboard
+│   ├── bio_scent.py    # Bio-Scent AI analyzer
+│   ├── skin_chemistry.py # Skin chemistry match
+│   ├── temp_volatility.py # Temperature volatility engine
+│   ├── metabolism.py   # Metabolism-based match
+│   ├── climate.py      # Climate-based recommendations
+│   ├── neuroscience.py # Olfactory neuroscience
+│   ├── stability.py    # Stability & diffusion analyzer
+│   ├── predictive.py   # Predictive scent engine
+│   ├── scent_personality.py # Personality builder
+│   ├── signature.py    # Signature scent builder
+│   ├── occasion.py     # Occasion-based perfume engine
+│   ├── habit_planner.py # Habit-based planner
+│   ├── digital_twin.py # Digital scent twin
+│   ├── adaptive.py     # Adaptive perfume engine
+│   ├── oil_mixer.py    # AI oil & notes mixer
+│   └── marketplace.py  # Scent marketplace
+├── templates/          # Jinja2 HTML templates (18+ module templates)
 └── static/
     ├── css/style.css   # Luxury styling
     └── images/         # Assets (logos, etc)
@@ -55,9 +72,42 @@ main.py                 # Entry point
 - Subtle shadows with color-matched opacity
 - Smooth hover animations & transitions
 
+## 18 Perfume Analysis Modules
+
+### Core Services
+1. **Scent DNA** (/scent-dna) - Discover unique fragrance personality
+2. **Custom Perfume** (/custom-perfume) - AI-designed personalized perfumes
+3. **AI Recommendations** (/recommendations) - Perfume suggestions with affiliate links
+
+### Biological Analysis
+4. **Bio-Scent AI** (/bio-scent) - Voice, skin, mood analysis
+5. **Skin Chemistry** (/skin-chemistry) - Perfume-skin compatibility
+6. **Temperature Volatility** (/temp-volatility) - Body heat & perfume evaporation
+7. **Metabolism Match** (/metabolism) - Activity-based recommendations
+
+### Environmental & Psychological
+8. **Climate Engine** (/climate) - Weather-based suggestions
+9. **Neuroscience** (/neuroscience) - Memory & emotion-scent connections
+10. **Stability Analyzer** (/stability) - Longevity & sillage measurement
+
+### AI Advanced Features
+11. **Predictive Engine** (/predictive) - Future perfume predictions
+12. **Scent Personality** (/scent-personality) - Complete fragrance identity
+13. **Signature Builder** (/signature) - Create your signature scent
+
+### Planning & Organization
+14. **Occasion Matcher** (/occasion) - Event-based recommendations
+15. **Habit Planner** (/habit-planner) - Weekly/monthly perfume schedules
+16. **Adaptive Engine** (/adaptive) - Real-time recommendations
+
+### Digital & Creative
+17. **Digital Twin** (/digital-twin) - Permanent digital scent identity
+18. **Oil Mixer** (/oil-mixer) - Custom note blending
+19. **Marketplace** (/marketplace) - Browse oils, notes, bottles
+
 ## Key Features Implemented
 
-### User Management System (Latest)
+### User Management System
 - **User Management Page** (/admin/users):
   - Search by name or email with live filtering
   - View user statistics (total, active, locked users)
@@ -86,7 +136,7 @@ main.py                 # Entry point
 - **RTL Arabic Interface** with Bootstrap 5
 - **Responsive Design** for all devices
 - **Hero Section** with tagline: "PERLOV منصة محبي العطور"
-- **Feature Cards** for modules (Scent DNA, Custom Perfume, Recommendations)
+- **Feature Cards** for all 18 modules organized by category
 - **Luxury Footer** with links and copyright
 
 ## Running the App
@@ -108,11 +158,15 @@ python main.py
 - **Database**: Seeding only in development (not production)
 
 ## Recent Changes (Dec 5, 2025)
+- Added 18 comprehensive perfume analysis modules
+- Created 15 new route files with robust AI fallbacks
+- Created 15 new template directories with forms
+- Updated modules.html with categorized grid layout
+- Added get_ai_response() helper to ai_service.py
+- All modules have default fallback data for reliability
 - Changed brand name from "PERLOV.ai" to "PERLOV"
 - Updated tagline to "منصة محبي العطور" (Perfume Lovers Platform)
-- All PERLOV.ai references changed to PERLOV throughout app
 - Logo integration setup (custom logo in navbar)
-- Page title and footer updated with new branding
 - Deployment configuration validated and working
 
 ## User Preferences

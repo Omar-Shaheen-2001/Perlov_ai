@@ -34,23 +34,25 @@ def analyze():
     
     أجب بصيغة JSON."""
     
+    default_analysis = {
+        'suitable_perfumes': ['Chanel No. 5', 'Dior Sauvage', 'Tom Ford Oud Wood', 'Jo Malone Peony', 'Byredo Gypsy Water'],
+        'stability_level': 'جيد',
+        'avoid_ingredients': ['الكحول المركز', 'المسك الصناعي', 'البارابين'],
+        'recommendations': 'يُنصح باستخدام عطور ذات قاعدة خشبية لثبات أطول مع بشرتك'
+    }
+    
     try:
         response = get_ai_response(prompt)
-        return jsonify({
-            'success': True,
-            'analysis': response,
-            'skin_type': skin_type,
-            'sensitivity': sensitivity
-        })
-    except Exception as e:
-        return jsonify({
-            'success': True,
-            'analysis': {
-                'suitable_perfumes': ['Chanel No. 5', 'Dior Sauvage', 'Tom Ford Oud Wood', 'Jo Malone Peony', 'Byredo Gypsy Water'],
-                'stability_level': 'جيد',
-                'avoid_ingredients': ['الكحول المركز', 'المسك الصناعي', 'البارابين'],
-                'recommendations': 'يُنصح باستخدام عطور ذات قاعدة خشبية لثبات أطول مع بشرتك'
-            },
-            'skin_type': skin_type,
-            'sensitivity': sensitivity
-        })
+        if isinstance(response, dict) and 'suitable_perfumes' in response:
+            analysis = response
+        else:
+            analysis = default_analysis
+    except:
+        analysis = default_analysis
+    
+    return jsonify({
+        'success': True,
+        'analysis': analysis,
+        'skin_type': skin_type,
+        'sensitivity': sensitivity
+    })
