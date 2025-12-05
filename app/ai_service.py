@@ -1,6 +1,7 @@
 import json
 import os
 from openai import OpenAI
+from flask_login import current_user
 
 AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
@@ -9,6 +10,51 @@ client = OpenAI(
     api_key=AI_INTEGRATIONS_OPENAI_API_KEY,
     base_url=AI_INTEGRATIONS_OPENAI_BASE_URL
 )
+
+MODULE_INFO = {
+    'bio_scent': {'name_ar': 'Bio-Scent AI', 'icon': 'bi-soundwave'},
+    'skin_chemistry': {'name_ar': 'كيمياء البشرة', 'icon': 'bi-droplet'},
+    'temp_volatility': {'name_ar': 'التطاير الحراري', 'icon': 'bi-thermometer-half'},
+    'metabolism': {'name_ar': 'التمثيل الغذائي', 'icon': 'bi-activity'},
+    'climate': {'name_ar': 'محرك المناخ', 'icon': 'bi-cloud-sun'},
+    'neuroscience': {'name_ar': 'علم الأعصاب', 'icon': 'bi-brain'},
+    'stability': {'name_ar': 'الثبات والانتشار', 'icon': 'bi-clock-history'},
+    'predictive': {'name_ar': 'الذكاء التنبّؤي', 'icon': 'bi-magic'},
+    'scent_personality': {'name_ar': 'الشخصية العطرية', 'icon': 'bi-person-badge'},
+    'signature': {'name_ar': 'العطر التوقيعي', 'icon': 'bi-pen'},
+    'occasion': {'name_ar': 'عطر لكل مناسبة', 'icon': 'bi-calendar-event'},
+    'habit_planner': {'name_ar': 'الخطة العطرية', 'icon': 'bi-calendar-check'},
+    'digital_twin': {'name_ar': 'التوأم الرقمي', 'icon': 'bi-person-bounding-box'},
+    'adaptive': {'name_ar': 'العطر التكيّفي', 'icon': 'bi-arrow-repeat'},
+    'oil_mixer': {'name_ar': 'مازج الزيوت', 'icon': 'bi-shuffle'},
+    'scent_dna': {'name_ar': 'Scent DNA', 'icon': 'bi-fingerprint'},
+    'custom_perfume': {'name_ar': 'تصميم عطر', 'icon': 'bi-palette'},
+    'recommendations': {'name_ar': 'توصيات العطور', 'icon': 'bi-stars'}
+}
+
+def save_analysis_result(module_type, input_data, result_data):
+    """Save analysis result to database for the current user."""
+    from app import db
+    from app.models import AnalysisResult
+    
+    if not current_user.is_authenticated:
+        return None
+    
+    module_info = MODULE_INFO.get(module_type, {'name_ar': module_type, 'icon': 'bi-star'})
+    
+    analysis = AnalysisResult(
+        user_id=current_user.id,
+        module_type=module_type,
+        module_name_ar=module_info['name_ar'],
+        module_icon=module_info['icon'],
+        input_data=json.dumps(input_data, ensure_ascii=False) if input_data else None,
+        result_data=json.dumps(result_data, ensure_ascii=False) if result_data else None
+    )
+    
+    db.session.add(analysis)
+    db.session.commit()
+    
+    return analysis.id
 
 def parse_ai_response(content):
     """Safely parse AI response content, handling None and malformed JSON."""
