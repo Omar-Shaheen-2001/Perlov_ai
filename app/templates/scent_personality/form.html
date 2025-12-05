@@ -4,24 +4,291 @@
 <div class="page-header text-center">
     <div class="container">
         <h1>بناء الشخصية العطرية</h1>
-        <p class="opacity-75">إنشاء شخصية عطريّة كاملة بناءً على حمضك العطري</p>
+        <p class="opacity-75">كتشف هويتك العطرية الكاملة من خلال 6 مراحل تحليل شاملة</p>
     </div>
 </div>
 <div class="container py-5">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-10 offset-md-1">
             <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
-                <div class="card-body p-4">
+                <div class="card-body p-5">
                     <div id="inputs-section">
-                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <h2 class="fw-bold mb-5 text-center">استكشف شخصيتك العطرية</h2>
                         <form id="analysis-form">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-fingerprint me-2"></i>نتيجة Scent DNA</label>
-                                <textarea class="form-control rounded-3" id="scent_dna_result" rows="4" placeholder="أدخل نتيجة تحليل الحمض العطري الخاص بك أو صف تفضيلاتك العطرية..." required></textarea>
+                            <!-- 1. البيانات الأساسية -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2" style="color: #B37A94;"></i>البيانات الأساسية</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">العمر</label>
+                                        <select class="form-select rounded-3" id="age" required>
+                                            <option value="">اختر فئتك العمرية</option>
+                                            <option value="18-25">18 - 25 سنة</option>
+                                            <option value="26-35">26 - 35 سنة</option>
+                                            <option value="36-45">36 - 45 سنة</option>
+                                            <option value="46-55">46 - 55 سنة</option>
+                                            <option value="56+">56 سنة فأكثر</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">الجنس</label>
+                                        <select class="form-select rounded-3" id="gender" required>
+                                            <option value="">اختر الجنس</option>
+                                            <option value="نسائي">نسائي</option>
+                                            <option value="رجالي">رجالي</option>
+                                            <option value="للجنسين">للجنسين</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">أسلوب الحياة</label>
+                                        <select class="form-select rounded-3" id="lifestyle" required>
+                                            <option value="">اختر أسلوب حياتك</option>
+                                            <option value="عملي">عملي</option>
+                                            <option value="رومانسي">رومانسي</option>
+                                            <option value="مغامر">مغامر</option>
+                                            <option value="كلاسيكي">كلاسيكي</option>
+                                            <option value="هادئ">هادئ</option>
+                                            <option value="اجتماعي">اجتماعي</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">نوع الشخصية</label>
+                                        <select class="form-select rounded-3" id="personality" required>
+                                            <option value="">اختر نوع شخصيتك</option>
+                                            <option value="جذاب / أنيق / غامض">جذاب / أنيق / غامض</option>
+                                            <option value="جريء / قوي / طموح">جريء / قوي / طموح</option>
+                                            <option value="عاطفي / حساس / ناعم">عاطفي / حساس / ناعم</option>
+                                            <option value="هادئ / راقٍ / متزن">هادئ / راقٍ / متزن</option>
+                                            <option value="حيوي / رياضي / نشيط">حيوي / رياضي / نشيط</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-center">
+
+                            <!-- 2. تفضيلات العطور الأساسية -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-flower1 me-2" style="color: #D9A35F;"></i>تفضيلات العطور الأساسية</h4>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">الروائح المفضلة (يمكنك اختيار أكثر من واحدة)</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="حمضيات"> حمضيات</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="فانيلا"> فانيلا</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="عنبر"> عنبر</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="أخشاب"> أخشاب</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="مسك"> مسك</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="ورد"> ورد</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="عود"> عود</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="فواكه"> فواكه</label>
+                                            <label class="form-check"><input type="checkbox" class="form-check-input" name="liked_scents" value="توابل"> توابل</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">الروائح المكروهة</label>
+                                        <textarea class="form-control rounded-3" id="disliked_scents" rows="2" placeholder="اذكر الروائح التي تفضل تجنبها..."></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">درجة القوة المرغوبة</label>
+                                        <select class="form-select rounded-3" id="strength" required>
+                                            <option value="">اختر درجة القوة</option>
+                                            <option value="خفيف">خفيف</option>
+                                            <option value="متوسط">متوسط</option>
+                                            <option value="قوي">قوي</option>
+                                            <option value="فواح جدًا">فواح جدًا</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">الثبات المفضل</label>
+                                        <select class="form-select rounded-3" id="longevity" required>
+                                            <option value="">اختر الثبات</option>
+                                            <option value="يدوم لساعات">يدوم لساعات</option>
+                                            <option value="يدوم طوال اليوم">يدوم طوال اليوم</option>
+                                            <option value="ثبات منخفض">ثبات منخفض</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. المدخلات البيئية والجسدية -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-cloud-sun me-2" style="color: #E9C9D3;"></i>المدخلات البيئية والجسدية</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">نوع البشرة</label>
+                                        <select class="form-select rounded-3" id="skin_type" required>
+                                            <option value="">اختر نوع بشرتك</option>
+                                            <option value="جافة">جافة</option>
+                                            <option value="دهنية">دهنية</option>
+                                            <option value="مختلطة">مختلطة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">حرارة الجسم</label>
+                                        <select class="form-select rounded-3" id="body_temperature" required>
+                                            <option value="">اختر</option>
+                                            <option value="باردة">باردة</option>
+                                            <option value="معتدلة">معتدلة</option>
+                                            <option value="دافئة">دافئة</option>
+                                            <option value="شديدة الدفء">شديدة الدفء</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">المناخ الذي تعيش فيه</label>
+                                        <select class="form-select rounded-3" id="climate" required>
+                                            <option value="">اختر نوع المناخ</option>
+                                            <option value="حار">حار</option>
+                                            <option value="رطب">رطب</option>
+                                            <option value="بارد">بارد</option>
+                                            <option value="صحراوي">صحراوي</option>
+                                            <option value="ساحلي">ساحلي</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">مناسبات الاستخدام (يمكنك اختيار أكثر من واحدة)</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="يومي"> يومي</label>
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="عمل"> عمل</label>
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="سفر"> سفر</label>
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="زواج"> زواج</label>
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="سهرة"> سهرة</label>
+                                            <label class="form-check"><input type="checkbox" name="occasions" value="رياضة"> رياضة</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. المدخلات النفسية والعاطفية -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-heart-pulse me-2" style="color: #B37A94;"></i>المدخلات النفسية والعاطفية</h4>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">ماذا تريد أن يعكس عطرك عن شخصيتك؟ (يمكنك اختيار أكثر من واحد)</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الأنوثة"> الأنوثة</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الرجولة"> الرجولة</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الفخامة"> الفخامة</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الغموض"> الغموض</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الثقة"> الثقة</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الجاذبية"> الجاذبية</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="النعومة"> النعومة</label>
+                                            <label class="form-check"><input type="checkbox" name="persona" value="الحيوية"> الحيوية</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">الألوان المفضلة لديك</label>
+                                        <select class="form-select rounded-3" id="color_preference" required>
+                                            <option value="">اختر اللون</option>
+                                            <option value="وردي">وردي - ناعم زهري</option>
+                                            <option value="ذهبي">ذهبي - عنبري فاخر</option>
+                                            <option value="أسود">أسود - قوي وغامض</option>
+                                            <option value="أخضر">أخضر - عطر نقي منعش</option>
+                                            <option value="فضي">فضي - عصري براق</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">المشاعر المرتبطة بالعطر (يمكنك اختيار أكثر من واحد)</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الهدوء"> الهدوء</label>
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الإلهام"> الإلهام</label>
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الطاقة"> الطاقة</label>
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الجاذبية"> الجاذبية</label>
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الراحة"> الراحة</label>
+                                            <label class="form-check"><input type="checkbox" name="emotions" value="الفرح"> الفرح</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">الروائح التي تثير ذكريات إيجابية لديك</label>
+                                        <textarea class="form-control rounded-3" id="positive_memories" rows="2" placeholder="مثال: رائحة البحر، رائحة الورد، رائحة العود..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. المدخلات السلوكية -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-graph-up me-2" style="color: #D9A35F;"></i>المدخلات السلوكية</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">نمط تفاعلك مع الروائح</label>
+                                        <select class="form-select rounded-3" id="scent_behavior" required>
+                                            <option value="">اختر</option>
+                                            <option value="أحب الروائح القوية">أحب الروائح القوية</option>
+                                            <option value="أتضايق من الروائح الثقيلة">أتضايق من الروائح الثقيلة</option>
+                                            <option value="أفضل روائح دائمة">أفضل روائح دائمة</option>
+                                            <option value="أحب أن تتغير الروائح بسرعة">أحب أن تتغير الروائح بسرعة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">معدل استخدام العطر</label>
+                                        <select class="form-select rounded-3" id="usage_frequency" required>
+                                            <option value="">اختر</option>
+                                            <option value="مرة يوميًا">مرة يوميًا</option>
+                                            <option value="أكثر من مرة">أكثر من مرة</option>
+                                            <option value="فقط للمناسبات">فقط للمناسبات</option>
+                                            <option value="طوال اليوم">طوال اليوم</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">الميزانية المخصصة للعطر</label>
+                                        <select class="form-select rounded-3" id="budget" required>
+                                            <option value="">اختر</option>
+                                            <option value="اقتصادية">اقتصادية</option>
+                                            <option value="متوسطة">متوسطة</option>
+                                            <option value="فخمة">فخمة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">العطور التي جربتها وأحببتها</label>
+                                        <textarea class="form-control rounded-3" id="liked_perfumes" rows="2" placeholder="أذكر أسماء العطور التي أعجبتك..."></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">العطور التي لم تعجبك</label>
+                                        <textarea class="form-control rounded-3" id="disliked_perfumes" rows="2" placeholder="أذكر أسماء العطور التي لم تعجبك..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 6. مدخلات Bio-Scent (اختيارية) -->
+                            <div class="section-divider mb-5">
+                                <h4 class="fw-bold mb-4"><i class="bi bi-mic me-2" style="color: #E9C9D3;"></i>مدخلات Bio-Scent (اختيارية)</h4>
+                                <p class="text-muted small mb-3">هذه المدخلات اختيارية لكنها تعزز دقة التحليل</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">نبرة صوتك</label>
+                                        <select class="form-select rounded-3" id="voice_tone">
+                                            <option value="">اختر</option>
+                                            <option value="هادئة وناعمة">هادئة وناعمة</option>
+                                            <option value="قوية وجريئة">قوية وجريئة</option>
+                                            <option value="دافئة وحنونة">دافئة وحنونة</option>
+                                            <option value="عالية الطاقة">عالية الطاقة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">جودة الجلد</label>
+                                        <select class="form-select rounded-3" id="skin_quality">
+                                            <option value="">اختر</option>
+                                            <option value="صافي ومتوهج">صافي ومتوهج</option>
+                                            <option value="ناعم وحريري">ناعم وحريري</option>
+                                            <option value="حساس">حساس</option>
+                                            <option value="متوازن">متوازن</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">حالتك المزاجية الحالية</label>
+                                        <select class="form-select rounded-3" id="current_mood">
+                                            <option value="">اختر</option>
+                                            <option value="هادئ">هادئ</option>
+                                            <option value="متحمس">متحمس</option>
+                                            <option value="رومانسي">رومانسي</option>
+                                            <option value="رسمي واحترافي">رسمي واحترافي</option>
+                                            <option value="مرح ومرتاح">مرح ومرتاح</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-5">
                                 <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
-                                    <i class="bi bi-person-badge me-2"></i>اكشف شخصيتك
+                                    <i class="bi bi-person-badge me-2"></i>اكتشف شخصيتك العطرية
                                 </button>
                             </div>
                         </form>
@@ -40,15 +307,73 @@
         </div>
     </div>
 </div>
+<style>
+.section-divider {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(179, 122, 148, 0.15);
+}
+.section-divider:last-of-type {
+    border-bottom: none;
+}
+</style>
 <script>
 document.getElementById('analyze-btn').addEventListener('click', function() {
     const btn = this;
-    const data = { scent_dna_result: document.getElementById('scent_dna_result').value };
+    
+    // Collect all form data
+    const formData = {
+        basic: {
+            age: document.getElementById('age').value,
+            gender: document.getElementById('gender').value,
+            lifestyle: document.getElementById('lifestyle').value,
+            personality: document.getElementById('personality').value
+        },
+        preferences: {
+            liked_scents: Array.from(document.querySelectorAll('input[name="liked_scents"]:checked')).map(el => el.value),
+            disliked_scents: document.getElementById('disliked_scents').value,
+            strength: document.getElementById('strength').value,
+            longevity: document.getElementById('longevity').value
+        },
+        environmental: {
+            skin_type: document.getElementById('skin_type').value,
+            body_temperature: document.getElementById('body_temperature').value,
+            climate: document.getElementById('climate').value,
+            occasions: Array.from(document.querySelectorAll('input[name="occasions"]:checked')).map(el => el.value)
+        },
+        emotional: {
+            persona: Array.from(document.querySelectorAll('input[name="persona"]:checked')).map(el => el.value),
+            color_preference: document.getElementById('color_preference').value,
+            emotions: Array.from(document.querySelectorAll('input[name="emotions"]:checked')).map(el => el.value),
+            positive_memories: document.getElementById('positive_memories').value
+        },
+        behavioral: {
+            scent_behavior: document.getElementById('scent_behavior').value,
+            usage_frequency: document.getElementById('usage_frequency').value,
+            budget: document.getElementById('budget').value,
+            liked_perfumes: document.getElementById('liked_perfumes').value,
+            disliked_perfumes: document.getElementById('disliked_perfumes').value
+        },
+        bio_scent: {
+            voice_tone: document.getElementById('voice_tone').value,
+            skin_quality: document.getElementById('skin_quality').value,
+            current_mood: document.getElementById('current_mood').value
+        }
+    };
+    
+    // Validate required fields
+    if (!formData.basic.age || !formData.basic.gender || !formData.basic.lifestyle || !formData.basic.personality ||
+        !formData.preferences.strength || !formData.preferences.longevity ||
+        !formData.environmental.skin_type || !formData.environmental.body_temperature || !formData.environmental.climate ||
+        !formData.behavioral.scent_behavior || !formData.behavioral.usage_frequency || !formData.behavioral.budget) {
+        showError('يرجى ملء جميع الحقول المطلوبة');
+        return;
+    }
+    
     showLoading(btn);
     fetch('{{ url_for("scent_personality.analyze") }}', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
     })
     .then(r => r.json())
     .then(result => {
