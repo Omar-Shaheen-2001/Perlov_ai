@@ -379,7 +379,40 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     .then(result => {
         hideLoading(btn);
         const a = result.analysis;
+        const perfume = a.recommended_perfume;
+        const perfumeHTML = perfume ? `
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.4) 0%, rgba(217, 163, 95, 0.3) 100%); border: 2px solid #B37A94;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-gem me-2" style="color: #D9A35F;"></i>عطرك المقترح</h5>
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-8">
+                            <h6 class="fw-bold mb-1">${perfume.name}</h6>
+                            <p class="text-muted small mb-2">${perfume.brand}</p>
+                            <p class="mb-2">${perfume.description}</p>
+                            <div class="mb-2">
+                                <small class="badge bg-light text-dark me-2">${perfume.concentration}</small>
+                                <small class="badge bg-light text-dark me-2">${perfume.size}</small>
+                                <small class="badge bg-light text-dark">${perfume.category}</small>
+                            </div>
+                            <p class="mb-2"><strong>النوتات الرئيسية:</strong> <small>${perfume.main_notes}</small></p>
+                            <p class="mb-0"><strong>السعر:</strong> <span style="color: #D9A35F; font-weight: bold;">${perfume.price}</span></p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div style="font-size: 48px; margin-bottom: 10px;">${perfume.image_placeholder}</div>
+                            <div class="mb-2">
+                                <small><i class="bi bi-star-fill" style="color: #FFB84D;"></i> ${perfume.rating || 'N/A'}</small>
+                            </div>
+                            <a href="${perfume.store_url}" target="_blank" class="btn btn-gradient btn-sm rounded-pill w-100">
+                                <i class="bi bi-bag-heart me-1"></i>اشتري الآن
+                            </a>
+                            <p class="text-muted small mt-2">من ${perfume.store_name}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ` : '';
         document.getElementById('results-content').innerHTML = `
+            ${perfumeHTML}
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
                 <div class="card-body text-center"><h5 class="fw-bold"><i class="bi bi-person-heart me-2"></i>وصف الشخصية</h5><p class="mb-0 fs-5">${a.personality_description}</p></div>
             </div>

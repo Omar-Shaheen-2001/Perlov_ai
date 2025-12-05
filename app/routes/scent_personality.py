@@ -2,8 +2,87 @@ from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.ai_service import get_ai_response, save_analysis_result
+from app.real_products import REAL_PERFUME_PRODUCTS
 
 scent_personality_bp = Blueprint('scent_personality', __name__, url_prefix='/scent-personality')
+
+def recommend_perfume(data):
+    """اختر العطر الأنسب بناءً على بيانات الشخصية"""
+    basic = data.get('basic', {})
+    preferences = data.get('preferences', {})
+    emotional = data.get('emotional', {})
+    behavioral = data.get('behavioral', {})
+    
+    gender = basic.get('gender', 'للجنسين')
+    personality = basic.get('personality', '')
+    strength = preferences.get('strength', '')
+    liked_scents = preferences.get('liked_scents', [])
+    color = emotional.get('color_preference', '')
+    budget = behavioral.get('budget', '')
+    
+    category_map = {
+        'نسائي': 'عطور نسائية',
+        'رجالي': 'عطور رجالية',
+        'للجنسين': None
+    }
+    
+    price_budget = {
+        'اقتصادية': (0, 100),
+        'متوسطة': (100, 200),
+        'فخمة': (200, 400)
+    }
+    
+    preferred_category = category_map.get(gender)
+    budget_range = price_budget.get(budget, (0, 300))
+    
+    scored_perfumes = []
+    
+    for idx, perfume in enumerate(REAL_PERFUME_PRODUCTS):
+        score = 0
+        
+        if preferred_category and perfume['category'] == preferred_category:
+            score += 20
+        elif perfume['category'] == 'عطور يونيسكس':
+            score += 10
+        
+        if perfume['rating'] and perfume['rating'] >= 4.7:
+            score += 15
+        
+        for scent in liked_scents:
+            if scent.lower() in perfume['main_notes'].lower():
+                score += 10
+        
+        if color == 'وردي' and any(x in perfume['keywords'] for x in ['نسائي', 'زهري']):
+            score += 8
+        elif color == 'ذهبي' and any(x in perfume['keywords'] for x in ['عنبري', 'دافئ', 'فاخر']):
+            score += 8
+        elif color == 'أسود' and any(x in perfume['keywords'] for x in ['غامض', 'قوي', 'شرقي']):
+            score += 8
+        elif color == 'أخضر' and any(x in perfume['keywords'] for x in ['منعش', 'حمضي']):
+            score += 8
+        
+        price_val = int(perfume['price'].replace('$', '').replace(',', ''))
+        if budget_range[0] <= price_val <= budget_range[1]:
+            score += 12
+        
+        if perfume['category'] in ['عطور نسائية', 'عطور رجالية', 'عطور يونيسكس']:
+            if score > 0:
+                scored_perfumes.append({
+                    'index': idx,
+                    'score': score,
+                    'perfume': perfume
+                })
+    
+    if scored_perfumes:
+        scored_perfumes.sort(key=lambda x: x['score'], reverse=True)
+        top_perfume = scored_perfumes[0]['perfume']
+        return top_perfume
+    
+    fallback_perfumes = [p for p in REAL_PERFUME_PRODUCTS if preferred_category and p['category'] == preferred_category]
+    if fallback_perfumes:
+        return max(fallback_perfumes, key=lambda x: x['rating'] if x['rating'] else 0)
+    
+    return max(REAL_PERFUME_PRODUCTS, key=lambda x: x['rating'] if x['rating'] else 0)
 
 @scent_personality_bp.route('/form')
 @login_required
@@ -93,6 +172,13 @@ Bio-Scent:
             analysis = default_analysis
     except:
         analysis = default_analysis
+    
+    # اختر العطر المقترح
+    try:
+        recommended = recommend_perfume(data)
+        analysis['recommended_perfume'] = recommended
+    except:
+        analysis['recommended_perfume'] = None
     
     save_analysis_result('scent_personality', data, analysis)
     
