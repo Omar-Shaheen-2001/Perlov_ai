@@ -12,12 +12,12 @@ client = OpenAI(
 )
 
 MODULE_INFO = {
-    'bio_scent': {'name_ar': 'Bio-Scent AI', 'icon': 'bi-soundwave'},
+    'bio_scent': {'name_ar': 'تحليل الرائحة الحيوية', 'icon': 'bi-soundwave'},
     'skin_chemistry': {'name_ar': 'كيمياء البشرة', 'icon': 'bi-droplet'},
     'temp_volatility': {'name_ar': 'التطاير الحراري', 'icon': 'bi-thermometer-half'},
     'metabolism': {'name_ar': 'التمثيل الغذائي', 'icon': 'bi-activity'},
     'climate': {'name_ar': 'محرك المناخ', 'icon': 'bi-cloud-sun'},
-    'neuroscience': {'name_ar': 'علم الأعصاب', 'icon': 'bi-brain'},
+    'neuroscience': {'name_ar': 'علم الأعصاب العطري', 'icon': 'bi-brain'},
     'stability': {'name_ar': 'الثبات والانتشار', 'icon': 'bi-clock-history'},
     'predictive': {'name_ar': 'الذكاء التنبّؤي', 'icon': 'bi-magic'},
     'scent_personality': {'name_ar': 'الشخصية العطرية', 'icon': 'bi-person-badge'},
@@ -27,8 +27,8 @@ MODULE_INFO = {
     'digital_twin': {'name_ar': 'التوأم الرقمي', 'icon': 'bi-person-bounding-box'},
     'adaptive': {'name_ar': 'العطر التكيّفي', 'icon': 'bi-arrow-repeat'},
     'oil_mixer': {'name_ar': 'مازج الزيوت', 'icon': 'bi-shuffle'},
-    'scent_dna': {'name_ar': 'Scent DNA', 'icon': 'bi-fingerprint'},
-    'custom_perfume': {'name_ar': 'تصميم عطر', 'icon': 'bi-palette'},
+    'scent_dna': {'name_ar': 'بصمة الرائحة', 'icon': 'bi-fingerprint'},
+    'custom_perfume': {'name_ar': 'تصميم عطر مخصص', 'icon': 'bi-palette'},
     'recommendations': {'name_ar': 'توصيات العطور', 'icon': 'bi-stars'}
 }
 

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}تفاصيل التحليل - {{ analysis.module_name_ar }}{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1><i class="bi {{ analysis.module_icon or 'bi-star' }} me-2"></i> {{ analysis.module_name_ar }}</h1>
+        <p class="opacity-75">{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="dashboard-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="analysis-icon me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #E9C9D3, #B37A94); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi {{ analysis.module_icon or 'bi-star' }} text-white fs-3"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 fw-bold">{{ analysis.module_name_ar }}</h3>
+                        <small class="text-muted">{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                </div>
+                
+                {% if result_data %}
+                <div class="bg-light rounded-4 p-4 mb-4">
+                    <h5 class="fw-bold mb-3" style="color: #B37A94;">
+                        <i class="bi bi-clipboard-data me-2"></i>نتائج التحليل
+                    </h5>
+                    <div class="result-container" id="resultContainer">
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="text-center">
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-gradient">
+                        <i class="bi bi-arrow-right me-1"></i> العودة للوحة التحكم
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const resultData = {{ result_data | tojson | safe if result_data else '{}' }};
+
+function renderJsonData(data) {
+    if (typeof data === 'string') {
+        return `<p>${data}</p>`;
+    }
+    
+    if (Array.isArray(data)) {
+        return '<ul class="list-unstyled mb-0">' + data.map(item => {
+            if (typeof item === 'object') {
+                return '<li class="mb-2 p-3 bg-white rounded-3 shadow-sm">' + renderJsonData(item) + '</li>';
+            }
+            return `<li class="mb-1"><i class="bi bi-check2 me-2" style="color: #B37A94;"></i>${item}</li>`;
+        }).join('') + '</ul>';
+    }
+    
+    if (typeof data === 'object' && data !== null) {
+        let html = '<div class="row g-3">';
+        for (const [key, value] of Object.entries(data)) {
+            if (typeof value === 'object' && value !== null) {
+                html += `<div class="col-12 mb-3">
+                    <h6 class="fw-bold mb-2" style="color: #1F1F1F;">${formatKey(key)}</h6>
+                    <div class="ps-3 border-start" style="border-color: #E9C9D3 !important; border-width: 3px !important;">${renderJsonData(value)}</div>
+                </div>`;
+            } else {
+                html += `<div class="col-md-6 col-12">
+                    <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                        <small class="text-muted d-block">${formatKey(key)}</small>
+                        <span class="fw-medium">${value || '-'}</span>
+                    </div>
+                </div>`;
+            }
+        }
+        html += '</div>';
+        return html;
+    }
+    
+    return `<span>${data}</span>`;
+}
+
+function formatKey(key) {
+    const translations = {
+        'suitable_perfumes': 'العطور المناسبة',
+        'stability_level': 'مستوى الثبات',
+        'avoid_ingredients': 'المكونات المتجنبة',
+        'recommendations': 'التوصيات',
+        'volatility_rate': 'معدل التطاير',
+        'hot_weather_stability': 'الثبات في الحر',
+        'cold_weather_stability': 'الثبات في البرد',
+        'best_time': 'أفضل وقت',
+        'recommended_concentration': 'التركيز المناسب',
+        'tips': 'نصائح',
+        'metabolism_type': 'نوع الأيض',
+        'strong_perfumes': 'العطور القوية',
+        'soft_perfumes': 'العطور الخفيفة',
+        'stability_factors': 'عوامل الثبات',
+        'recommendation': 'التوصية',
+        'summer_perfumes': 'عطور الصيف',
+        'winter_perfumes': 'عطور الشتاء',
+        'sillage_level': 'مستوى الفوحان',
+        'hot_weather_options': 'خيارات الحر',
+        'neural_profile': 'الملف العصبي',
+        'mood_recommendations': 'توصيات المزاج',
+        'emotional_notes': 'النوتات العاطفية',
+        'color_scent_match': 'تطابق اللون والرائحة',
+        'memory_triggers': 'محفزات الذاكرة',
+        'recommended_perfumes': 'العطور الموصى بها',
+        'stability_score': 'درجة الثبات',
+        'sillage_strength': 'قوة الفوحان',
+        'longevity_hours': 'ساعات الثبات',
+        'best_application': 'أفضل طريقة للرش',
+        'future_top5': 'أفضل 5 مستقبلية',
+        'taste_patterns': 'أنماط الذوق',
+        'evolution_analysis': 'تحليل التطور',
+        'next_purchase': 'الشراء القادم',
+        'personality_description': 'وصف الشخصية',
+        'strengths': 'نقاط القوة',
+        'scent_colors': 'ألوان العطر',
+        'mood_board': 'لوحة المزاج',
+        'identity_statement': 'بيان الهوية',
+        'signature_name': 'اسم العطر التوقيعي',
+        'description': 'الوصف',
+        'notes': 'النوتات',
+        'wearing_guide': 'دليل الارتداء',
+        'uniqueness': 'التفرد',
+        'perfumes': 'العطور',
+        'weekly_plan': 'الخطة الأسبوعية',
+        'monthly_tips': 'نصائح شهرية',
+        'digital_identity': 'الهوية الرقمية',
+        'permanent_record': 'السجل الدائم',
+        'auto_updates': 'التحديث التلقائي',
+        'last_updated': 'آخر تحديث',
+        'evolution_stage': 'مرحلة التطور',
+        'current_recommendation': 'التوصية الحالية',
+        'morning_perfume': 'عطر الصباح',
+        'evening_perfume': 'عطر المساء',
+        'adaptive_tips': 'نصائح تكيّفية',
+        'accord_name': 'اسم الأكورد',
+        'notes_used': 'النوتات المستخدمة',
+        'mixing_ratios': 'نسب المزج',
+        'layer_type': 'نوع الطبقة',
+        'compatibility': 'التوافق',
+        'name': 'الاسم',
+        'price': 'السعر',
+        'why': 'السبب',
+        'match': 'التطابق',
+        'category': 'الفئة',
+        'perfume': 'العطر',
+        'reason': 'السبب',
+        'type': 'النوع',
+        'best_for': 'الأفضل لـ',
+        'time_period': 'الفترة الزمنية',
+        'top': 'المقدمة',
+        'heart': 'القلب',
+        'base': 'القاعدة',
+        'occasion': 'المناسبة',
+        'application': 'الطريقة',
+        'layering': 'الطبقات',
+        'primary': 'أساسي',
+        'secondary': 'ثانوي',
+        'accent': 'لمسة',
+        'vibes': 'الأجواء',
+        'occasions': 'المناسبات',
+        'seasons': 'المواسم',
+        'time': 'الوقت',
+        'code': 'الكود',
+        'personality_type': 'نوع الشخصية',
+        'scent_family': 'عائلة العطر',
+        'favorite_notes': 'النوتات المفضلة',
+        'preferred_intensity': 'شدة التركيز',
+        'best_season': 'أفضل موسم',
+        'signature_accords': 'الأكوردات التوقيعية',
+        'happiness': 'السعادة',
+        'calm': 'الهدوء',
+        'energy': 'الطاقة',
+        'voice_analysis': 'تحليل الصوت',
+        'skin_analysis': 'تحليل البشرة',
+        'fragrance_predictions': 'توقعات العطور',
+        'sensitive_recommendations': 'توصيات للبشرة الحساسة',
+        'mood': 'المزاج',
+        'speech_speed': 'سرعة الكلام',
+        'tone_detected': 'النبرة المكتشفة',
+        'skin_type': 'نوع البشرة',
+        'sensitivity_level': 'مستوى الحساسية'
+    };
+    return translations[key] || key.replace(/_/g, ' ');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('resultContainer');
+    if (container && Object.keys(resultData).length > 0) {
+        container.innerHTML = renderJsonData(resultData);
+    } else if (container) {
+        container.innerHTML = '<p class="text-muted text-center">لا توجد بيانات للعرض</p>';
+    }
+});
+</script>
+{% endblock %}
