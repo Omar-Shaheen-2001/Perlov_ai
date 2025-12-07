@@ -13,82 +13,166 @@
             <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
                 <div class="card-body p-4">
                     <div id="inputs-section">
-                        <h2 class="fw-bold mb-4 text-center">مدخلات التحليل</h2>
+                        <h2 class="fw-bold mb-4 text-center">تحليل دقيق لكيمياء بشرتك</h2>
                         <form id="analysis-form">
-                            <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>نوع البشرة</label>
-                                <select class="form-select form-select-lg rounded-3" id="skin_type" required>
-                                    <option value="">اختر نوع بشرتك</option>
-                                    <option value="جافة">جافة</option>
-                                    <option value="دهنية">دهنية</option>
-                                    <option value="مختلطة">مختلطة</option>
-                                    <option value="عادية">عادية</option>
-                                </select>
+                            <!-- الصف الأول -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>نوع البشرة</label>
+                                    <select class="form-select form-select-lg rounded-3" id="skin_type" required>
+                                        <option value="">اختر نوع بشرتك</option>
+                                        <option value="جافة">جافة</option>
+                                        <option value="دهنية">دهنية</option>
+                                        <option value="مختلطة">مختلطة</option>
+                                        <option value="عادية">عادية</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-shield me-2"></i>حساسية البشرة</label>
+                                    <select class="form-select form-select-lg rounded-3" id="sensitivity" required>
+                                        <option value="">اختر مستوى الحساسية</option>
+                                        <option value="حساسة جداً">حساسة جداً</option>
+                                        <option value="حساسة">حساسة</option>
+                                        <option value="متوسطة">متوسطة</option>
+                                        <option value="غير حساسة">غير حساسة</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-shield me-2"></i>حساسية البشرة</label>
-                                <select class="form-select form-select-lg rounded-3" id="sensitivity" required>
-                                    <option value="">اختر مستوى الحساسية</option>
-                                    <option value="حساسة جداً">حساسة جداً</option>
-                                    <option value="حساسة">حساسة</option>
-                                    <option value="متوسطة">متوسطة</option>
-                                    <option value="غير حساسة">غير حساسة</option>
-                                </select>
+
+                            <!-- حرارة الجسم والمناطق الدهنية -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-thermometer me-2"></i>حرارة الجسم</label>
+                                    <select class="form-select form-select-lg rounded-3" id="body_temp">
+                                        <option value="باردة">باردة</option>
+                                        <option value="معتدلة" selected>معتدلة</option>
+                                        <option value="دافئة">دافئة</option>
+                                        <option value="حارة">حارة</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-circle-half me-2"></i>المناطق الدهنية</label>
+                                    <select class="form-select form-select-lg rounded-3" id="oily_areas">
+                                        <option value="">لا توجد مناطق دهنية</option>
+                                        <option value="الجبين">الجبين فقط</option>
+                                        <option value="الجبين والأنف">الجبين والأنف (T-Zone)</option>
+                                        <option value="الوجه كله">الوجه كله</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-thermometer me-2"></i>حرارة الجسم التقريبية</label>
-                                <select class="form-select form-select-lg rounded-3" id="body_temp">
-                                    <option value="باردة">باردة</option>
-                                    <option value="معتدلة" selected>معتدلة</option>
-                                    <option value="دافئة">دافئة</option>
-                                    <option value="حارة">حارة</option>
-                                </select>
+
+                            <!-- المناطق الجافة والتفاعلات -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-square me-2"></i>المناطق الجافة</label>
+                                    <select class="form-select form-select-lg rounded-3" id="dry_areas">
+                                        <option value="">لا توجد مناطق جافة</option>
+                                        <option value="الخدين">الخدين</option>
+                                        <option value="منطقة العيون">منطقة العيون</option>
+                                        <option value="مناطق متعددة">مناطق متعددة</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-exclamation-circle me-2"></i>تفاعلات سابقة</label>
+                                    <input type="text" class="form-control rounded-3 form-control-lg" id="reactions" placeholder="مثال: حكة، احمرار، تهيج">
+                                </div>
                             </div>
+
+                            <!-- العطور السابقة والتفضيلات -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold"><i class="bi bi-x-circle me-2"></i>عطور لم تثبت سابقاً</label>
-                                <textarea class="form-control rounded-3" id="failed_perfumes" rows="2" placeholder="اذكر العطور التي لم تدم طويلاً على بشرتك"></textarea>
+                                <label class="form-label fw-bold"><i class="bi bi-x-circle me-2"></i>عطور لم تثبت سابقاً أو سببت مشاكل</label>
+                                <textarea class="form-control rounded-3" id="failed_perfumes" rows="2" placeholder="مثال: Chanel No.5 (لم تدم طويلاً)، Dior J'adore (سبب حكة)"></textarea>
                             </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-heart me-2"></i>تفضيلات العطور المفضلة</label>
+                                <textarea class="form-control rounded-3" id="preferences" rows="2" placeholder="مثال: عطور شرقية، خشبية، زهرية فاتحة"></textarea>
+                            </div>
+
                             <div class="text-center">
                                 <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
-                                    <i class="bi bi-search me-2"></i>اكتشف التوافق
+                                    <i class="bi bi-flask me-2"></i>تحليل كيمياء البشرة
                                 </button>
                             </div>
                         </form>
                     </div>
                     <div id="results-section" class="d-none">
-                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل</h2>
+                        <h2 class="fw-bold mb-4 text-center">نتائج التحليل الدقيق لكيمياء بشرتك</h2>
+
+                        <!-- العطور المناسبة كيميائياً -->
                         <div class="mb-4">
-                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.15) 0%, rgba(242, 244, 248, 0.2) 100%);">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3"><i class="bi bi-check-circle text-success me-2"></i>العطور المناسبة كيميائياً</h5>
-                                    <div id="suitable-perfumes"></div>
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-check-circle-fill text-primary me-2"></i>العطور المناسبة كيميائياً</h5>
+                                    <div id="suitable-perfumes" style="max-height: 600px; overflow-y: auto;"></div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- تحليل الثبات -->
                         <div class="mb-4">
-                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 235, 130, 0.15) 100%);">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3"><i class="bi bi-clock text-warning me-2"></i>مستوى الثبات المتوقع</h5>
-                                    <p id="stability-level" class="fs-5 mb-0"></p>
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-hourglass-split text-warning me-2"></i>تحليل الثبات المتوقع</h5>
+                                    <div id="stability-analysis"></div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- الاعتبارات الكيميائية -->
                         <div class="mb-4">
-                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(255, 193, 193, 0.2) 100%);">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(255, 193, 193, 0.15) 100%);">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle text-danger me-2"></i>مكونات يجب تجنبها</h5>
-                                    <div id="avoid-ingredients"></div>
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-flask text-danger me-2"></i>الاعتبارات الكيميائية</h5>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold text-success mb-2">✓ المكونات الآمنة:</h6>
+                                        <div id="safe-ingredients" class="ms-2"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold text-danger mb-2">✕ المكونات المراد تجنبها:</h6>
+                                        <div id="avoid-ingredients" class="ms-2"></div>
+                                    </div>
+
+                                    <div>
+                                        <h6 class="fw-bold text-muted mb-2">📝 الأسباب العلمية:</h6>
+                                        <div id="why-avoid" class="ms-2"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- التوصيات التفصيلية -->
                         <div class="mb-4">
-                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
                                 <div class="card-body">
-                                    <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb text-primary me-2"></i>توصيات خاصة</h5>
-                                    <p id="recommendations" class="mb-0"></p>
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-success me-2"></i>التوصيات التفصيلية</h5>
+                                    <div id="detailed-recommendations"></div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- توافق العناية بالبشرة -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(103, 58, 183, 0.15) 0%, rgba(186, 104, 200, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-heart-fill text-info me-2"></i>توافق العناية بالبشرة</h5>
+                                    <p id="skincare-compatibility" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- نصائح التطبيق -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(165, 214, 167, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-check text-success me-2"></i>نصائح التطبيق الأمثل</h5>
+                                    <p id="application-tips" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
                                 <i class="bi bi-arrow-right me-2"></i>إعادة التحليل
@@ -107,12 +191,18 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         skin_type: document.getElementById('skin_type').value,
         sensitivity: document.getElementById('sensitivity').value,
         body_temp: document.getElementById('body_temp').value,
-        failed_perfumes: document.getElementById('failed_perfumes').value
+        oily_areas: document.getElementById('oily_areas').value,
+        dry_areas: document.getElementById('dry_areas').value,
+        reactions: document.getElementById('reactions').value,
+        failed_perfumes: document.getElementById('failed_perfumes').value,
+        preferences: document.getElementById('preferences').value
     };
+    
     if (!data.skin_type || !data.sensitivity) {
         showError('يرجى ملء جميع الحقول المطلوبة');
         return;
     }
+    
     showLoading(btn);
     fetch('{{ url_for("skin_chemistry.analyze") }}', {
         method: 'POST',
@@ -123,14 +213,83 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
     .then(result => {
         hideLoading(btn);
         const analysis = result.analysis;
-        document.getElementById('suitable-perfumes').innerHTML = analysis.suitable_perfumes.map(p => 
-            `<div class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>${p}</div>`
-        ).join('');
-        document.getElementById('stability-level').textContent = analysis.stability_level;
-        document.getElementById('avoid-ingredients').innerHTML = analysis.avoid_ingredients.map(i => 
-            `<span class="badge bg-danger me-2 mb-2">${i}</span>`
-        ).join('');
-        document.getElementById('recommendations').textContent = analysis.recommendations;
+        
+        // Display suitable perfumes with detailed info
+        if (analysis.suitable_perfumes && analysis.suitable_perfumes.length > 0) {
+            const perfumesHtml = analysis.suitable_perfumes.map((p, idx) => `
+                <div class="card rounded-3 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.05) 0%, rgba(242, 244, 248, 0.1) 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="fw-bold mb-1">${idx + 1}. ${p.name || 'عطر'}</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.9rem;">${p.brand || ''}</p>
+                            </div>
+                            <span class="badge bg-primary rounded-pill" style="background: linear-gradient(135deg, #0B2E8A 0%, #4F7DFF 100%) !important;">${p.compatibility || 0}%</span>
+                        </div>
+                        <p class="mb-2" style="font-size: 0.95rem;"><strong>العائلة:</strong> ${p.family || ''}</p>
+                        <p class="mb-2" style="font-size: 0.95rem;"><i class="bi bi-info-circle text-primary me-1"></i><strong>السبب العلمي:</strong> ${p.chemistry_reason || ''}</p>
+                        <p class="mb-0" style="font-size: 0.9rem;"><i class="bi bi-hourglass-split text-warning me-1"></i><strong>الثبات:</strong> ${p.longevity_hours || 0} ساعات</p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('suitable-perfumes').innerHTML = perfumesHtml;
+        }
+        
+        // Display stability analysis
+        if (analysis.stability_analysis) {
+            const stability = analysis.stability_analysis;
+            const stabilityHtml = `
+                <div class="mb-3">
+                    <p class="mb-2"><strong>مستوى الثبات:</strong> <span class="badge bg-warning">${stability.level || 'غير محدد'}</span></p>
+                    <p class="mb-2"><strong>المدة المتوقعة:</strong> ${stability.estimated_hours || 0} ساعات</p>
+                    <p class="mb-2"><strong>تأثير حرارة الجسم:</strong> ${stability.body_heat_effect || 'متوازن'}</p>
+                    <p class="mb-0"><strong>تأثير نوع البشرة:</strong> ${stability.skin_chemistry_effect || 'إيجابي'}</p>
+                </div>
+            `;
+            document.getElementById('stability-analysis').innerHTML = stabilityHtml;
+        }
+        
+        // Display chemical considerations
+        if (analysis.chemical_considerations) {
+            const chem = analysis.chemical_considerations;
+            
+            // Safe ingredients
+            const safeHtml = (chem.safe_ingredients || []).map(i => 
+                `<div class="mb-1"><i class="bi bi-check-circle text-success me-2"></i>${i}</div>`
+            ).join('') || '<p class="text-muted">لم تحدد</p>';
+            document.getElementById('safe-ingredients').innerHTML = safeHtml;
+            
+            // Avoid ingredients
+            const avoidHtml = (chem.avoid_ingredients || []).map(i => 
+                `<div class="mb-1"><span class="badge bg-danger me-2">${i}</span></div>`
+            ).join('') || '<p class="text-muted">لم تحدد</p>';
+            document.getElementById('avoid-ingredients').innerHTML = avoidHtml;
+            
+            // Why avoid
+            const whyHtml = (chem.why_avoid || []).map(r => 
+                `<div class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>${r}</div>`
+            ).join('') || '<p class="text-muted">لم تحدد</p>';
+            document.getElementById('why-avoid').innerHTML = whyHtml;
+        }
+        
+        // Display detailed recommendations
+        if (analysis.detailed_recommendations && Array.isArray(analysis.detailed_recommendations)) {
+            const recsHtml = analysis.detailed_recommendations.map(r => 
+                `<div class="mb-2"><i class="bi bi-lightbulb text-warning me-2"></i>${r}</div>`
+            ).join('');
+            document.getElementById('detailed-recommendations').innerHTML = recsHtml;
+        }
+        
+        // Display skincare compatibility
+        if (analysis.skincare_compatibility) {
+            document.getElementById('skincare-compatibility').innerHTML = `<i class="bi bi-heart text-info me-2"></i>${analysis.skincare_compatibility}`;
+        }
+        
+        // Display application tips
+        if (analysis.application_tips) {
+            document.getElementById('application-tips').innerHTML = `<i class="bi bi-bookmark-check text-success me-2"></i>${analysis.application_tips}`;
+        }
+        
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
         showSuccess('تم تحليل كيمياء بشرتك بنجاح!');
@@ -140,9 +299,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
+
 document.getElementById('back-btn').addEventListener('click', function() {
     document.getElementById('results-section').classList.add('d-none');
     document.getElementById('inputs-section').classList.remove('d-none');
+    document.getElementById('analysis-form').reset();
 });
 </script>
 {% endblock %}
