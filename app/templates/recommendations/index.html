@@ -61,17 +61,27 @@
                     <h5 class="fw-bold mb-3"><i class="bi bi-search text-primary me-2"></i>تحليل وصفك</h5>
                     {% set analysis = recommendations.get('scent_analysis', {}) %}
                     <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <strong>النوتات العليا:</strong> {{ analysis.get('top_notes_requested', [])|join(', ') or 'غير محددة' }}
+                        <div class="col-md-6 mb-3">
+                            <strong>🔝 النوتات المطلوبة:</strong><br>
+                            <small>
+                                عليا: {{ analysis.get('top_notes_requested', [])|join(', ') or 'غير محددة' }}<br>
+                                وسطى: {{ analysis.get('heart_notes_requested', [])|join(', ') or 'غير محددة' }}<br>
+                                أساسية: {{ analysis.get('base_notes_requested', [])|join(', ') or 'غير محددة' }}
+                            </small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>💜 DNA العطر:</strong><br>
+                            <small>
+                                العائلة: {{ analysis.get('fragrance_family', 'غير محددة') }}<br>
+                                الأسلوب: {{ analysis.get('fragrance_style', 'غير محدد') }}<br>
+                                الطابع: {{ analysis.get('fragrance_character', 'غير محدد') }}
+                            </small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <strong>النوتات الوسطى:</strong> {{ analysis.get('heart_notes_requested', [])|join(', ') or 'غير محددة' }}
+                            <strong>🎯 نوع الاستخدام:</strong> {{ analysis.get('usage_type', 'غير محدد') }}
                         </div>
                         <div class="col-md-6 mb-2">
-                            <strong>النوتات الأساسية:</strong> {{ analysis.get('base_notes_requested', [])|join(', ') or 'غير محددة' }}
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <strong>العائلة العطرية:</strong> {{ analysis.get('fragrance_family', 'غير محددة') }}
+                            <strong>🌍 الجو العام:</strong> {{ analysis.get('overall_atmosphere', 'غير محدد') }}
                         </div>
                     </div>
                 </div>
@@ -119,10 +129,35 @@
                                     {% endif %}
                                 </div>
 
+                                <!-- DNA Alignment -->
+                                {% if rec.get('dna_alignment') %}
+                                <div class="alert alert-success mb-3" style="background: rgba(61, 220, 151, 0.1);">
+                                    <i class="bi bi-dna me-2"></i>
+                                    <strong>محاذاة DNA:</strong><br>
+                                    {{ rec.get('dna_alignment') }}
+                                </div>
+                                {% endif %}
+
+                                <!-- 6 Factor Analysis -->
+                                {% if rec.get('six_factor_analysis') %}
+                                <div class="mb-3 p-3" style="background: rgba(79, 125, 255, 0.08); border-radius: 10px; border-right: 3px solid #0B2E8A;">
+                                    <strong class="small">تحليل 6 عوامل:</strong>
+                                    {% set factors = rec.get('six_factor_analysis', {}) %}
+                                    <div class="mt-2 small">
+                                        {% if factors.get('notes_match') %}<div>📌 {{ factors.get('notes_match') }}</div>{% endif %}
+                                        {% if factors.get('family_match') %}<div>🏛️ {{ factors.get('family_match') }}</div>{% endif %}
+                                        {% if factors.get('style_match') %}<div>🎨 {{ factors.get('style_match') }}</div>{% endif %}
+                                        {% if factors.get('character_match') %}<div>✨ {{ factors.get('character_match') }}</div>{% endif %}
+                                        {% if factors.get('sillage_match') %}<div>💨 {{ factors.get('sillage_match') }}</div>{% endif %}
+                                        {% if factors.get('mood_match') %}<div>🎭 {{ factors.get('mood_match') }}</div>{% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
                                 <!-- سبب التطابق -->
                                 <div class="alert alert-info mb-3">
                                     <i class="bi bi-check-circle me-2"></i>
-                                    <strong>سبب التطابق:</strong><br>
+                                    <strong>سبب التطابق الشامل:</strong><br>
                                     {{ rec.get('detailed_match_reason', 'تطابق عالي مع معايير البحث') }}
                                 </div>
 
