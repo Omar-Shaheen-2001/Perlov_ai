@@ -53,29 +53,82 @@
                 </form>
             </div>
             
-            {% if recommendations and recommendations.get('recommendations') %}
+            {% if recommendations and recommendations.get('top_3_matches') %}
             <div class="result-card">
+                <!-- تحليل الرائحة -->
+                {% if recommendations.get('scent_analysis') %}
+                <div class="alert alert-light border-0 mb-4" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.1) 0%, rgba(242, 244, 248, 0.1) 100%);">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-search text-primary me-2"></i>تحليل وصفك</h5>
+                    {% set analysis = recommendations.get('scent_analysis', {}) %}
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <strong>النوتات العليا:</strong> {{ analysis.get('top_notes_requested', [])|join(', ') or 'غير محددة' }}
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>النوتات الوسطى:</strong> {{ analysis.get('heart_notes_requested', [])|join(', ') or 'غير محددة' }}
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>النوتات الأساسية:</strong> {{ analysis.get('base_notes_requested', [])|join(', ') or 'غير محددة' }}
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong>العائلة العطرية:</strong> {{ analysis.get('fragrance_family', 'غير محددة') }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- أفضل 3 توصيات -->
                 <h4 class="fw-bold mb-4">
-                    <i class="bi bi-stars text-warning me-2"></i>
-                    التوصيات المقترحة لك
+                    <i class="bi bi-trophy text-warning me-2"></i>
+                    أفضل 3 عطور متطابقة
                 </h4>
                 
-                <div class="row g-4">
-                    {% for rec in recommendations.get('recommendations', []) %}
+                <div class="row g-4 mb-5">
+                    {% for rec in recommendations.get('top_3_matches', []) %}
                     {% if rec and rec.get('name') %}
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm">
+                    <div class="col-md-12">
+                        <div class="card h-100 border-0" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.05) 0%, rgba(242, 244, 248, 0.05) 100%); box-shadow: 0 2px 8px rgba(11, 46, 138, 0.1);">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <div>
-                                        <h5 class="fw-bold mb-1">{{ rec.get('name', 'عطر غير محدد') }}</h5>
+                                        <h5 class="fw-bold mb-1">
+                                            {% if rec.get('rank') == 1 %}<i class="bi bi-star-fill text-warning me-2"></i>{% elif rec.get('rank') == 2 %}<i class="bi bi-star text-secondary me-2"></i>{% else %}<i class="bi bi-star text-muted me-2"></i>{% endif %}
+                                            #{{ rec.get('rank', 1) }} - {{ rec.get('name', 'عطر غير محدد') }}
+                                        </h5>
                                         <p class="text-muted small mb-0">{{ rec.get('brand', '') }}</p>
                                     </div>
-                                    <span class="badge bg-primary rounded-pill">{{ rec.get('match_percentage', 80) }}%</span>
+                                    <div class="text-end">
+                                        <span class="badge bg-success rounded-pill fs-6 mb-2">{{ rec.get('match_percentage', 80) }}% تطابق</span>
+                                        <div class="small text-muted">قوة الفوحان: {{ rec.get('sillage', 'متوسط') }}</div>
+                                    </div>
                                 </div>
-                                <p class="text-muted mb-2">{{ rec.get('reason', '') }}</p>
-                                <p class="small mb-2"><strong>النوتات:</strong> {{ rec.get('main_notes', 'غير محدد') }}</p>
-                                <p class="small text-muted mb-3"><strong>الأفضل لـ:</strong> {{ rec.get('best_for', 'متنوع') }}</p>
+
+                                <!-- النوتات -->
+                                <div class="mb-3">
+                                    {% if rec.get('actual_notes') %}
+                                        {% set notes = rec.get('actual_notes', {}) %}
+                                        <p class="small mb-2">
+                                            <strong>🔝 النوتات العليا:</strong> {{ notes.get('top', [])|join(', ') or 'غير محددة' }}
+                                        </p>
+                                        <p class="small mb-2">
+                                            <strong>💜 النوتات الوسطى:</strong> {{ notes.get('heart', [])|join(', ') or 'غير محددة' }}
+                                        </p>
+                                        <p class="small mb-2">
+                                            <strong>🏛️ النوتات الأساسية:</strong> {{ notes.get('base', [])|join(', ') or 'غير محددة' }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- سبب التطابق -->
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <strong>سبب التطابق:</strong><br>
+                                    {{ rec.get('detailed_match_reason', 'تطابق عالي مع معايير البحث') }}
+                                </div>
+
+                                <p class="small text-muted mb-3">
+                                    <strong>الاستخدام الأمثل:</strong> {{ rec.get('best_for', 'متنوع') }}
+                                </p>
                                 
                                 {% set matching_product = None %}
                                 {% set rec_name = rec.get('name', '')|lower %}
@@ -86,11 +139,11 @@
                                 {% endfor %}
                                 
                                 {% if matching_product %}
-                                <a href="{{ matching_product.url }}" target="_blank" class="btn btn-outline-primary btn-sm w-100">
-                                    <i class="bi bi-cart me-1"></i> اشترِ الآن - {{ matching_product.price_text }}
+                                <a href="{{ matching_product.url }}" target="_blank" class="btn btn-gradient btn-sm w-100">
+                                    <i class="bi bi-cart me-1"></i> اشترِ الآن
                                 </a>
                                 {% else %}
-                                <a href="https://www.google.com/search?q={{ rec.get('name', '') }} {{ rec.get('brand', '') }} perfume buy" target="_blank" class="btn btn-outline-secondary btn-sm w-100">
+                                <a href="https://www.google.com/search?q={{ rec.get('name', '') }} {{ rec.get('brand', '') }} perfume buy" target="_blank" class="btn btn-outline-primary btn-sm w-100">
                                     <i class="bi bi-search me-1"></i> ابحث عن هذا العطر
                                 </a>
                                 {% endif %}
@@ -100,11 +153,45 @@
                     {% endif %}
                     {% endfor %}
                 </div>
-                
-                {% if recommendations.get('general_advice') %}
-                <div class="alert alert-info mt-4">
-                    <i class="bi bi-lightbulb me-2"></i>
-                    <strong>نصيحة:</strong> {{ recommendations.get('general_advice') }}
+
+                <!-- العطور المستبعدة -->
+                {% if recommendations.get('excluded_fragrances') and recommendations.get('excluded_fragrances')|length > 0 %}
+                <hr class="my-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-x-circle text-danger me-2"></i>
+                    عطور لا تطابق وصفك
+                </h5>
+                <div class="row g-3">
+                    {% for excluded in recommendations.get('excluded_fragrances', []) %}
+                    <div class="col-md-6">
+                        <div class="card h-100 border border-danger-subtle" style="background: rgba(255, 77, 79, 0.05);">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-2">{{ excluded.get('name', 'عطر') }} - {{ excluded.get('brand', '') }}</h6>
+                                <p class="small text-muted mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    {{ excluded.get('exclusion_reason', 'لا يتطابق مع الوصف') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- الخلاصة العلمية -->
+                {% if recommendations.get('scientific_conclusion') %}
+                <div class="alert alert-light border-0 mt-4" style="background: linear-gradient(135deg, rgba(61, 220, 151, 0.1) 0%, rgba(242, 244, 248, 0.1) 100%);">
+                    <i class="bi bi-lightbulb text-success me-2"></i>
+                    <strong>الخلاصة العلمية:</strong><br>
+                    {{ recommendations.get('scientific_conclusion') }}
+                </div>
+                {% endif %}
+
+                <!-- نصيحة إضافية -->
+                {% if recommendations.get('additional_advice') %}
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>نصيحتنا:</strong> {{ recommendations.get('additional_advice') }}
                 </div>
                 {% endif %}
             </div>

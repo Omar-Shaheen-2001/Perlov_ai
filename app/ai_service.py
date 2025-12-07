@@ -317,68 +317,165 @@ def generate_recommendations(query, scent_profile=None, products=None):
     profile_context = ""
     if scent_profile:
         profile_context = f"""
-الملف العطري للمستخدم:
+معلومات الملف العطري السابق:
 - الشخصية العطرية: {scent_profile.scent_personality or 'غير محدد'}
 - النوتات المفضلة: {scent_profile.favorite_notes or 'غير محدد'}
+- النوتات المكروهة: {scent_profile.disliked_notes or 'غير محدد'}
 """
 
-    products_context = ""
-    if products:
-        products_list = []
-        for p in products[:20]:
-            products_list.append(f"- {p.name} من {p.brand}: {p.main_notes}")
-        products_context = f"\n\nالعطور المتاحة للتوصية:\n" + "\n".join(products_list)
+    prompt = f"""أنت خبير عطور محترف ومحلّل روائح متخصص.
+مهمتك هي تحديد العطور التي تطابق وصف المستخدم بأعلى دقة ممكنة.
 
-    prompt = f"""أنت خبير توصيات عطور. المستخدم يبحث عن:
+يجب الالتزام بالخطوات التالية دون اختصار:
+
+1) استخرج جميع الإشارات العطرية المذكورة في وصف المستخدم:
+- النوتات العليا (Top Notes)
+- النوتات الوسطى (Heart Notes)
+- النوتات الأساسية (Base Notes)
+- نوع العطر (عطري – خشبي – شرقي – فواح – نظيف – حار – ناعم)
+- قوة الفوحان (خفيف، متوسط، قوي)
+- مدة الثبات المتوقعة
+- الأجواء/المزاج المرتبط بالعطر
+- الكيميائيات المحددة (Ambroxan، Iso E Super، Incense، إلخ)
+
+2) قارن هذه الإشارات مع قاعدة معرفتك عن العطور المشهورة:
+- تطابق النوتات الرئيسية
+- تطابق أسلوب العطر
+- تطابق الفوحان والثبات
+- تطابق الطابع العام
+
+3) أعطِ 3 عطور فقط هي الأقرب للنتيجة (مرتبة من الأكثر تطابقًا إلى الأقل)
+لكل عطر يجب أن تذكر:
+- اسم العطر الكامل
+- درجة التشابه (%)
+- سبب التطابق بالتفصيل (قارن الوصف بالنوتات الحقيقية)
+
+4) اعرض قائمة بـ 3-5 عطور لا تتطابق مع الوصف واذكر السبب الواضح.
+
+تعليمات إضافية:
+- لا تخمن أبداً
+- إذا كان الوصف ناقصاً، قل "الوصف غير كافٍ لتحديد العطر بدقة"
+- يُمنع إعطاء عطر لا يتوافق مع الوصف حتى لو كان مشهورًا
+- يجب أن تكون المقارنة علمية مبنية على النوتات الحقيقية
+
+وصف المستخدم:
 "{query}"
 {profile_context}
-{products_context}
 
-قدم 5 توصيات عطور مناسبة بصيغة JSON فقط:
+قدم الإجابة بصيغة JSON فقط:
 {{
-    "recommendations": [
+    "scent_analysis": {{
+        "top_notes_requested": ["نوتة 1", "نوتة 2"],
+        "heart_notes_requested": ["نوتة 1", "نوتة 2"],
+        "base_notes_requested": ["نوتة 1", "نوتة 2"],
+        "fragrance_family": "العائلة العطرية المطلوبة",
+        "intensity_required": "خفيف/متوسط/قوي",
+        "mood_keywords": ["كلمة مفتاحية 1", "كلمة مفتاحية 2"]
+    }},
+    "top_3_matches": [
         {{
-            "name": "اسم العطر",
-            "brand": "اسم العلامة التجارية",
-            "reason": "سبب التوصية في جملة واحدة",
-            "main_notes": "النوتات الرئيسية",
-            "match_percentage": 85,
-            "best_for": "الاستخدام الأمثل"
+            "rank": 1,
+            "name": "اسم العطر الكامل",
+            "brand": "العلامة التجارية",
+            "match_percentage": 92,
+            "actual_notes": {{
+                "top": ["نوتة 1", "نوتة 2"],
+                "heart": ["نوتة 1", "نوتة 2"],
+                "base": ["نوتة 1", "نوتة 2"]
+            }},
+            "detailed_match_reason": "شرح مفصل لماذا هذا العطر يطابق الوصف. قارن كل نوتة وخصائص العطر مع ما طلبه المستخدم",
+            "best_for": "الاستخدام الأمثل",
+            "sillage": "قوة الانتشار المتوقعة"
         }}
     ],
-    "general_advice": "نصيحة عامة للمستخدم"
+    "excluded_fragrances": [
+        {{
+            "name": "اسم العطر",
+            "brand": "العلامة التجارية",
+            "exclusion_reason": "السبب الواضح لعدم التطابق (مثال: غياب النوتات الدافئة المطلوبة، أو طابع مختلف تماماً)"
+        }}
+    ],
+    "scientific_conclusion": "ملخص علمي للتطابق والاختلافات",
+    "additional_advice": "نصيحة إضافية للمستخدم"
 }}"""
 
     default_response = {
-        "recommendations": [
+        "scent_analysis": {
+            "top_notes_requested": ["برغموت", "ليمون"],
+            "heart_notes_requested": ["فلفل", "نعناع"],
+            "base_notes_requested": ["عنبر", "مسك"],
+            "fragrance_family": "شرقي-عطري",
+            "intensity_required": "متوسط",
+            "mood_keywords": ["عصري", "جذاب"]
+        },
+        "top_3_matches": [
             {
-                "name": "Dior Sauvage",
+                "rank": 1,
+                "name": "Dior Sauvage EDP",
                 "brand": "Dior",
-                "reason": "عطر رجالي عصري وجذاب",
-                "main_notes": "برغموت، فلفل، عنبر",
-                "match_percentage": 85,
-                "best_for": "الاستخدام اليومي والمناسبات"
+                "match_percentage": 88,
+                "actual_notes": {
+                    "top": ["برغموت أمبروكسادي", "ليمون"],
+                    "heart": ["فلفل سيشيلي"],
+                    "base": ["عنبر جراي", "مسك"]
+                },
+                "detailed_match_reason": "يطابق الوصف لأنه يحتوي على البرغموت والفلفل المطلوبين، مع قاعدة عنبرية دافئة جداً",
+                "best_for": "الاستخدام اليومي والمناسبات",
+                "sillage": "متوسط إلى قوي"
             },
             {
-                "name": "Chanel Bleu",
+                "rank": 2,
+                "name": "Bleu de Chanel EDP",
                 "brand": "Chanel",
-                "reason": "عطر أنيق يناسب جميع المناسبات",
-                "main_notes": "نعناع، جريب فروت، خشب الصندل",
                 "match_percentage": 82,
-                "best_for": "العمل والمناسبات الرسمية"
+                "actual_notes": {
+                    "top": ["برغموت", "ليمون"],
+                    "heart": ["ياسمين", "نعناع"],
+                    "base": ["خشب الأرز", "مسك"]
+                },
+                "detailed_match_reason": "يشارك حمضيات البرغموت والليمون، مع نعناع بدل الفلفل، وقاعدة خشبية أكثر برودة",
+                "best_for": "العمل والمناسبات الرسمية",
+                "sillage": "متوسط"
+            },
+            {
+                "rank": 3,
+                "name": "Spicebomb by Viktor & Rolf",
+                "brand": "Viktor & Rolf",
+                "match_percentage": 75,
+                "actual_notes": {
+                    "top": ["بهارات", "تفاح"],
+                    "heart": ["فلفل أسود", "قرنفل"],
+                    "base": ["عنبر", "خشب"]
+                },
+                "detailed_match_reason": "يوفر الفلفل الأسود والنوتات الدافئة والقاعدة العنبرية، لكن النوتات العليا مختلفة",
+                "best_for": "المساء والمناسبات الخاصة",
+                "sillage": "قوي"
             }
         ],
-        "general_advice": "جرب العطور قبل الشراء للتأكد من ملاءمتها لبشرتك"
+        "excluded_fragrances": [
+            {
+                "name": "Acqua di Gio",
+                "brand": "Giorgio Armani",
+                "exclusion_reason": "عطر مائي-نظيف بدون قاعدة عنبرية دافئة ولا يحتوي على الفلفل أو التوابل"
+            },
+            {
+                "name": "Light Blue",
+                "brand": "Dolce & Gabbana",
+                "exclusion_reason": "عطر حمضي خفيف جداً، لا يتطابق مع الطابع الدافئ والعطري المطلوب"
+            }
+        ],
+        "scientific_conclusion": "الوصف يطلب عطراً شرقياً دافئاً مع نوتات حمضية وفلفلية وقاعدة عنبرية قوية",
+        "additional_advice": "جرب هذه العطور في متاجر تجار العطور قبل الشراء للتأكد من توافقها مع بشرتك"
     }
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "أنت خبير توصيات عطور محترف. أجب دائمًا بصيغة JSON فقط."},
+                {"role": "system", "content": "أنت خبير عطور محترف ومحلّل روائح متخصص. قدم تحليلات دقيقة بناءً على النوتات الحقيقية للعطور. أجب دائمًا بصيغة JSON فقط."},
                 {"role": "user", "content": prompt}
             ],
-            max_completion_tokens=1500
+            max_completion_tokens=2000
         )
         
         content = response.choices[0].message.content
@@ -387,7 +484,7 @@ def generate_recommendations(query, scent_profile=None, products=None):
         if parsed is None:
             return default_response
         
-        if 'recommendations' not in parsed or not isinstance(parsed.get('recommendations'), list):
+        if 'top_3_matches' not in parsed or not isinstance(parsed.get('top_3_matches'), list):
             return default_response
         
         return parsed
