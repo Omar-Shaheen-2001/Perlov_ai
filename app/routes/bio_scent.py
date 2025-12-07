@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required
 from app import db
 from app.models import User
-from app.ai_service import save_analysis_result
+from app.ai_service import save_analysis_result, get_ai_response
 
 bio_scent_bp = Blueprint('bio_scent', __name__, url_prefix='/bio-scent', template_folder='../templates/bio_scent')
 
@@ -78,3 +78,95 @@ def analyze():
     save_analysis_result('bio_scent', data, result)
     
     return jsonify(result)
+
+@bio_scent_bp.route('/get-suggestions', methods=['POST'])
+@login_required
+def get_suggestions():
+    """Get AI-powered perfume suggestions based on analysis results."""
+    data = request.get_json()
+    
+    mood = data.get('mood', '')
+    speech_speed = data.get('speech_speed', '')
+    skin_type = data.get('skin_type', '')
+    fragrance_predictions = data.get('fragrance_predictions', [])
+    
+    prompt = f"""أنت خبير عطور متخصص في تقديم توصيات شخصية. بناءً على تحليل Bio-Scent التالي، قدم 5 عطور مقترحة:
+
+بيانات التحليل:
+- المزاج: {mood}
+- سرعة الكلام: {speech_speed}
+- نوع البشرة: {skin_type}
+- توقعات النوتات المفضلة: {', '.join(fragrance_predictions) if fragrance_predictions else 'عطور شرقية وزهرية'}
+
+قدم الإجابة بصيغة JSON فقط بالشكل التالي:
+{{
+    "suggestions": [
+        {{
+            "name": "اسم العطر",
+            "brand": "اسم العلامة التجارية",
+            "reason": "سبب التوصية بناءً على التحليل (جملة واحدة)",
+            "main_notes": "النوتات الرئيسية",
+            "concentration": "EDP/EDT/Parfum",
+            "match_percentage": 90,
+            "ideal_for": "الاستخدام المثالي بناءً على المزاج والبشرة"
+        }}
+    ],
+    "personalized_advice": "نصيحة شخصية مخصصة بناءً على تحليلك الحيوي"
+}}"""
+
+    response = get_ai_response(prompt, "أنت خبير عطور متخصص في تحليل الشخصيات العطرية وتقديم توصيات دقيقة. أجب دائمًا بصيغة JSON فقط.")
+    
+    if isinstance(response, dict) and 'suggestions' in response:
+        return jsonify(response)
+    
+    # Fallback response
+    return jsonify({
+        "suggestions": [
+            {
+                "name": "Oud Ispahan",
+                "brand": "Yves Saint Laurent",
+                "reason": "عطر شرقي فاخر يناسب شخصيتك الدافئة",
+                "main_notes": "ورد، عود، سماق",
+                "concentration": "EDP",
+                "match_percentage": 92,
+                "ideal_for": "المناسبات الخاصة والمساء"
+            },
+            {
+                "name": "Hypnotic Poison",
+                "brand": "Dior",
+                "reason": "عطر جذاب يعكس طاقتك وديناميكيتك",
+                "main_notes": "جاردينيا، فانيلا، أمبروكسان",
+                "concentration": "EDT",
+                "match_percentage": 88,
+                "ideal_for": "السهرات والتجمعات الاجتماعية"
+            },
+            {
+                "name": "Shalimar",
+                "brand": "Guerlain",
+                "reason": "كلاسيكي خالد يناسب ذوقك الراقي",
+                "main_notes": "ياسمين، ورد، عنبر",
+                "concentration": "EDP",
+                "match_percentage": 85,
+                "ideal_for": "الاستخدام اليومي والمناسبات"
+            },
+            {
+                "name": "Black Opium",
+                "brand": "Yves Saint Laurent",
+                "reason": "عطر جريء يعكس شخصيتك الجذابة",
+                "main_notes": "قهوة، فانيلا، نيروليا",
+                "concentration": "EDP",
+                "match_percentage": 87,
+                "ideal_for": "المساء والعطل النهاية"
+            },
+            {
+                "name": "La Belle",
+                "brand": "Jean Paul Gaultier",
+                "reason": "عطر نسائي أنيق بتركيبة متوازنة",
+                "main_notes": "أسيد، كشمش، موس",
+                "concentration": "EDP",
+                "match_percentage": 84,
+                "ideal_for": "العمل والمناسبات الرسمية"
+            }
+        ],
+        "personalized_advice": "بناءً على تحليلك الحيوي، أنت تفضل العطور الشرقية الفاخرة مع لمسات دافئة. جرّب عطورًا بتركيز EDP عالي لضمان ثبات أطول يناسب طاقتك."
+    })

@@ -178,6 +178,23 @@
                             </div>
                         </div>
 
+                        <!-- مقترحات عطور ذكية -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.15) 0%, rgba(11, 46, 138, 0.1) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="bi bi-sparkles text-primary me-2"></i>مقترحات عطور مخصصة من الذكاء الاصطناعي
+                                    </h5>
+                                    <div id="ai-suggestions" style="max-height: 500px; overflow-y: auto;">
+                                        <div class="text-center text-muted">
+                                            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                            جاري تحليل ملفك والحصول على مقترحات شخصية...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- زر العودة -->
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
@@ -340,6 +357,9 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         document.getElementById('inputs-section').classList.add('d-none');
         document.getElementById('results-section').classList.remove('d-none');
         showSuccess('تم التحليل الحيوي بنجاح!');
+        
+        // Get AI suggestions
+        fetchAISuggestions(mood, speechSpeed, data.fragrance_predictions);
     })
     .catch(err => {
         hideLoading(btn);
@@ -353,6 +373,76 @@ document.getElementById('back-btn').addEventListener('click', function() {
     document.getElementById('bioScent-form').reset();
     clearRecording();
 });
+
+// Fetch AI Suggestions
+function fetchAISuggestions(mood, speechSpeed, predictions) {
+    fetch('{{ url_for("bio_scent.get_suggestions") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mood: mood,
+            speech_speed: speechSpeed,
+            skin_type: 'معتدلة',
+            fragrance_predictions: predictions
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const suggestionsContainer = document.getElementById('ai-suggestions');
+        
+        if (!data.suggestions || data.suggestions.length === 0) {
+            suggestionsContainer.innerHTML = '<p class="text-muted text-center">لم يتم العثور على مقترحات</p>';
+            return;
+        }
+        
+        let html = `
+            <div class="mb-3">
+                <p class="text-muted mb-3"><i class="bi bi-quote me-2"></i><em>${data.personalized_advice || 'مقترحات شخصية بناءً على تحليلك'}</em></p>
+            </div>
+        `;
+        
+        data.suggestions.forEach((suggestion, idx) => {
+            html += `
+                <div class="card rounded-3 border-0 mb-3" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.08) 0%, rgba(242, 244, 248, 0.1) 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="fw-bold mb-1">${idx + 1}. ${suggestion.name}</h6>
+                                <p class="text-muted mb-2" style="font-size: 0.9rem;">${suggestion.brand}</p>
+                            </div>
+                            <span class="badge bg-primary rounded-pill" style="background: linear-gradient(135deg, #0B2E8A 0%, #4F7DFF 100%) !important;">${suggestion.match_percentage}%</span>
+                        </div>
+                        
+                        <p class="mb-2" style="font-size: 0.95rem;">
+                            <i class="bi bi-info-circle text-primary me-1"></i>
+                            <strong>السبب:</strong> ${suggestion.reason}
+                        </p>
+                        
+                        <p class="mb-2" style="font-size: 0.9rem;">
+                            <i class="bi bi-droplet text-info me-1"></i>
+                            <strong>النوتات:</strong> ${suggestion.main_notes}
+                        </p>
+                        
+                        <p class="mb-2" style="font-size: 0.9rem;">
+                            <i class="bi bi-bucket text-secondary me-1"></i>
+                            <strong>التركيز:</strong> ${suggestion.concentration} | 
+                            <strong>مثالي لـ:</strong> ${suggestion.ideal_for}
+                        </p>
+                    </div>
+                </div>
+            `;
+        });
+        
+        suggestionsContainer.innerHTML = html;
+    })
+    .catch(err => {
+        console.error('Error fetching suggestions:', err);
+        const suggestionsContainer = document.getElementById('ai-suggestions');
+        suggestionsContainer.innerHTML = '<p class="text-danger text-center">حدث خطأ في جلب المقترحات</p>';
+    });
+}
 </script>
 
 <style>
