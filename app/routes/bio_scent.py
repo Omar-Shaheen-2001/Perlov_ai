@@ -34,6 +34,28 @@ def analyze():
     mood = data.get('mood', '')
     speech_speed = data.get('speech_speed', 'عادية')
     skin_type = data.get('skin_type', 'معتدلة')
+    audio_data = data.get('audio_data', '')
+    
+    # Store audio if provided
+    if audio_data:
+        import base64
+        import os
+        try:
+            audio_base64 = audio_data.split(',')[1] if ',' in audio_data else audio_data
+            audio_bytes = base64.b64decode(audio_base64)
+            
+            # Create audio directory if not exists
+            audio_dir = 'app/static/uploads/audio'
+            os.makedirs(audio_dir, exist_ok=True)
+            
+            # Save audio file
+            from datetime import datetime
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            audio_path = f'{audio_dir}/bio_scent_{timestamp}.webm'
+            with open(audio_path, 'wb') as f:
+                f.write(audio_bytes)
+        except Exception as e:
+            print(f'Error saving audio: {e}')
     
     result = {
         'voice_analysis': {
