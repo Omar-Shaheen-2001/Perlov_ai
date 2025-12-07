@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block title %}Perfume Blend Predictor™{% endblock %}
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <h1>Perfume Blend Predictor™</h1>
+        <p class="opacity-75">تنبأ بنتائج دمج عطريك المفضلين بدقة علمية</p>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
+                <div class="card-body p-5">
+                    <div id="inputs-section">
+                        <h2 class="fw-bold mb-4 text-center">🔥 مدخلات الدمج</h2>
+                        <form id="blend-form">
+                            <!-- العطر الأول -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>العطر الأول</label>
+                                <input type="text" class="form-control rounded-3 form-control-lg" id="perfume1_name" placeholder="مثال: Dior Sauvage" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-percent me-2"></i>تركيز العطر الأول</label>
+                                <select class="form-select form-select-lg rounded-3" id="perfume1_concentration">
+                                    <option value="Eau de Parfum (EDP)">Eau de Parfum (EDP) - 15-20%</option>
+                                    <option value="Eau de Toilette (EDT)">Eau de Toilette (EDT) - 5-15%</option>
+                                    <option value="Eau de Cologne">Eau de Cologne - 3-5%</option>
+                                    <option value="Parfum">Parfum - 20-30%</option>
+                                </select>
+                            </div>
+
+                            <!-- العطر الثاني -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>العطر الثاني</label>
+                                <input type="text" class="form-control rounded-3 form-control-lg" id="perfume2_name" placeholder="مثال: Bleu de Chanel" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-percent me-2"></i>تركيز العطر الثاني</label>
+                                <select class="form-select form-select-lg rounded-3" id="perfume2_concentration">
+                                    <option value="Eau de Parfum (EDP)">Eau de Parfum (EDP) - 15-20%</option>
+                                    <option value="Eau de Toilette (EDT)">Eau de Toilette (EDT) - 5-15%</option>
+                                    <option value="Eau de Cologne">Eau de Cologne - 3-5%</option>
+                                    <option value="Parfum">Parfum - 20-30%</option>
+                                </select>
+                            </div>
+
+                            <!-- نسبة الدمج -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-sliders me-2"></i>نسبة الدمج</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="blend_ratio" id="ratio_50" value="50/50" checked>
+                                    <label class="btn btn-outline-primary rounded-3" for="ratio_50">50/50</label>
+                                    
+                                    <input type="radio" class="btn-check" name="blend_ratio" id="ratio_60" value="60/40">
+                                    <label class="btn btn-outline-primary rounded-3" for="ratio_60">60/40</label>
+                                    
+                                    <input type="radio" class="btn-check" name="blend_ratio" id="ratio_70" value="70/30">
+                                    <label class="btn btn-outline-primary rounded-3" for="ratio_70">70/30</label>
+                                </div>
+                            </div>
+
+                            <!-- هدف الدمج -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-target me-2"></i>هدف الدمج</label>
+                                <input type="text" class="form-control rounded-3 form-control-lg" id="blend_goal" placeholder="مثال: رائحة فريدة لفصل الصيف">
+                            </div>
+
+                            <!-- معلومات إضافية -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>نوع البشرة (اختياري)</label>
+                                    <select class="form-select form-select-lg rounded-3" id="skin_type">
+                                        <option value="">لم يحدد</option>
+                                        <option value="جافة">جافة</option>
+                                        <option value="دهنية">دهنية</option>
+                                        <option value="مختلطة">مختلطة</option>
+                                        <option value="عادية">عادية</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold"><i class="bi bi-cloud me-2"></i>البيئة/الطقس (اختياري)</label>
+                                    <select class="form-select form-select-lg rounded-3" id="environment">
+                                        <option value="">لم يحدد</option>
+                                        <option value="صيف حار">صيف حار</option>
+                                        <option value="ربيع معتدل">ربيع معتدل</option>
+                                        <option value="خريف بارد">خريف بارد</option>
+                                        <option value="شتاء بارد">شتاء بارد</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="predict-btn">
+                                    <i class="bi bi-stars me-2"></i>تنبأ بنتائج الدمج
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- النتائج -->
+                    <div id="results-section" class="d-none">
+                        <h2 class="fw-bold mb-4 text-center">🎯 نتائج التنبؤ</h2>
+
+                        <!-- النتيجة العطرية -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.15) 0%, rgba(242, 244, 248, 0.2) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-sparkles text-primary me-2"></i>النتيجة العطرية المتوقعة</h5>
+                                    <p id="scent_description" class="mb-3"></p>
+                                    <div class="mb-3">
+                                        <strong>النوتات البارزة:</strong>
+                                        <div id="dominant_notes" class="mt-2"></div>
+                                    </div>
+                                    <p><strong>الشخصية الإجمالية:</strong> <span id="overall_character"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الاسم المقترح -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(218, 112, 214, 0.15) 0%, rgba(238, 201, 245, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-pen text-info me-2"></i>الاسم المقترح</h5>
+                                    <p id="suggested_name" class="fs-5 fw-bold mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- العطر التجاري المشابه -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(103, 58, 183, 0.15) 0%, rgba(186, 104, 200, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-check text-success me-2"></i>أقرب عطر تجاري</h5>
+                                    <p class="mb-2"><strong id="similar_name">عطر</strong> من <strong id="similar_brand">علامة</strong></p>
+                                    <p id="similar_reason" class="text-muted mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- تحليل التناسق -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(165, 214, 167, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-diagram-2 text-success me-2"></i>تحليل التناسق</h5>
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold text-success mb-2">✓ النوتات المتناسقة:</h6>
+                                        <div id="harmonizing_notes" class="ms-2"></div>
+                                    </div>
+                                    <div class="mb-3" id="conflict-section" style="display: none;">
+                                        <h6 class="fw-bold text-warning mb-2">⚠ النوتات المتعارضة:</h6>
+                                        <div id="conflicting_notes" class="ms-2"></div>
+                                    </div>
+                                    <p id="chemical_dynamics" class="text-muted mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الإيجابيات والسلبيات -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold mb-3 text-success"><i class="bi bi-hand-thumbs-up me-2"></i>الإيجابيات</h5>
+                                        <div id="positives"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(244, 67, 54, 0.15) 0%, rgba(255, 172, 173, 0.15) 100%);">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold mb-3 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>السلبيات</h5>
+                                        <div id="negatives"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- التوصية النهائية -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" id="recommendation-card" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(165, 214, 167, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-star-fill text-warning me-2"></i>التوصية النهائية</h5>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span id="verdict" class="fw-bold fs-5"></span>
+                                        <span id="success_percentage" class="badge bg-success rounded-pill fs-6"></span>
+                                    </div>
+                                    <p id="best_for" class="mb-0"><strong>الاستخدام الأمثل:</strong> <span id="best_for_text"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- النسب البديلة -->
+                        <div class="mb-4">
+                            <div class="card rounded-4 border-0" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 235, 130, 0.15) 100%);">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3"><i class="bi bi-sliders text-warning me-2"></i>النسب المقترحة البديلة</h5>
+                                    <div id="alternative_ratios"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-5" id="back-btn">
+                                <i class="bi bi-arrow-right me-2"></i>جرب دمجاً آخر
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('predict-btn').addEventListener('click', function() {
+    const btn = this;
+    const data = {
+        perfume1_name: document.getElementById('perfume1_name').value,
+        perfume1_concentration: document.getElementById('perfume1_concentration').value,
+        perfume2_name: document.getElementById('perfume2_name').value,
+        perfume2_concentration: document.getElementById('perfume2_concentration').value,
+        blend_ratio: document.querySelector('input[name="blend_ratio"]:checked').value,
+        blend_goal: document.getElementById('blend_goal').value,
+        skin_type: document.getElementById('skin_type').value,
+        environment: document.getElementById('environment').value
+    };
+    
+    if (!data.perfume1_name || !data.perfume2_name) {
+        showError('يرجى إدخال أسماء العطرين');
+        return;
+    }
+    
+    showLoading(btn);
+    fetch('{{ url_for("perfume_blend.predict") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(result => {
+        hideLoading(btn);
+        const pred = result.prediction;
+        
+        // Expected result
+        document.getElementById('scent_description').textContent = pred.expected_result.scent_description;
+        document.getElementById('dominant_notes').innerHTML = pred.expected_result.dominant_notes
+            .map(n => `<span class="badge bg-primary me-2 mb-2">${n}</span>`).join('');
+        document.getElementById('overall_character').textContent = pred.expected_result.overall_character;
+        
+        // Suggested name
+        document.getElementById('suggested_name').textContent = pred.suggested_name;
+        
+        // Similar fragrance
+        const sim = pred.similar_commercial_fragrance;
+        document.getElementById('similar_name').textContent = sim.name;
+        document.getElementById('similar_brand').textContent = sim.brand;
+        document.getElementById('similar_reason').textContent = sim.why_similar;
+        
+        // Harmony
+        const harm = pred.harmony_analysis;
+        document.getElementById('harmonizing_notes').innerHTML = harm.harmonizing_notes
+            .map(n => `<div class="mb-1"><i class="bi bi-check-circle text-success me-2"></i>${n}</div>`).join('');
+        
+        if (harm.conflicting_notes && harm.conflicting_notes.length > 0) {
+            document.getElementById('conflict-section').style.display = 'block';
+            document.getElementById('conflicting_notes').innerHTML = harm.conflicting_notes
+                .map(n => `<div class="mb-1"><span class="badge bg-warning me-2">${n}</span></div>`).join('');
+        }
+        
+        document.getElementById('chemical_dynamics').textContent = harm.chemical_dynamics;
+        
+        // Positives & Negatives
+        document.getElementById('positives').innerHTML = pred.positives
+            .map(p => `<div class="mb-2"><i class="bi bi-check-lg text-success me-2"></i>${p}</div>`).join('');
+        document.getElementById('negatives').innerHTML = pred.negatives
+            .map(n => `<div class="mb-2"><i class="bi bi-x-lg text-danger me-2"></i>${n}</div>`).join('');
+        
+        // Recommendation
+        const rec = pred.final_recommendation;
+        const color = rec.success ? 'rgba(76, 175, 80, 0.15)' : 'rgba(244, 67, 54, 0.15)';
+        document.getElementById('recommendation-card').style.background = 
+            `linear-gradient(135deg, ${color} 0%, rgba(242, 244, 248, 0.2) 100%)`;
+        document.getElementById('verdict').textContent = rec.verdict;
+        document.getElementById('verdict').style.color = rec.success ? '#4CAF50' : '#F44336';
+        document.getElementById('success_percentage').textContent = rec.success_percentage + '%';
+        document.getElementById('best_for_text').textContent = rec.best_for;
+        
+        // Alternative ratios
+        document.getElementById('alternative_ratios').innerHTML = pred.alternative_ratios
+            .map(r => `<div class="mb-2"><strong>${r.ratio}:</strong> ${r.benefits}</div>`).join('');
+        
+        document.getElementById('inputs-section').classList.add('d-none');
+        document.getElementById('results-section').classList.remove('d-none');
+        showSuccess('تم التنبؤ بنتائج الدمج بنجاح!');
+    })
+    .catch(err => {
+        hideLoading(btn);
+        showError('حدث خطأ، يرجى المحاولة مرة أخرى');
+    });
+});
+
+document.getElementById('back-btn').addEventListener('click', function() {
+    document.getElementById('results-section').classList.add('d-none');
+    document.getElementById('inputs-section').classList.remove('d-none');
+    document.getElementById('blend-form').reset();
+});
+</script>
+{% endblock %}

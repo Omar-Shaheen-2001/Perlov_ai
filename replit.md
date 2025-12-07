@@ -82,7 +82,7 @@ main.py                 # Entry point
 - **الجمهور**: فئة شبابية + مستخدمي التقنية
 - **الشعور**: Trust + Love + Innovation
 
-## 18 Perfume Analysis Modules
+## 19 Perfume Analysis Modules
 
 ### Core Services
 1. **Scent DNA** (/scent-dna) - Discover unique fragrance personality
@@ -113,7 +113,8 @@ main.py                 # Entry point
 ### Digital & Creative
 17. **Digital Twin** (/digital-twin) - Permanent digital scent identity
 18. **Oil Mixer** (/oil-mixer) - Custom note blending
-19. **Marketplace** (/marketplace) - Real products from verified stores with AI-powered search
+19. **Perfume Blend Predictor™** (/perfume-blend-predictor) - AI-powered perfume blending predictions
+20. **Marketplace** (/marketplace) - Real products from verified stores with AI-powered search
 
 ## Key Features Implemented
 
@@ -168,6 +169,33 @@ python main.py
 - **Database**: Seeding only in development (not production)
 
 ## Recent Changes (Dec 7, 2025)
+
+### New Perfume Blend Predictor™ Module (Dec 7 - Turn 4) ⭐🔥 NEW
+- **AI-Powered Blending Prediction System**:
+  - Precise prediction of perfume blend results
+  - **Input Fields** (8 detailed inputs):
+    - Two perfume names and concentrations
+    - Blend ratio selection (50/50, 60/40, 70/30)
+    - Blend goal
+    - Optional: skin type and environment/weather
+  - **Advanced AI Prompt**:
+    - Perfume Blending Specialist expert system
+    - Scientific analysis of fragrance compatibility
+    - Chemical dynamics and harmony analysis
+  - **Comprehensive Results** (8 categories):
+    - Expected scent result with dominant notes
+    - Suggested name for the blend
+    - Most similar commercial fragrance
+    - Harmony analysis (harmonizing & conflicting notes)
+    - Pros and cons of the blend
+    - Final recommendation with success percentage
+    - Alternative blend ratios with benefits
+  - **User-Friendly Interface**:
+    - Beautiful gradient cards matching Royal Blue theme
+    - Intuitive input form with radio buttons and selects
+    - Detailed results display with icons and badges
+    - Success percentage visualization
+  - **Fallback Data**: Ensures smooth experience even without AI
 
 ### Enhanced Bio-Scent Module (Dec 7 - Turn 3)
 - **Smart Perfume Suggestions Feature**:
