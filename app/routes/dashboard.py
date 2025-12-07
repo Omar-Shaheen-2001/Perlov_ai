@@ -57,6 +57,14 @@ def view_analysis(analysis_id):
                           result_data=result_data,
                           input_data=input_data)
 
+@dashboard_bp.route('/dashboard/all-analyses')
+@login_required
+def all_analyses():
+    analysis_results = AnalysisResult.query.filter_by(user_id=current_user.id).order_by(AnalysisResult.created_at.desc()).all()
+    
+    return render_template('dashboard/all_analyses.html', 
+                         analysis_results=analysis_results)
+
 @dashboard_bp.route('/dashboard/api/analysis/<int:analysis_id>')
 @login_required
 def api_analysis(analysis_id):
