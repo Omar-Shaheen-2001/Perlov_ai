@@ -167,23 +167,29 @@ python main.py
 - **Health Check**: / endpoint returns 200 immediately
 - **Database**: Seeding only in development (not production)
 
-## Recent Changes (Dec 5, 2025)
+## Recent Changes (Dec 7, 2025)
+- **Multi-language Support**:
+  - Added language selector dropdown in navbar (Arabic, English, Hindi, Persian)
+  - Arabic (RTL) is the default language
+  - Language preference saved to localStorage for persistence
+  - Smooth transition between languages with RTL/LTR direction toggle
+  - Styled dropdown matches Royal Blue theme with hover animations
+- **Logo Update**: Replaced with new white PERLOV logo with leaf and heart design
+- **Complete Royal Blue Brand Rebrand** (Dec 5-7):
+  - Primary color: #0B2E8A (Royal Blue) throughout entire platform
+  - Updated all CSS variables, gradients, and shadows
+  - Converted 8+ template files to new color scheme
+  - Typography: Cairo (Arabic) + Poppins (English)
+  - Glassmorphism effects with 25-30px rounded corners for luxury feel
 - **Real Marketplace Implementation**:
   - 45+ real products from verified stores (Sephora, FragranceNet, FragranceX, Notino, Macy's, etc.)
   - 6 product categories: عطور نسائية, رجالية, يونيسكس, زيوت, نوتات, عبوات
   - AI-powered search with hybrid approach (curated database + AI suggestions)
   - Accurate data source tracking (curated_database, ai_suggestions, or mixed)
   - All products include real purchase URLs from verified international stores
-- Fixed mobile navbar-toggler icon color (Velvet Plum instead of white)
 - Added 18 comprehensive perfume analysis modules
 - Created 15 new route files with robust AI fallbacks
-- Created 15 new template directories with forms
-- Updated modules.html with categorized grid layout
-- Added get_ai_response() helper to ai_service.py
 - All modules have default fallback data for reliability
-- Changed brand name from "PERLOV.ai" to "PERLOV"
-- Updated tagline to "منصة محبي العطور" (Perfume Lovers Platform)
-- Logo integration setup (custom logo in navbar)
 - Deployment configuration validated and working
 
 ## User Preferences

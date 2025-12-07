@@ -824,6 +824,26 @@ body {
     border-radius: 12px !important;
 }
 
+/* Language Dropdown */
+.language-dropdown {
+    background: var(--primary);
+    border: 1px solid rgba(79, 125, 255, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(11, 46, 138, 0.25);
+}
+
+.language-dropdown .dropdown-item {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.language-dropdown .dropdown-item:hover {
+    background: rgba(79, 125, 255, 0.3);
+    color: #FFFFFF;
+    border-radius: 6px;
+}
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 60px 0;

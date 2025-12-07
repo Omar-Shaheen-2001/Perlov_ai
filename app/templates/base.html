@@ -48,6 +48,19 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-globe"></i> <span id="current-lang">العربية</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end language-dropdown" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('ar'); return false;">🇸🇦 العربية</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('fa'); return false;">🇮🇷 فارسی</a></li>
+                        </ul>
+                    </li>
+
                     {% if current_user.is_authenticated and current_user.is_admin %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin.dashboard') }}" title="لوحة الإدارة">
@@ -159,6 +172,48 @@
                 confirmButtonColor: '#0B2E8A'
             });
         }
+
+        // Language Switching
+        const translations = {
+            ar: { name: 'العربية', dir: 'rtl', label: 'العربية' },
+            en: { name: 'English', dir: 'ltr', label: 'English' },
+            hi: { name: 'हिंदी', dir: 'ltr', label: 'हिंदी' },
+            fa: { name: 'فارسی', dir: 'rtl', label: 'فارسی' }
+        };
+
+        function changeLanguage(lang) {
+            const config = translations[lang];
+            if (!config) return;
+            
+            // Update document
+            document.documentElement.lang = lang;
+            document.documentElement.dir = config.dir;
+            
+            // Update current language display
+            document.getElementById('current-lang').textContent = config.label;
+            
+            // Save to localStorage
+            localStorage.setItem('perlov-language', lang);
+            
+            // Show notification
+            Swal.fire({
+                icon: 'info',
+                title: 'تم تغيير اللغة',
+                text: `تم تغيير اللغة إلى ${config.name}`,
+                confirmButtonText: 'حسناً',
+                confirmButtonColor: '#0B2E8A',
+                timer: 1500,
+                timerProgressBar: true
+            });
+        }
+
+        // Load saved language on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('perlov-language') || 'ar';
+            if (savedLang !== 'ar') {
+                changeLanguage(savedLang);
+            }
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>
