@@ -49,7 +49,7 @@ document.getElementById('create-btn').addEventListener('click', function() {
         hideLoading(btn);
         const a = result.analysis;
         document.getElementById('results-content').innerHTML = `
-            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">
+            <div class="card rounded-4 border-0 mb-3 text-center" style="background: linear-gradient(135deg, #0B2E8A 0%, #4F7DFF 100%);">
                 <div class="card-body py-4 text-white">
                     <i class="bi bi-person-badge fs-1 mb-2"></i>
                     <h3 class="fw-bold">${a.digital_identity.name}</h3>
@@ -58,17 +58,17 @@ document.getElementById('create-btn').addEventListener('click', function() {
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-6">
-                    <div class="card rounded-4 border-0 h-100" style="background: rgba(179, 122, 148, 0.2);">
+                    <div class="card rounded-4 border-0 h-100" style="background: rgba(11, 46, 138, 0.2);">
                         <div class="card-body text-center"><strong>نوع الشخصية</strong><br>${a.digital_identity.personality_type}</div>
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="card rounded-4 border-0 h-100" style="background: rgba(217, 163, 95, 0.2);">
+                    <div class="card rounded-4 border-0 h-100" style="background: rgba(79, 125, 255, 0.2);">
                         <div class="card-body text-center"><strong>عائلة العطر</strong><br>${a.digital_identity.scent_family}</div>
                     </div>
                 </div>
             </div>
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.3) 0%, rgba(247, 244, 246, 0.3) 100%);">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.3) 0%, rgba(242, 244, 248, 0.3) 100%);">
                 <div class="card-body">
                     <h5 class="fw-bold"><i class="bi bi-archive me-2"></i>السجل الدائم</h5>
                     <p><strong>النوتات المفضلة:</strong> ${a.permanent_record.favorite_notes.join('، ')}</p>

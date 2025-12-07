@@ -53,24 +53,34 @@ main.py                 # Entry point
 
 ## Design System
 
-### Luxury Color Palette
-- **Blush Rose** (#E9C9D3) - Primary feminine accent
-- **Pearl Mist** (#F7F4F6) - Clean, elegant backgrounds
-- **Velvet Plum** (#B37A94) - Primary buttons & actions
-- **Warm Amber** (#D9A35F) - Secondary warmth & luxury accents
-- **Soft Musk White** (#FDF9F7) - Premium backgrounds
-- **Deep Charcoal** (#1F1F1F) - Text & sophistication
+### Royal Blue Color Palette
+- **Primary** (#0B2E8A) - أزرق ملكي - Header, buttons, main actions
+- **Dark** (#071F5E) - أزرق داكن - Footer, gradients
+- **Light** (#4F7DFF) - أزرق فاتح - Hover states, accents
+- **Background** (#FFFFFF) - أبيض نقي - Page backgrounds
+- **Light Gray** (#F2F4F8) - رمادي فاتح - Cards, sections
+- **Dark Text** (#1C1C1C) - رمادي داكن - Main text
+- **Success** (#3DDC97) - أخضر - Positive actions, confirmation
+- **Error** (#FF4D4F) - أحمر - Warnings, errors
 
 ### Typography
-- **Arabic**: Cairo (300-500 weight) - elegant, modern, light
-- **English**: Playfair Display (headings) + Poppins (body) - luxury serif aesthetic
+- **Arabic**: Cairo (300-800 weight) - عصرية، تقنية، أناقة
+- **English**: Poppins (300-800 weight) - Modern, clean, professional
 
 ### Design Elements
-- Glassmorphism with backdrop blur effects
-- 25-30px rounded corners for luxury feel
-- Soft gradients (Rose→Amber, Rose→Pearl, Amber→Rose)
-- Subtle shadows with color-matched opacity
+- Clean, minimal design with spacious layouts
+- 12-20px rounded corners for modern feel
+- Primary gradient: linear-gradient(135deg, #0B2E8A, #071F5E)
+- Light shadows with blue tint (rgba(11, 46, 138, 0.08))
 - Smooth hover animations & transitions
+- White cards with subtle borders
+- Line icons for modern aesthetic
+
+### Brand Personality
+- **النبرة**: عاطفية – راقية – ذكية
+- **الأسلوب**: Minimal – Clean
+- **الجمهور**: فئة شبابية + مستخدمي التقنية
+- **الشعور**: Trust + Love + Innovation
 
 ## 18 Perfume Analysis Modules
 

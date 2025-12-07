@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, #E9C9D3, #B37A94);">
+            <div class="stat-card" style="background: linear-gradient(135deg, #F2F4F8, #0B2E8A);">
                 <div class="stat-number">{{ stats.analysis_count }}</div>
                 <div class="stat-label">تحليلات كاملة</div>
             </div>
@@ -185,7 +185,7 @@
             <div class="col-md-4">
                 <div class="analysis-card p-3 rounded-4 bg-light border-0 h-100" style="cursor: pointer;" onclick="showAnalysisModal({{ analysis.id }})">
                     <div class="d-flex align-items-center mb-2">
-                        <div class="analysis-icon me-2" style="width: 40px; height: 40px; background: linear-gradient(135deg, #E9C9D3, #B37A94); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <div class="analysis-icon me-2" style="width: 40px; height: 40px; background: linear-gradient(135deg, #F2F4F8, #0B2E8A); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                             <i class="bi {{ analysis.module_icon or 'bi-star' }} text-white"></i>
                         </div>
                         <div>
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <span class="badge" style="background-color: #B37A94;">عرض التفاصيل</span>
+                        <span class="badge" style="background-color: #0B2E8A;">عرض التفاصيل</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@
 <div class="modal fade" id="analysisModal" tabindex="-1" aria-labelledby="analysisModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content" style="border-radius: 25px; border: none;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #E9C9D3, #B37A94); border-radius: 25px 25px 0 0; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #F2F4F8, #0B2E8A); border-radius: 25px 25px 0 0; border: none;">
                 <h5 class="modal-title text-white" id="analysisModalLabel">
                     <i class="bi bi-file-earmark-text me-2"></i>تفاصيل التحليل
                 </h5>
@@ -256,7 +256,7 @@ function showAnalysisModal(analysisId) {
     
     document.getElementById('analysisModalBody').innerHTML = `
         <div class="text-center py-5">
-            <div class="spinner-border" style="color: #B37A94;" role="status">
+            <div class="spinner-border" style="color: #0B2E8A;" role="status">
                 <span class="visually-hidden">جاري التحميل...</span>
             </div>
         </div>
@@ -268,7 +268,7 @@ function showAnalysisModal(analysisId) {
             let html = `
                 <div class="mb-4">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="analysis-icon me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #E9C9D3, #B37A94); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <div class="analysis-icon me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #F2F4F8, #0B2E8A); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                             <i class="bi ${data.module_icon || 'bi-star'} text-white fs-4"></i>
                         </div>
                         <div>
@@ -281,7 +281,7 @@ function showAnalysisModal(analysisId) {
             
             if (data.result_data) {
                 html += '<div class="bg-light rounded-4 p-4">';
-                html += '<h6 class="fw-bold mb-3" style="color: #B37A94;"><i class="bi bi-clipboard-data me-2"></i>نتائج التحليل</h6>';
+                html += '<h6 class="fw-bold mb-3" style="color: #0B2E8A;"><i class="bi bi-clipboard-data me-2"></i>نتائج التحليل</h6>';
                 html += renderJsonData(data.result_data);
                 html += '</div>';
             }
@@ -308,7 +308,7 @@ function renderJsonData(data) {
             if (typeof item === 'object') {
                 return '<li class="mb-2 p-2 bg-white rounded-3">' + renderJsonData(item) + '</li>';
             }
-            return `<li class="mb-1"><i class="bi bi-check2 me-2" style="color: #B37A94;"></i>${item}</li>`;
+            return `<li class="mb-1"><i class="bi bi-check2 me-2" style="color: #0B2E8A;"></i>${item}</li>`;
         }).join('') + '</ul>';
     }
     

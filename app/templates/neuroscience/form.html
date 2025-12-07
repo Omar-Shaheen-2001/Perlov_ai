@@ -69,7 +69,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         let perfumesHtml = '';
         if (a.recommended_perfumes && a.recommended_perfumes.length > 0) {
             perfumesHtml = `
-                <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.15) 0%, rgba(217, 163, 95, 0.15) 100%);">
+                <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.15) 0%, rgba(79, 125, 255, 0.15) 100%);">
                     <div class="card-body">
                         <h5 class="fw-bold mb-4"><i class="bi bi-stars me-2"></i>عطور مقترحة لك</h5>
                         <div class="row g-3">
@@ -78,8 +78,8 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
                                     <div class="card border-0 rounded-3 h-100" style="background: rgba(255,255,255,0.7);">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="fw-bold mb-0" style="color: #B37A94;">${p.name}</h6>
-                                                <span class="badge rounded-pill" style="background: linear-gradient(135deg, #B37A94 0%, #D9A35F 100%);">${p.category}</span>
+                                                <h6 class="fw-bold mb-0" style="color: #0B2E8A;">${p.name}</h6>
+                                                <span class="badge rounded-pill" style="background: linear-gradient(135deg, #0B2E8A 0%, #4F7DFF 100%);">${p.category}</span>
                                             </div>
                                             <p class="small mb-2"><i class="bi bi-flower1 me-1"></i><strong>النوتات:</strong> ${p.notes}</p>
                                             <p class="small mb-0 text-muted"><i class="bi bi-lightbulb me-1"></i>${p.why}</p>
@@ -93,10 +93,10 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
             `;
         }
         document.getElementById('results-content').innerHTML = `
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.3) 0%, rgba(11, 46, 138, 0.15) 100%);">
                 <div class="card-body"><h5 class="fw-bold"><i class="bi bi-person-badge me-2"></i>ملفك العصبي</h5><p class="mb-0 fs-5">${a.neural_profile}</p></div>
             </div>
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.3) 0%, rgba(242, 244, 248, 0.3) 100%);">
                 <div class="card-body"><h5 class="fw-bold"><i class="bi bi-emoji-heart-eyes me-2"></i>توصيات مزاجية</h5>${a.mood_recommendations.map(r => `<div class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i>${r}</div>`).join('')}</div>
             </div>
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">

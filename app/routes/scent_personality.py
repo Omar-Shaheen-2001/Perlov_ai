@@ -151,9 +151,9 @@ Bio-Scent:
         'personality_description': 'شخصية عطرية متوازنة وجذابة، تجمع بين الأناقة والثقة، مع حس فني عالي في اختيار الروائح',
         'strengths': ['التذوق الرفيع', 'الوعي الشخصي العميق', 'القدرة على التعبير الفني', 'الحساسية للتفاصيل'],
         'scent_colors': {
-            'primary': '#B37A94',
-            'secondary': '#D9A35F',
-            'accent': '#E9C9D3'
+            'primary': '#0B2E8A',
+            'secondary': '#4F7DFF',
+            'accent': '#3DDC97'
         },
         'mood_board': {
             'vibes': ['فاخر', 'دافئ', 'غامض', 'مصقول'],

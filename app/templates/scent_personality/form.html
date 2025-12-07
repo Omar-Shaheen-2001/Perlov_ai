@@ -17,7 +17,7 @@
                         <form id="analysis-form">
                             <!-- 1. البيانات الأساسية -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2" style="color: #B37A94;"></i>البيانات الأساسية</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-person-circle me-2" style="color: #0B2E8A;"></i>البيانات الأساسية</h4>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">العمر</label>
@@ -67,7 +67,7 @@
 
                             <!-- 2. تفضيلات العطور الأساسية -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-flower1 me-2" style="color: #D9A35F;"></i>تفضيلات العطور الأساسية</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-flower1 me-2" style="color: #4F7DFF;"></i>تفضيلات العطور الأساسية</h4>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label">الروائح المفضلة (يمكنك اختيار أكثر من واحدة)</label>
@@ -111,7 +111,7 @@
 
                             <!-- 3. المدخلات البيئية والجسدية -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-cloud-sun me-2" style="color: #E9C9D3;"></i>المدخلات البيئية والجسدية</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-cloud-sun me-2" style="color: #3DDC97;"></i>المدخلات البيئية والجسدية</h4>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">نوع البشرة</label>
@@ -159,7 +159,7 @@
 
                             <!-- 4. المدخلات النفسية والعاطفية -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-heart-pulse me-2" style="color: #B37A94;"></i>المدخلات النفسية والعاطفية</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-heart-pulse me-2" style="color: #0B2E8A;"></i>المدخلات النفسية والعاطفية</h4>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label">ماذا تريد أن يعكس عطرك عن شخصيتك؟ (يمكنك اختيار أكثر من واحد)</label>
@@ -205,7 +205,7 @@
 
                             <!-- 5. المدخلات السلوكية -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-graph-up me-2" style="color: #D9A35F;"></i>المدخلات السلوكية</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-graph-up me-2" style="color: #4F7DFF;"></i>المدخلات السلوكية</h4>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">نمط تفاعلك مع الروائح</label>
@@ -249,7 +249,7 @@
 
                             <!-- 6. مدخلات Bio-Scent (اختيارية) -->
                             <div class="section-divider mb-5">
-                                <h4 class="fw-bold mb-4"><i class="bi bi-mic me-2" style="color: #E9C9D3;"></i>مدخلات Bio-Scent (اختيارية)</h4>
+                                <h4 class="fw-bold mb-4"><i class="bi bi-mic me-2" style="color: #3DDC97;"></i>مدخلات Bio-Scent (اختيارية)</h4>
                                 <p class="text-muted small mb-3">هذه المدخلات اختيارية لكنها تعزز دقة التحليل</p>
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -381,9 +381,9 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         const a = result.analysis;
         const perfume = a.recommended_perfume;
         const perfumeHTML = perfume ? `
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(233, 201, 211, 0.4) 0%, rgba(217, 163, 95, 0.3) 100%); border: 2px solid #B37A94;">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.08) 0%, rgba(79, 125, 255, 0.08) 100%); border: 2px solid #0B2E8A;">
                 <div class="card-body">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-gem me-2" style="color: #D9A35F;"></i>عطرك المقترح</h5>
+                    <h5 class="fw-bold mb-3"><i class="bi bi-gem me-2" style="color: #0B2E8A;"></i>عطرك المقترح</h5>
                     <div class="row align-items-center g-3">
                         <div class="col-md-8">
                             <h6 class="fw-bold mb-1">${perfume.name}</h6>
@@ -395,12 +395,12 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
                                 <small class="badge bg-light text-dark">${perfume.category}</small>
                             </div>
                             <p class="mb-2"><strong>النوتات الرئيسية:</strong> <small>${perfume.main_notes}</small></p>
-                            <p class="mb-0"><strong>السعر:</strong> <span style="color: #D9A35F; font-weight: bold;">${perfume.price}</span></p>
+                            <p class="mb-0"><strong>السعر:</strong> <span style="color: #0B2E8A; font-weight: bold;">${perfume.price}</span></p>
                         </div>
                         <div class="col-md-4 text-center">
                             <div style="font-size: 48px; margin-bottom: 10px;">${perfume.image_placeholder}</div>
                             <div class="mb-2">
-                                <small><i class="bi bi-star-fill" style="color: #FFB84D;"></i> ${perfume.rating || 'N/A'}</small>
+                                <small><i class="bi bi-star-fill" style="color: #3DDC97;"></i> ${perfume.rating || 'N/A'}</small>
                             </div>
                             <a href="${perfume.store_url}" target="_blank" class="btn btn-gradient btn-sm rounded-pill w-100">
                                 <i class="bi bi-bag-heart me-1"></i>اشتري الآن
@@ -413,11 +413,11 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         ` : '';
         document.getElementById('results-content').innerHTML = `
             ${perfumeHTML}
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(179, 122, 148, 0.3) 0%, rgba(233, 201, 211, 0.3) 100%);">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.1) 0%, rgba(79, 125, 255, 0.1) 100%);">
                 <div class="card-body text-center"><h5 class="fw-bold"><i class="bi bi-person-heart me-2"></i>وصف الشخصية</h5><p class="mb-0 fs-5">${a.personality_description}</p></div>
             </div>
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(217, 163, 95, 0.3) 0%, rgba(245, 235, 220, 0.3) 100%);">
-                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-star me-2"></i>نقاط القوة</h5>${a.strengths.map(s => `<span class="badge bg-warning text-dark me-2 mb-2 fs-6">${s}</span>`).join('')}</div>
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(61, 220, 151, 0.1) 0%, rgba(43, 198, 134, 0.1) 100%);">
+                <div class="card-body"><h5 class="fw-bold"><i class="bi bi-star me-2"></i>نقاط القوة</h5>${a.strengths.map(s => `<span class="badge bg-warning text-white me-2 mb-2 fs-6">${s}</span>`).join('')}</div>
             </div>
             <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, ${a.scent_colors.primary}30 0%, ${a.scent_colors.secondary}30 100%);">
                 <div class="card-body"><h5 class="fw-bold"><i class="bi bi-palette me-2"></i>ألوان عطرك</h5>
@@ -427,7 +427,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
                     <div class="text-center"><div style="width:50px;height:50px;border-radius:50%;background:${a.scent_colors.accent}"></div><small>مميز</small></div>
                 </div></div>
             </div>
-            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(167, 243, 208, 0.15) 100%);">
+            <div class="card rounded-4 border-0 mb-3" style="background: linear-gradient(135deg, rgba(79, 125, 255, 0.1) 0%, rgba(11, 46, 138, 0.08) 100%);">
                 <div class="card-body"><h5 class="fw-bold"><i class="bi bi-image me-2"></i>Mood Board</h5>
                 <div class="row text-center">
                     <div class="col-3"><strong>الأجواء</strong><br>${a.mood_board.vibes.join(', ')}</div>

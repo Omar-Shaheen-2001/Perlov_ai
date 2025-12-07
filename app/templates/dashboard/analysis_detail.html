@@ -15,7 +15,7 @@
         <div class="col-lg-10">
             <div class="dashboard-card">
                 <div class="d-flex align-items-center mb-4">
-                    <div class="analysis-icon me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #E9C9D3, #B37A94); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                    <div class="analysis-icon me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #F2F4F8, #0B2E8A); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
                         <i class="bi {{ analysis.module_icon or 'bi-star' }} text-white fs-3"></i>
                     </div>
                     <div>
@@ -26,7 +26,7 @@
                 
                 {% if result_data %}
                 <div class="bg-light rounded-4 p-4 mb-4">
-                    <h5 class="fw-bold mb-3" style="color: #B37A94;">
+                    <h5 class="fw-bold mb-3" style="color: #0B2E8A;">
                         <i class="bi bi-clipboard-data me-2"></i>نتائج التحليل
                     </h5>
                     <div class="result-container" id="resultContainer">
@@ -57,7 +57,7 @@ function renderJsonData(data) {
             if (typeof item === 'object') {
                 return '<li class="mb-2 p-3 bg-white rounded-3 shadow-sm">' + renderJsonData(item) + '</li>';
             }
-            return `<li class="mb-1"><i class="bi bi-check2 me-2" style="color: #B37A94;"></i>${item}</li>`;
+            return `<li class="mb-1"><i class="bi bi-check2 me-2" style="color: #0B2E8A;"></i>${item}</li>`;
         }).join('') + '</ul>';
     }
     
@@ -67,7 +67,7 @@ function renderJsonData(data) {
             if (typeof value === 'object' && value !== null) {
                 html += `<div class="col-12 mb-3">
                     <h6 class="fw-bold mb-2" style="color: #1F1F1F;">${formatKey(key)}</h6>
-                    <div class="ps-3 border-start" style="border-color: #E9C9D3 !important; border-width: 3px !important;">${renderJsonData(value)}</div>
+                    <div class="ps-3 border-start" style="border-color: #0B2E8A !important; border-width: 3px !important;">${renderJsonData(value)}</div>
                 </div>`;
             } else {
                 html += `<div class="col-md-6 col-12">
