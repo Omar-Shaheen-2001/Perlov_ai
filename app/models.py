@@ -138,3 +138,30 @@ class Article(db.Model):
     views_count = db.Column(db.Integer, default=0)
     
     creator = db.relationship('User', backref=db.backref('articles', lazy=True), foreign_keys=[created_by])
+    comments = db.relationship('ArticleComment', backref='article', lazy=True, cascade='all, delete-orphan')
+    likes = db.relationship('ArticleLike', backref='article', lazy=True, cascade='all, delete-orphan')
+
+class ArticleComment(db.Model):
+    __tablename__ = 'article_comments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    name = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    content = db.Column(db.Text, nullable=False)
+    is_approved = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('article_comments', lazy=True))
+
+class ArticleLike(db.Model):
+    __tablename__ = 'article_likes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    session_id = db.Column(db.String(100), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('article_likes', lazy=True))

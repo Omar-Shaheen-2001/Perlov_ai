@@ -38,9 +38,46 @@
                     {{ article.content_ar | safe }}
                 </div>
                 
+                <!-- Engagement Bar -->
+                <div class="mt-5 pt-4 border-top border-bottom py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-3">
+                            <!-- Like Button -->
+                            <form method="POST" action="{{ url_for('articles.like_article', slug=article.slug) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-link btn-lg text-decoration-none {% if user_liked %}text-danger{% else %}text-muted{% endif %}" title="إعجاب">
+                                    <i class="bi {% if user_liked %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                    <span class="ms-2">{{ article.likes|length }}</span>
+                                </button>
+                            </form>
+                            
+                            <!-- Comments Count -->
+                            <a href="#comments" class="btn btn-link btn-lg text-decoration-none text-muted" title="تعليقات">
+                                <i class="bi bi-chat-left"></i>
+                                <span class="ms-2">{{ comments|length }}</span>
+                            </a>
+                        </div>
+                        
+                        <!-- Share Buttons -->
+                        <div class="d-flex gap-2">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" class="btn btn-sm btn-outline-primary" title="مشاركة على فيسبوك">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ article.title_ar }}" target="_blank" class="btn btn-sm btn-outline-info" title="مشاركة على تويتر">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="https://wa.me/?text={{ article.title_ar }}%20{{ request.url }}" target="_blank" class="btn btn-sm btn-outline-success" title="مشاركة على واتس آب">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                            <button onclick="copyLink()" class="btn btn-sm btn-outline-secondary" title="نسخ الرابط">
+                                <i class="bi bi-link-45deg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Keywords -->
                 {% if article.keywords %}
-                <div class="mt-5 pt-4 border-top">
+                <div class="mt-5 pt-4">
                     <strong>الكلمات المفتاحية:</strong>
                     <div class="mt-3">
                         {% for keyword in article.keywords.split(',') %}
@@ -78,6 +115,69 @@
             </div>
             {% endif %}
             
+            <!-- Comments Section -->
+            <div class="mt-5 pt-5 border-top" id="comments">
+                <h3 class="mb-4">التعليقات ({{ comments|length }})</h3>
+                
+                <!-- Comment Form -->
+                <div class="card border-0 shadow-sm mb-4 p-4">
+                    <h5 class="mb-3">أضف تعليقاً</h5>
+                    <form method="POST" action="{{ url_for('articles.add_comment', slug=article.slug) }}">
+                        {% if current_user.is_authenticated %}
+                        <input type="hidden" name="name" value="{{ current_user.name }}">
+                        <input type="hidden" name="email" value="{{ current_user.email }}">
+                        {% else %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" name="name" class="form-control" placeholder="اسمك" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" name="email" class="form-control" placeholder="بريدك الإلكتروني" required>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <textarea name="content" class="form-control" rows="4" placeholder="أكتب تعليقك هنا..." required maxlength="1000"></textarea>
+                            <small class="text-muted">الحد الأقصى 1000 حرف</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-luxury">
+                            <i class="bi bi-send"></i> نشر التعليق
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Comments List -->
+                {% if comments %}
+                <div class="comments-list">
+                    {% for comment in comments %}
+                    <div class="card border-0 shadow-sm mb-3 p-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ comment.name }}</h6>
+                                <small class="text-muted">{{ comment.created_at.strftime('%d %B %Y في %H:%M') }}</small>
+                            </div>
+                            {% if current_user.is_authenticated and (current_user.id == comment.user_id or current_user.is_admin) %}
+                            <form method="POST" action="{{ url_for('articles.delete_comment', comment_id=comment.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف" onclick="return confirm('هل تريد حذف هذا التعليق؟');">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        <p class="mt-3 mb-0">{{ comment.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-chat-left" style="font-size: 2rem;"></i>
+                    <p class="mt-3">لا توجد تعليقات حتى الآن. كن أول من يعلق!</p>
+                </div>
+                {% endif %}
+            </div>
+            
             <!-- Back Link -->
             <div class="mt-5">
                 <a href="{{ url_for('articles.index') }}" class="btn btn-outline-secondary">
@@ -105,5 +205,30 @@
         margin-bottom: 1rem;
         padding-right: 1.5rem;
     }
+    
+    .btn-link {
+        font-size: 1.1rem !important;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-link:hover {
+        transform: scale(1.1);
+    }
+    
+    .comments-list {
+        max-height: 800px;
+        overflow-y: auto;
+    }
 </style>
+
+<script>
+    function copyLink() {
+        const url = '{{ request.url }}';
+        navigator.clipboard.writeText(url).then(() => {
+            alert('تم نسخ الرابط بنجاح!');
+        }).catch(() => {
+            alert('فشل في نسخ الرابط');
+        });
+    }
+</script>
 {% endblock %}
