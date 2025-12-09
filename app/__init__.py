@@ -51,6 +51,7 @@ def create_app():
     from app.routes.oil_mixer import oil_mixer_bp
     from app.routes.marketplace import marketplace_bp
     from app.routes.perfume_blend_predictor import perfume_blend_bp
+    from app.routes.articles import articles_bp
     
     # Register core blueprints
     app.register_blueprint(auth_bp)
@@ -79,6 +80,7 @@ def create_app():
     app.register_blueprint(oil_mixer_bp)
     app.register_blueprint(marketplace_bp)
     app.register_blueprint(perfume_blend_bp)
+    app.register_blueprint(articles_bp)
     
     with app.app_context():
         db.create_all()

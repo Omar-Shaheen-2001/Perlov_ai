@@ -3,7 +3,11 @@ from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user
 from app import db
-from app.models import User, ScentProfile, CustomPerfume, AffiliateProduct, Recommendation
+from app.models import User, ScentProfile, CustomPerfume, AffiliateProduct, Recommendation, Article
+from app.ai_service import generate_article
+import json
+from datetime import datetime
+import re
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -194,3 +198,99 @@ def delete_product(id):
     
     flash('تم حذف المنتج بنجاح', 'success')
     return redirect(url_for('admin.products'))
+
+@admin_bp.route('/articles')
+@admin_required
+def articles():
+    articles = Article.query.order_by(Article.created_at.desc()).all()
+    return render_template('admin/articles_list.html', articles=articles)
+
+@admin_bp.route('/articles/create', methods=['GET', 'POST'])
+@admin_required
+def create_article():
+    if request.method == 'POST':
+        topic = request.form.get('topic', '').strip()
+        keywords = request.form.get('keywords', '').strip()
+        tone = request.form.get('tone', 'إعلامي متوازن').strip()
+        
+        if not topic:
+            flash('يجب إدخال موضوع المقال', 'error')
+            return render_template('admin/article_generator.html')
+        
+        ai_result = generate_article(topic, keywords, tone)
+        
+        if not ai_result.get('success'):
+            flash(f'خطأ في توليد المقال: {ai_result.get("error")}', 'error')
+            return render_template('admin/article_generator.html')
+        
+        slug = re.sub(r'[^\w\s-]', '', topic).strip().replace(' ', '-').lower()
+        slug = slug[:50]
+        
+        article = Article(
+            title_ar=ai_result['title'],
+            slug=slug,
+            content_ar=ai_result['content'],
+            summary_ar=ai_result['summary'],
+            topic=topic,
+            keywords=ai_result['keywords'],
+            is_published=False,
+            created_by=current_user.id
+        )
+        
+        db.session.add(article)
+        db.session.commit()
+        
+        flash('تم إنشاء المقال بنجاح. يمكنك الآن نشره', 'success')
+        return redirect(url_for('admin.edit_article', id=article.id))
+    
+    return render_template('admin/article_generator.html')
+
+@admin_bp.route('/articles/edit/<int:id>', methods=['GET', 'POST'])
+@admin_required
+def edit_article(id):
+    article = Article.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        article.title_ar = request.form.get('title_ar', '').strip()
+        article.content_ar = request.form.get('content_ar', '').strip()
+        article.summary_ar = request.form.get('summary_ar', '').strip()
+        article.topic = request.form.get('topic', '').strip()
+        article.keywords = request.form.get('keywords', '').strip()
+        article.image_url = request.form.get('image_url', '').strip()
+        
+        db.session.commit()
+        flash('تم تحديث المقال بنجاح', 'success')
+    
+    return render_template('admin/article_edit.html', article=article)
+
+@admin_bp.route('/articles/publish/<int:id>', methods=['POST'])
+@admin_required
+def publish_article(id):
+    article = Article.query.get_or_404(id)
+    article.is_published = True
+    article.published_at = datetime.utcnow()
+    db.session.commit()
+    
+    flash(f'تم نشر المقال "{article.title_ar}" بنجاح', 'success')
+    return redirect(url_for('admin.articles'))
+
+@admin_bp.route('/articles/unpublish/<int:id>', methods=['POST'])
+@admin_required
+def unpublish_article(id):
+    article = Article.query.get_or_404(id)
+    article.is_published = False
+    db.session.commit()
+    
+    flash(f'تم إلغاء نشر المقال "{article.title_ar}"', 'success')
+    return redirect(url_for('admin.articles'))
+
+@admin_bp.route('/articles/delete/<int:id>', methods=['POST'])
+@admin_required
+def delete_article(id):
+    article = Article.query.get_or_404(id)
+    title = article.title_ar
+    db.session.delete(article)
+    db.session.commit()
+    
+    flash(f'تم حذف المقال "{title}" بنجاح', 'success')
+    return redirect(url_for('admin.articles'))

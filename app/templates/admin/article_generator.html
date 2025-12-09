@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}إنشاء مقال - إدارة PERLOV{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-luxury text-white py-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square"></i> توليد مقال بالذكاء الاصطناعي
+                    </h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation">
+                        <div class="mb-4">
+                            <label for="topic" class="form-label fw-bold">موضوع المقال *</label>
+                            <input type="text" class="form-control form-control-lg" id="topic" name="topic" 
+                                   placeholder="مثال: فوائد العطور الطبيعية" required>
+                            <small class="text-muted">أدخل الموضوع الذي تريد كتابة مقال عنه</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="keywords" class="form-label fw-bold">الكلمات المفتاحية</label>
+                            <input type="text" class="form-control form-control-lg" id="keywords" name="keywords"
+                                   placeholder="عطور, روائح, فوائد صحية">
+                            <small class="text-muted">أدخل الكلمات المفتاحية مفصولة بفواصل</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="tone" class="form-label fw-bold">نبرة المقال</label>
+                            <select class="form-select form-select-lg" id="tone" name="tone">
+                                <option value="إعلامي متوازن">إعلامي متوازن</option>
+                                <option value="متخصص وعلمي">متخصص وعلمي</option>
+                                <option value="خفيف وودي">خفيف وودي</option>
+                                <option value="فاخر وراقي">فاخر وراقي</option>
+                                <option value="تعليمي مفصل">تعليمي مفصل</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-luxury btn-lg">
+                                <i class="bi bi-lightning-fill"></i> توليد المقال بالذكاء الاصطناعي
+                            </button>
+                            <a href="{{ url_for('admin.articles') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> العودة
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>ملاحظة:</strong> سيقوم الذكاء الاصطناعي بإنشاء مقال شامل بناءً على المدخلات التي تقدمها.
+                        يمكنك تعديل المقال بعد إنشاؤه قبل نشره.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

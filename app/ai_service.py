@@ -569,3 +569,57 @@ def generate_recommendations(query, scent_profile=None, products=None):
     except Exception as e:
         default_response["error"] = str(e)
         return default_response
+
+def generate_article(topic, keywords, tone, language='ar'):
+    """Generate a comprehensive article using AI"""
+    
+    prompt = f"""
+    أنت محرر ومؤلف محتوى متخصص في مجال العطور والروائح.
+    
+    قم بإنشاء مقال شامل حول الموضوع التالي:
+    الموضوع: {topic}
+    الكلمات المفتاحية: {keywords}
+    النبرة: {tone}
+    
+    يجب أن يتضمن المقال:
+    1. عنوان جاذب وخلاق
+    2. ملخص قصير (100-150 كلمة)
+    3. محتوى غني وشامل (1000-1500 كلمة)
+    4. استنتاج قوي
+    5. نصائح عملية
+    
+    أجب بصيغة JSON فقط:
+    {{
+        "title": "العنوان",
+        "summary": "الملخص",
+        "content": "المحتوى الكامل",
+        "keywords": "كلمات مفتاحية"
+    }}
+    """
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "أنت كاتب محتوى متخصص في مجال العطور. أنتج محتوى عالي الجودة وجذاب وغني بالمعلومات. أجب بصيغة JSON فقط."},
+                {"role": "user", "content": prompt}
+            ],
+            max_completion_tokens=2500
+        )
+        
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
+        
+        if parsed is None:
+            return {"success": False, "error": "فشل معالجة الرد"}
+        
+        return {
+            "success": True,
+            "title": parsed.get('title', f'مقال عن {topic}'),
+            "summary": parsed.get('summary', ''),
+            "content": parsed.get('content', ''),
+            "keywords": parsed.get('keywords', keywords)
+        }
+    
+    except Exception as e:
+        return {"success": False, "error": str(e)}

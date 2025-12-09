@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}تعديل المقال - PERLOV Admin{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4"><i class="bi bi-pencil-square"></i> تعديل المقال</h2>
+    
+    <div class="row">
+        <div class="col-lg-10">
+            <form method="POST" class="needs-validation">
+                <div class="mb-4">
+                    <label for="title_ar" class="form-label fw-bold">العنوان</label>
+                    <input type="text" class="form-control form-control-lg" id="title_ar" name="title_ar" 
+                           value="{{ article.title_ar }}" required>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="topic" class="form-label fw-bold">الموضوع</label>
+                        <input type="text" class="form-control" id="topic" name="topic" 
+                               value="{{ article.topic }}" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="image_url" class="form-label fw-bold">رابط الصورة</label>
+                        <input type="url" class="form-control" id="image_url" name="image_url" 
+                               value="{{ article.image_url or '' }}">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="summary_ar" class="form-label fw-bold">الملخص</label>
+                    <textarea class="form-control" id="summary_ar" name="summary_ar" rows="3" required>{{ article.summary_ar }}</textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="content_ar" class="form-label fw-bold">المحتوى</label>
+                    <textarea class="form-control" id="content_ar" name="content_ar" rows="15" required>{{ article.content_ar }}</textarea>
+                    <small class="text-muted">يمكنك استخدام علامات HTML مثل &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;</small>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="keywords" class="form-label fw-bold">الكلمات المفتاحية</label>
+                    <input type="text" class="form-control" id="keywords" name="keywords" 
+                           value="{{ article.keywords or '' }}" placeholder="كلمة1, كلمة2, كلمة3">
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-luxury btn-lg">
+                        <i class="bi bi-check-circle"></i> حفظ التعديلات
+                    </button>
+                    
+                    {% if not article.is_published %}
+                    <form method="POST" action="{{ url_for('admin.publish_article', id=article.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-cloud-upload"></i> نشر المقال
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('admin.unpublish_article', id=article.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-cloud-slash"></i> إلغاء النشر
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('admin.articles') }}" class="btn btn-outline-secondary btn-lg ms-auto">
+                        <i class="bi bi-arrow-left"></i> العودة
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-lg-2">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <strong>معلومات المقال</strong>
+                </div>
+                <div class="card-body">
+                    <p><small><strong>الحالة:</strong></small><br>
+                    {% if article.is_published %}
+                    <span class="badge bg-success">منشور</span>
+                    {% else %}
+                    <span class="badge bg-warning">مسودة</span>
+                    {% endif %}</p>
+                    
+                    <p><small><strong>المشاهدات:</strong></small><br>{{ article.views_count }}</p>
+                    
+                    <p><small><strong>تاريخ الإنشاء:</strong></small><br>{{ article.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    
+                    {% if article.published_at %}
+                    <p><small><strong>تاريخ النشر:</strong></small><br>{{ article.published_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <a href="{{ url_for('articles.view', slug=article.slug) }}" class="btn btn-sm btn-info w-100" target="_blank">
+                        <i class="bi bi-eye"></i> معاينة
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

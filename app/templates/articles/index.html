@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}المقالات - PERLOV{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-luxury mb-3">
+            <i class="bi bi-newspaper"></i> مقالات عن العطور والروائح
+        </h1>
+        <p class="lead text-muted">اكتشف معلومات مفيدة وإرشادات متخصصة حول عالم العطور</p>
+    </div>
+    
+    {% if articles %}
+    <div class="row g-4">
+        {% for article in articles %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 overflow-hidden hover-card">
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title_ar }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-luxury text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-newspaper" style="font-size: 4rem;"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <span class="badge bg-info mb-2" style="width: fit-content;">{{ article.topic }}</span>
+                    
+                    <h5 class="card-title">{{ article.title_ar }}</h5>
+                    
+                    <p class="card-text text-muted flex-grow-1">{{ article.summary_ar[:150] }}...</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar"></i> {{ article.published_at.strftime('%Y-%m-%d') }}
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-eye"></i> {{ article.views_count }}
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{{ url_for('articles.view', slug=article.slug) }}" class="btn btn-luxury w-100">
+                        اقرأ المقال <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+        <p class="mt-3">لا توجد مقالات منشورة حتى الآن</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(11, 46, 138, 0.15) !important;
+    }
+</style>
+{% endblock %}

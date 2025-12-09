@@ -115,3 +115,26 @@ class AnalysisResult(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User', backref=db.backref('analysis_results', lazy=True))
+
+class Article(db.Model):
+    __tablename__ = 'articles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title_ar = db.Column(db.String(200), nullable=False)
+    title_en = db.Column(db.String(200), nullable=True)
+    slug = db.Column(db.String(200), unique=True, nullable=False)
+    content_ar = db.Column(db.Text, nullable=False)
+    content_en = db.Column(db.Text, nullable=True)
+    summary_ar = db.Column(db.String(500), nullable=False)
+    summary_en = db.Column(db.String(500), nullable=True)
+    image_url = db.Column(db.String(500), nullable=True)
+    topic = db.Column(db.String(100), nullable=False)
+    keywords = db.Column(db.Text, nullable=True)
+    is_published = db.Column(db.Boolean, default=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    published_at = db.Column(db.DateTime, nullable=True)
+    views_count = db.Column(db.Integer, default=0)
+    
+    creator = db.relationship('User', backref=db.backref('articles', lazy=True), foreign_keys=[created_by])
