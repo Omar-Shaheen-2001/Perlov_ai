@@ -130,6 +130,7 @@ class Article(db.Model):
     image_url = db.Column(db.String(500), nullable=True)
     topic = db.Column(db.String(100), nullable=False)
     keywords = db.Column(db.Text, nullable=True)
+    suggested_services = db.Column(db.Text, nullable=True)
     is_published = db.Column(db.Boolean, default=False)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

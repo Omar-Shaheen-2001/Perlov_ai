@@ -228,6 +228,9 @@ def create_article():
         slug = re.sub(r'[^\w\s-]', '', topic).strip().replace(' ', '-').lower()
         slug = slug[:50]
         
+        import json
+        suggested_services = json.dumps(ai_result.get('suggested_services', []), ensure_ascii=False)
+        
         article = Article(
             title_ar=ai_result['title'],
             slug=slug,
@@ -235,6 +238,7 @@ def create_article():
             summary_ar=ai_result['summary'],
             topic=topic,
             keywords=ai_result['keywords'],
+            suggested_services=suggested_services,
             is_published=True,
             published_at=datetime.utcnow(),
             created_by=current_user.id

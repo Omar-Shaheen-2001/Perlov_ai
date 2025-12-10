@@ -45,6 +45,22 @@
                            value="{{ article.keywords or '' }}" placeholder="كلمة1, كلمة2, كلمة3">
                 </div>
                 
+                {% if article.suggested_services %}
+                <div class="mb-4 p-3 bg-light rounded" style="border-left: 4px solid #0B2E8A;">
+                    <label class="fw-bold mb-3"><i class="bi bi-lightbulb"></i> الخدمات المقترحة المرتبطة بهذا المقال</label>
+                    <div class="suggested-services d-flex flex-wrap gap-2">
+                        {% set services_data = article.suggested_services | fromjson %}
+                        {% if services_data %}
+                            {% for service in services_data %}
+                                <span class="badge bg-info" style="padding: 8px 12px; font-size: 0.9rem;">{{ service }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">لم يتم اكتشاف خدمات مقترحة</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-luxury btn-lg">
                         <i class="bi bi-check-circle"></i> حفظ التعديلات

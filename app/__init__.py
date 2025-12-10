@@ -84,6 +84,21 @@ def create_app():
     app.register_blueprint(articles_bp)
     app.register_blueprint(seo_bp)
     
+    # Add custom Jinja2 filters
+    import json
+    @app.template_filter('fromjson')
+    def fromjson_filter(value):
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except:
+                return []
+        return value
+    
+    @app.template_filter('tojson_safe')
+    def tojson_safe_filter(value):
+        return json.dumps(value, ensure_ascii=False)
+    
     with app.app_context():
         db.create_all()
         # Only seed data if not in production
