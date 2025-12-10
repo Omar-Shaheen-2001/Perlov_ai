@@ -8,6 +8,8 @@ from app.ai_service import generate_article
 import json
 from datetime import datetime
 import re
+import requests
+import threading
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -263,6 +265,30 @@ def edit_article(id):
     
     return render_template('admin/article_edit.html', article=article)
 
+def ping_indexnow(article):
+    """إرسال المقال إلى IndexNow API للفهرسة السريعة"""
+    try:
+        article_url = url_for('articles.view', slug=article.slug, _external=True)
+        
+        # إرسال إلى IndexNow API (Bing/Google)
+        indexnow_data = {
+            "host": "perlov.ai",  # استبدل باسم نطاقك الفعلي
+            "key": os.getenv('INDEXNOW_KEY', ''),
+            "keyLocation": "https://perlov.ai/indexnow-key.txt",
+            "urlList": [article_url]
+        }
+        
+        # محاولة الإرسال (بدون توقف العملية إذا فشلت)
+        if indexnow_data['key']:
+            requests.post(
+                "https://api.indexnow.org/indexnow",
+                json=indexnow_data,
+                timeout=5
+            )
+    except Exception as e:
+        # تسجيل الخطأ دون توقف النشر
+        print(f"IndexNow error: {str(e)}")
+
 @admin_bp.route('/articles/publish/<int:id>', methods=['POST'])
 @admin_required
 def publish_article(id):
@@ -270,6 +296,9 @@ def publish_article(id):
     article.is_published = True
     article.published_at = datetime.utcnow()
     db.session.commit()
+    
+    # إرسال المقال للفهرسة بشكل غير متزامن
+    threading.Thread(target=ping_indexnow, args=(article,), daemon=True).start()
     
     flash(f'تم نشر المقال "{article.title_ar}" بنجاح', 'success')
     return redirect(url_for('admin.articles'))

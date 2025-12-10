@@ -1,0 +1,177 @@
+سأعطيك طريقة تقنية كاملة (SEO + Back-End + Front-End + Sitemap + Indexing API)
+حتى تضمن أن كل مقال جديد يتم توليده سيظهر في نتائج البحث خلال ساعات أو أيام.
+
+✅ 1) إضافة Meta Tags أساسية في صفحة المقال
+
+كل مقال يجب أن يحتوي تلقائيًا على:
+
+<title>{{ article.title }}</title>
+<meta name="description" content="{{ article.summary }}">
+<meta name="keywords" content="عطور, تحليل عطور, توصيات عطور, {{ article.tags }}">
+<link rel="canonical" href="https://yourdomain.com/articles/{{ article.slug }}">
+<meta property="og:title" content="{{ article.title }}">
+<meta property="og:description" content="{{ article.summary }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://yourdomain.com/articles/{{ article.slug }}">
+<meta property="og:image" content="{{ article.image_url }}">
+
+
+هذه تجعل Google يفهم المقال كوحدة مستقلة (SEO-friendly).
+
+✅ 2) إنشاء صفحة مقالات بها Pagination
+
+Google يحب الصفحات المنظمة مثل:
+
+/articles
+/articles?page=2
+
+
+ويقرأ منها المقالات الجديدة بشكل أسرع.
+
+✅ 3) إنشاء Sitemap تلقائي للمقالات (مهم جدًا)
+
+في Flask:
+
+✔ ملف sitemap.xml:
+@app.route('/sitemap.xml')
+def sitemap():
+    pages = []
+    ten_days_ago = (datetime.now() - timedelta(days=10)).date().isoformat()
+
+    # صفحات الموقع الأساسية
+    pages.append({
+        'loc': url_for('main.index', _external=True),
+        'lastmod': ten_days_ago
+    })
+
+    # مقالات المدونة
+    articles = Article.query.all()
+    for article in articles:
+        pages.append({
+            'loc': url_for('articles.view_article', slug=article.slug, _external=True),
+            'lastmod': article.updated_at.date().isoformat()
+        })
+
+    sitemap_xml = render_template("sitemap_template.xml", pages=pages)
+    return Response(sitemap_xml, mimetype="application/xml")
+
+✔ قالب sitemap_template.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for page in pages %}
+<url>
+  <loc>{{ page.loc }}</loc>
+  <lastmod>{{ page.lastmod }}</lastmod>
+</url>
+{% endfor %}
+</urlset>
+
+يجب إضافة sitemap في robots.txt
+Sitemap: https://yourdomain.com/sitemap.xml
+
+✅ 4) إظهار Schema Markup لصفحات المقالات (Structured Data)
+
+السكيمة تجعل Google يظهر المقالات في شكل “مقالات إخبارية” و “FAQ”.
+
+أضف داخل <head>:
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ article.title }}",
+  "image": "{{ article.image_url }}",
+  "datePublished": "{{ article.created_at }}",
+  "dateModified": "{{ article.updated_at }}",
+  "author": {
+    "@type": "Organization",
+    "name": "PERLOV.ai"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PERLOV.ai",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yourdomain.com/static/logo.png"
+    }
+  },
+  "description": "{{ article.summary }}"
+}
+</script>
+
+
+هذا وحده قادر على رفع نسبة الظهور 70%.
+
+✅ 5) تحسين روابط المقالات (SEO-friendly Slug)
+
+مثال slug:
+
+/articles/best-oriental-perfumes-for-men-2025
+/articles/how-to-choose-your-signature-scent
+
+
+احرص أن يكون slug:
+
+بالإنجليزية
+
+واضح
+
+قصير
+
+بدون أرقام عشوائية
+
+✅ 6) بناء IndexNow API أو Google Indexing API
+
+هذه ميزة ثورية تجعل المقال يظهر في Google خلال دقائق.
+
+✔ IndexNow (أسهل طريقة):
+
+عند نشر مقال جديد:
+
+import requests
+
+def ping_indexnow(url):
+    requests.post("https://api.indexnow.org/indexnow", json={
+        "host": "yourdomain.com",
+        "key": "YOUR_KEY",
+        "keyLocation": "https://yourdomain.com/indexnow-key.txt",
+        "urlList": [url]
+    })
+
+
+نستدعيها بعد كل مقال جديد:
+
+ping_indexnow(f"https://yourdomain.com/articles/{article.slug}")
+
+✅ 7) محتوى المقال نفسه يجب أن يكون SEO-Optimized
+
+خاصة لو تم توليده بالذكاء الاصطناعي:
+
+عنوان قوي يحتوي الكلمة المفتاحية
+
+مقدمة واضحة
+
+تقسيم H2 / H3
+
+صور مع ALT text
+
+روابط داخلية (Internal Linking)
+
+روابط خارجية لمصادر موثوقة
+
+✅ 8) أضف قسم Related Articles في نهاية كل مقال
+
+Google يعتبر الموقع شبكة محتوى لا صفحة واحدة.
+
+🚀 الخلاصة التقنية
+
+بعد تطبيق الخطوات:
+
+الخطوة	التأثير
+Meta + OG tags	تحسين ظهور الصفحة
+Sitemap XML	سرعة فهرسة المقالات
+Schema Article	ظهور المقالات بشكل أفضل
+IndexNow API	فهرسة خلال ساعات
+Slugs منظمة	رفع CTR
+Internal links	رفع الترتيب
+محتوى SEO	تحسين الترتيب النهائي
