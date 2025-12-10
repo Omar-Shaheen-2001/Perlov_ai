@@ -235,15 +235,19 @@ def create_article():
             summary_ar=ai_result['summary'],
             topic=topic,
             keywords=ai_result['keywords'],
-            is_published=False,
+            is_published=True,
+            published_at=datetime.utcnow(),
             created_by=current_user.id
         )
         
         db.session.add(article)
         db.session.commit()
         
-        flash('تم إنشاء المقال بنجاح. يمكنك الآن نشره', 'success')
-        return redirect(url_for('admin.edit_article', id=article.id))
+        # إرسال المقال للفهرسة بشكل غير متزامن
+        threading.Thread(target=ping_indexnow, args=(article,), daemon=True).start()
+        
+        flash('تم إنشاء ونشر المقال بنجاح!', 'success')
+        return redirect(url_for('admin.articles'))
     
     return render_template('admin/article_generator.html')
 

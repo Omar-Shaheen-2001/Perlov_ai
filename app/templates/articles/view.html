@@ -244,19 +244,211 @@
 <style>
     .article-content h2 {
         color: #0B2E8A;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.2rem;
         font-weight: bold;
+        font-size: 1.6rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #4F7DFF;
+        scroll-margin-top: 80px;
+    }
+    
+    .article-content h3 {
+        color: #071F5E;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        font-size: 1.3rem;
+        padding-right: 15px;
+        border-right: 4px solid #3DDC97;
     }
     
     .article-content p {
-        margin-bottom: 1rem;
+        margin-bottom: 1.2rem;
         text-align: justify;
+        line-height: 1.9;
     }
     
-    .article-content ul {
-        margin-bottom: 1rem;
+    .article-content ul, .article-content ol {
+        margin-bottom: 1.2rem;
         padding-right: 1.5rem;
+        line-height: 1.9;
+    }
+    
+    .article-content li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .article-content .toc-box {
+        background: linear-gradient(135deg, rgba(11, 46, 138, 0.08) 0%, rgba(79, 125, 255, 0.08) 100%);
+        border: 2px solid #0B2E8A;
+        border-radius: 15px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .article-content .toc-box h4 {
+        color: #0B2E8A;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .article-content .toc-box ol {
+        margin-bottom: 0;
+        counter-reset: toc-counter;
+        list-style: none;
+        padding-right: 0;
+    }
+    
+    .article-content .toc-box li {
+        counter-increment: toc-counter;
+        margin-bottom: 0.6rem;
+        padding-right: 2rem;
+        position: relative;
+    }
+    
+    .article-content .toc-box li::before {
+        content: counter(toc-counter);
+        position: absolute;
+        right: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: #0B2E8A;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+    
+    .article-content .toc-box a {
+        color: #071F5E;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .article-content .toc-box a:hover {
+        color: #4F7DFF;
+        padding-right: 5px;
+    }
+    
+    .article-content .quote-box, .article-content blockquote.quote-box {
+        background: linear-gradient(135deg, rgba(79, 125, 255, 0.1) 0%, rgba(61, 220, 151, 0.1) 100%);
+        border-right: 5px solid #4F7DFF;
+        border-radius: 0 15px 15px 0;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        font-style: italic;
+        position: relative;
+    }
+    
+    .article-content .quote-box::before, .article-content blockquote.quote-box::before {
+        content: '"';
+        font-size: 4rem;
+        color: #4F7DFF;
+        opacity: 0.3;
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        font-family: Georgia, serif;
+    }
+    
+    .article-content .quote-box p, .article-content blockquote.quote-box p {
+        font-size: 1.15rem;
+        color: #1C1C1C;
+        margin-bottom: 0.5rem;
+    }
+    
+    .article-content .quote-box cite, .article-content blockquote.quote-box cite {
+        display: block;
+        font-size: 0.95rem;
+        color: #0B2E8A;
+        font-weight: 600;
+        margin-top: 0.8rem;
+        font-style: normal;
+    }
+    
+    .article-content .tip-box {
+        background: linear-gradient(135deg, rgba(61, 220, 151, 0.15) 0%, rgba(43, 198, 134, 0.15) 100%);
+        border: 2px solid #3DDC97;
+        border-radius: 15px;
+        padding: 1.2rem 1.5rem;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+    
+    .article-content .tip-box::before {
+        content: '💡';
+        position: absolute;
+        top: -15px;
+        right: 20px;
+        background: white;
+        padding: 0 8px;
+        font-size: 1.3rem;
+    }
+    
+    .article-content .tip-box strong {
+        color: #2bc686;
+    }
+    
+    .article-content .reference-box {
+        background: linear-gradient(135deg, rgba(28, 28, 28, 0.05) 0%, rgba(79, 125, 255, 0.08) 100%);
+        border: 1px solid #dee2e6;
+        border-radius: 15px;
+        padding: 1.5rem 2rem;
+        margin-top: 3rem;
+    }
+    
+    .article-content .reference-box h4 {
+        color: #0B2E8A;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    .article-content .reference-box ol {
+        margin-bottom: 0;
+        padding-right: 1.2rem;
+    }
+    
+    .article-content .reference-box li {
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+        color: #666;
+    }
+    
+    .article-content .reference-box a {
+        color: #4F7DFF;
+        text-decoration: none;
+    }
+    
+    .article-content .reference-box a:hover {
+        text-decoration: underline;
+    }
+    
+    .article-content a {
+        color: #0B2E8A;
+        text-decoration: none;
+        border-bottom: 1px dashed #4F7DFF;
+        transition: all 0.3s ease;
+    }
+    
+    .article-content a:hover {
+        color: #4F7DFF;
+        border-bottom-style: solid;
+    }
+    
+    .article-content strong {
+        color: #071F5E;
+    }
+    
+    .article-content em {
+        color: #4F7DFF;
+        font-style: italic;
     }
     
     .btn-link {
@@ -271,6 +463,21 @@
     .comments-list {
         max-height: 800px;
         overflow-y: auto;
+    }
+    
+    @media (max-width: 768px) {
+        .article-content h2 {
+            font-size: 1.4rem;
+        }
+        .article-content h3 {
+            font-size: 1.2rem;
+        }
+        .article-content .toc-box,
+        .article-content .quote-box,
+        .article-content .tip-box,
+        .article-content .reference-box {
+            padding: 1rem 1.2rem;
+        }
     }
 </style>
 
