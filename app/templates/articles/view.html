@@ -231,6 +231,52 @@
                 {% endif %}
             </div>
             
+            <!-- Suggested Services -->
+            {% if article.suggested_services %}
+            <div class="mt-5 pt-5 border-top">
+                <h3 class="mb-4"><i class="bi bi-lightbulb"></i> الخدمات المرتبطة بهذا المقال</h3>
+                <p class="text-muted mb-4">استكشف خدمات PERLOV التي تتعلق بموضوع هذا المقال:</p>
+                <div class="services-grid">
+                    {% set services_data = article.suggested_services | fromjson %}
+                    {% if services_data %}
+                        {% for service in services_data %}
+                            {% set service_info = {
+                                'bio_scent': {'name': 'تحليل الرائحة الحيوية', 'icon': 'bi-soundwave', 'color': '#0B2E8A'},
+                                'skin_chemistry': {'name': 'كيمياء البشرة', 'icon': 'bi-droplet', 'color': '#4F7DFF'},
+                                'temp_volatility': {'name': 'التطاير الحراري', 'icon': 'bi-thermometer-half', 'color': '#FF6B6B'},
+                                'metabolism': {'name': 'التمثيل الغذائي', 'icon': 'bi-activity', 'color': '#FFA500'},
+                                'climate': {'name': 'محرك المناخ', 'icon': 'bi-cloud-sun', 'color': '#3DDC97'},
+                                'neuroscience': {'name': 'علم الأعصاب العطري', 'icon': 'bi-brain', 'color': '#9C27B0'},
+                                'stability': {'name': 'الثبات والانتشار', 'icon': 'bi-clock-history', 'color': '#2196F3'},
+                                'predictive': {'name': 'الذكاء التنبّؤي', 'icon': 'bi-magic', 'color': '#FF1493'},
+                                'scent_personality': {'name': 'الشخصية العطرية', 'icon': 'bi-person-badge', 'color': '#0B2E8A'},
+                                'signature': {'name': 'العطر التوقيعي', 'icon': 'bi-pen', 'color': '#4F7DFF'},
+                                'occasion': {'name': 'عطر لكل مناسبة', 'icon': 'bi-calendar-event', 'color': '#FF6B6B'},
+                                'habit_planner': {'name': 'الخطة العطرية', 'icon': 'bi-calendar-check', 'color': '#FFA500'},
+                                'digital_twin': {'name': 'التوأم الرقمي', 'icon': 'bi-person-bounding-box', 'color': '#3DDC97'},
+                                'adaptive': {'name': 'العطر التكيّفي', 'icon': 'bi-arrow-repeat', 'color': '#9C27B0'},
+                                'oil_mixer': {'name': 'مازج الزيوت', 'icon': 'bi-shuffle', 'color': '#2196F3'},
+                                'scent_dna': {'name': 'بصمة الرائحة', 'icon': 'bi-fingerprint', 'color': '#FF1493'},
+                                'custom_perfume': {'name': 'تصميم عطر مخصص', 'icon': 'bi-palette', 'color': '#0B2E8A'},
+                                'recommendations': {'name': 'توصيات العطور', 'icon': 'bi-stars', 'color': '#4F7DFF'},
+                                'blend_predictor': {'name': 'الخلط التنبؤي', 'icon': 'bi-graph-up', 'color': '#FF6B6B'}
+                            }.get(service, {'name': service, 'icon': 'bi-box', 'color': '#666'}) %}
+                            
+                            <a href="{{ url_for('main.modules') }}#{{ service }}" class="service-card" style="border-color: {{ service_info.color }}; --hover-color: {{ service_info.color }};">
+                                <div class="service-icon" style="color: {{ service_info.color }};">
+                                    <i class="bi {{ service_info.icon }}"></i>
+                                </div>
+                                <h5 class="service-name">{{ service_info.name }}</h5>
+                                <p class="service-link">
+                                    <i class="bi bi-arrow-left"></i> اكتشف الخدمة
+                                </p>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
             <!-- Back Link -->
             <div class="mt-5">
                 <a href="{{ url_for('articles.index') }}" class="btn btn-outline-secondary">
@@ -465,6 +511,99 @@
         overflow-y: auto;
     }
     
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .service-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1.5rem;
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 15px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        min-height: 240px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--hover-color, #0B2E8A);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.4s ease;
+    }
+    
+    .service-card:hover {
+        border-color: var(--hover-color, #0B2E8A);
+        box-shadow: 0 12px 30px rgba(11, 46, 138, 0.15);
+        transform: translateY(-5px);
+    }
+    
+    .service-card:hover::before {
+        transform: scaleY(1);
+    }
+    
+    .service-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(11, 46, 138, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .service-card:hover .service-icon {
+        background: rgba(11, 46, 138, 0.15);
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .service-name {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        color: #1C1C1C;
+        line-height: 1.4;
+    }
+    
+    .service-link {
+        font-size: 0.9rem;
+        color: var(--hover-color, #0B2E8A);
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-weight: 500;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+    
+    .service-card:hover .service-link {
+        opacity: 1;
+        gap: 10px;
+    }
+    
     @media (max-width: 768px) {
         .article-content h2 {
             font-size: 1.4rem;
@@ -477,6 +616,10 @@
         .article-content .tip-box,
         .article-content .reference-box {
             padding: 1rem 1.2rem;
+        }
+        .services-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
         }
     }
 </style>

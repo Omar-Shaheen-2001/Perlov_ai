@@ -596,56 +596,66 @@ def detect_article_services(title, summary, content, keywords):
     """اكتشاف الخدمات المناسبة من محتوى المقال"""
     try:
         prompt = f"""
-        حلل المقال التالي واقترح الخدمات المناسبة من قائمة الخدمات المتاحة:
+        أنت خبير متخصص في تحليل محتوى العطور وربطه بالخدمات المناسبة.
+        
+        حلل المقال التالي واقترح جميع الخدمات المرتبطة والمناسبة:
         
         العنوان: {title}
         الملخص: {summary}
         الكلمات المفتاحية: {keywords}
-        جزء من المحتوى: {content[:500]}
+        جزء من المحتوى: {content[:1000]}
         
-        الخدمات المتاحة:
-        1. تحليل الرائحة الحيوية (Bio-Scent)
-        2. كيمياء البشرة (Skin Chemistry)
-        3. التطاير الحراري (Temperature Volatility)
-        4. التمثيل الغذائي (Metabolism)
-        5. محرك المناخ (Climate Engine)
-        6. علم الأعصاب العطري (Neuroscience)
-        7. الثبات والانتشار (Stability & Diffusion)
-        8. الذكاء التنبّؤي (Predictive Engine)
-        9. الشخصية العطرية (Scent Personality)
-        10. العطر التوقيعي (Signature Scent)
-        11. عطر لكل مناسبة (Occasion Matcher)
-        12. الخطة العطرية (Habit Planner)
-        13. التوأم الرقمي (Digital Twin)
-        14. العطر التكيّفي (Adaptive Fragrance)
-        15. مازج الزيوت (Oil Mixer)
-        16. بصمة الرائحة (Scent DNA)
-        17. تصميم عطر مخصص (Custom Perfume)
-        18. توصيات العطور (Recommendations)
-        19. الخلط التنبؤي (Blend Predictor)
+        الخدمات المتاحة (19 خدمة):
+        1. bio_scent - تحليل الرائحة الحيوية
+        2. skin_chemistry - كيمياء البشرة
+        3. temp_volatility - التطاير الحراري
+        4. metabolism - التمثيل الغذائي
+        5. climate - محرك المناخ
+        6. neuroscience - علم الأعصاب العطري
+        7. stability - الثبات والانتشار
+        8. predictive - الذكاء التنبّؤي
+        9. scent_personality - الشخصية العطرية
+        10. signature - العطر التوقيعي
+        11. occasion - عطر لكل مناسبة
+        12. habit_planner - الخطة العطرية
+        13. digital_twin - التوأم الرقمي
+        14. adaptive - العطر التكيّفي
+        15. oil_mixer - مازج الزيوت
+        16. scent_dna - بصمة الرائحة
+        17. custom_perfume - تصميم عطر مخصص
+        18. recommendations - توصيات العطور
+        19. blend_predictor - الخلط التنبؤي
         
-        أرجع قائمة بـ 2-4 خدمات فقط الأنسب والأكثر صلة بالمقال.
+        اقترح 4-7 خدمات الأنسب بناءً على:
+        - محتوى وموضوع المقال
+        - الكلمات المفتاحية والسياق
+        - الصلة المباشرة والغير مباشرة
+        - فائدة المستخدم
+        
         أجب بصيغة JSON فقط:
         {{
-            "services": ["service_key_1", "service_key_2", "service_key_3"],
-            "reasons": ["السبب 1", "السبب 2", "السبب 3"]
+            "services": ["key1", "key2", "key3", "key4"],
+            "reasons": ["السبب 1", "السبب 2", "السبب 3", "السبب 4"]
         }}
         """
         
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "أنت محلل محتوى متخصص في مجال العطور. اكتشف الخدمات المناسبة بناءً على محتوى المقال. أجب بصيغة JSON فقط."},
+                {"role": "system", "content": "أنت محلل محتوى متخصص في مجال العطور والروائح. اكتشف جميع الخدمات المرتبطة بالمقال بناءً على سياقه ومحتواه. أرجع 4-7 خدمات مناسبة. أجب بصيغة JSON فقط."},
                 {"role": "user", "content": prompt}
             ],
-            max_completion_tokens=500
+            max_completion_tokens=800
         )
         
         content_response = response.choices[0].message.content
         parsed = parse_ai_response(content_response)
         
         if parsed and 'services' in parsed:
-            return parsed.get('services', [])
+            services = parsed.get('services', [])
+            # تصفية الخدمات من التكرار والتأكد من أنها موجودة
+            valid_services = [s for s in services if s in SERVICES_MAP]
+            return valid_services[:7]  # أقصى 7 خدمات
         return []
     except Exception as e:
         print(f"Service detection error: {str(e)}")
