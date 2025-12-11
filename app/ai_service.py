@@ -29,7 +29,8 @@ MODULE_INFO = {
     'oil_mixer': {'name_ar': 'مازج الزيوت', 'icon': 'bi-shuffle'},
     'scent_dna': {'name_ar': 'بصمة الرائحة', 'icon': 'bi-fingerprint'},
     'custom_perfume': {'name_ar': 'تصميم عطر مخصص', 'icon': 'bi-palette'},
-    'recommendations': {'name_ar': 'توصيات العطور', 'icon': 'bi-stars'}
+    'recommendations': {'name_ar': 'توصيات العطور', 'icon': 'bi-stars'},
+    'face_analyzer': {'name_ar': 'محلل العطر بالوجه', 'icon': 'bi-camera'}
 }
 
 def save_analysis_result(module_type, input_data, result_data):
@@ -802,3 +803,194 @@ def generate_article(topic, keywords, tone, language='ar'):
     
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+def analyze_face_for_perfume(image_data):
+    """
+    Analyze face image using OpenAI Vision to recommend perfumes.
+    """
+    prompt = """أنت خبير متخصص في تحليل الوجه واختيار العطور المناسبة. قم بتحليل هذه الصورة بدقة عالية واستخرج:
+
+1. **تحليل البشرة**:
+   - نوع البشرة (جافة - دهنية - مختلطة - حساسة - عادية)
+   - درجة لون البشرة (فاتحة جداً - فاتحة - متوسطة - حنطية - داكنة - داكنة جداً)
+   - العمر التقريبي (18-25, 25-35, 35-45, 45-55, 55+)
+   - تأثير البشرة على ثبات العطر
+   - أفضل تركيز عطري (EDT, EDP, Parfum)
+   - ثبات متوقع للعطر على هذه البشرة
+
+2. **تحليل الشخصية من الملامح**:
+   - الشخصية العامة (رسمي - واثق - رومانسي - هادئ - جريء - مغامر - أنيق)
+   - الانطباع (قوي - أنيق - جذاب - خفيف - غامض - ودود)
+   - المزاج (جريء - رومانسي - هادئ - مرح - جدي)
+   - الـ Vibe (رياضي - رسمي - فخم - شبابي - كلاسيكي)
+   - الأسلوب (Minimal - Bold - Elegant - Casual - Sophisticated)
+
+3. **العائلات العطرية الأنسب** (اختر 3-5 من):
+   Fresh Citrus, Woody Amber, Floral, Oriental, Aromatic, Leather, Aquatic, Gourmand, Oud, Musk
+
+4. **أفضل 5 عطور** لهذا الشخص:
+   لكل عطر قدم:
+   - اسم العطر والعلامة التجارية
+   - نسبة التوافق (0-100%)
+   - لماذا يناسب هذا الشخص
+   - نقاط قوة العطر
+   - أين يُستخدم (يومي، عمل، مساء، مناسبات)
+
+5. **عطر التوقيع** (Signature Perfume):
+   - اسم العطر المثالي
+   - سبب كونه الأنسب لهذا الشخص
+
+6. **توصيات حسب المناسبة**:
+   - يومي
+   - عمل
+   - مساء
+   - مناسبات خاصة
+
+أجب بصيغة JSON فقط:
+{
+    "skin_analysis": {
+        "skin_type": "نوع البشرة",
+        "skin_tone": "درجة اللون",
+        "age_range": "الفئة العمرية",
+        "perfume_effect": "تأثير البشرة على العطر",
+        "best_concentration": "أفضل تركيز",
+        "longevity_estimate": "ثبات متوقع بالساعات"
+    },
+    "personality_analysis": {
+        "personality": "الشخصية",
+        "impression": "الانطباع",
+        "mood": "المزاج",
+        "vibe": "الـ Vibe",
+        "style": "الأسلوب"
+    },
+    "best_families": ["العائلة1", "العائلة2", "العائلة3"],
+    "recommended_perfumes": [
+        {
+            "name": "اسم العطر",
+            "brand": "العلامة",
+            "match_score": 95,
+            "why_suitable": "لماذا يناسب",
+            "strengths": "نقاط القوة",
+            "usage": "أين يُستخدم"
+        }
+    ],
+    "signature_perfume": {
+        "name": "اسم العطر التوقيعي",
+        "reason": "سبب التوصية"
+    },
+    "occasion_recommendations": {
+        "daily": "عطر يومي",
+        "work": "عطر العمل",
+        "evening": "عطر المساء",
+        "special": "عطر المناسبات"
+    }
+}"""
+
+    default_response = {
+        "skin_analysis": {
+            "skin_type": "مختلطة",
+            "skin_tone": "متوسطة",
+            "age_range": "25-35",
+            "perfume_effect": "ثبات متوسط إلى جيد",
+            "best_concentration": "EDP",
+            "longevity_estimate": "6-8 ساعات"
+        },
+        "personality_analysis": {
+            "personality": "أنيق وواثق",
+            "impression": "جذاب",
+            "mood": "هادئ",
+            "vibe": "فخم",
+            "style": "Elegant"
+        },
+        "best_families": ["Woody Amber", "Oriental", "Aromatic"],
+        "recommended_perfumes": [
+            {
+                "name": "Dior Sauvage EDP",
+                "brand": "Dior",
+                "match_score": 92,
+                "why_suitable": "يعكس الأناقة والثقة بالنفس",
+                "strengths": "ثبات ممتاز، فوحان قوي، مناسب لجميع المواسم",
+                "usage": "يومي وعمل"
+            },
+            {
+                "name": "Bleu de Chanel",
+                "brand": "Chanel",
+                "match_score": 90,
+                "why_suitable": "يناسب الشخصية الأنيقة والعصرية",
+                "strengths": "متوازن، راقي، متعدد الاستخدامات",
+                "usage": "يومي ومساء"
+            },
+            {
+                "name": "Tom Ford Oud Wood",
+                "brand": "Tom Ford",
+                "match_score": 88,
+                "why_suitable": "يعكس الفخامة والتميز",
+                "strengths": "فريد، فخم، انطباع قوي",
+                "usage": "مساء ومناسبات"
+            },
+            {
+                "name": "Versace Pour Homme",
+                "brand": "Versace",
+                "match_score": 85,
+                "why_suitable": "منعش وأنيق للاستخدام اليومي",
+                "strengths": "خفيف، منعش، مريح",
+                "usage": "يومي"
+            },
+            {
+                "name": "Creed Aventus",
+                "brand": "Creed",
+                "match_score": 95,
+                "why_suitable": "الاختيار الأمثل للشخصية القيادية",
+                "strengths": "فاخر، مميز، ثبات استثنائي",
+                "usage": "مناسبات خاصة"
+            }
+        ],
+        "signature_perfume": {
+            "name": "Creed Aventus",
+            "reason": "يعكس شخصيتك القيادية وذوقك الرفيع، ويترك انطباعاً لا يُنسى"
+        },
+        "occasion_recommendations": {
+            "daily": "Versace Pour Homme",
+            "work": "Bleu de Chanel",
+            "evening": "Tom Ford Oud Wood",
+            "special": "Creed Aventus"
+        }
+    }
+
+    try:
+        if not image_data or not image_data.startswith('data:image'):
+            return default_response
+        
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "أنت خبير متخصص في تحليل الوجه واختيار العطور. حلل الصورة بدقة وأجب بصيغة JSON فقط."
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": image_data}
+                        }
+                    ]
+                }
+            ],
+            max_tokens=2000
+        )
+        
+        content = response.choices[0].message.content
+        parsed = parse_ai_response(content)
+        
+        if parsed and 'skin_analysis' in parsed:
+            return parsed
+        else:
+            return default_response
+            
+    except Exception as e:
+        print(f"Face analysis error: {str(e)}")
+        return default_response

@@ -1,0 +1,551 @@
+{% extends "base.html" %}
+
+{% block title %}AI Face Scent Analyzer™ - محلل العطر بالوجه{% endblock %}
+
+{% block content %}
+<div class="page-header text-center" style="background: linear-gradient(135deg, #0B2E8A 0%, #4F7DFF 50%, #FF6B9D 100%);">
+    <div class="container">
+        <h1><i class="bi bi-camera"></i> AI Face Scent Analyzer™</h1>
+        <p class="opacity-75">محلل العطر الذكي بناءً على ملامح الوجه</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-body p-5">
+                    <div id="upload-section">
+                        <div class="text-center mb-5">
+                            <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #0B2E8A, #4F7DFF); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 10px 30px rgba(11, 46, 138, 0.3);">
+                                <i class="bi bi-person-bounding-box" style="font-size: 3rem; color: white;"></i>
+                            </div>
+                            <h2 class="fw-bold mt-4" style="color: #0B2E8A;">تحليل الوجه للعطر المثالي</h2>
+                            <p class="text-muted">التقط أو ارفع صورة واضحة لوجهك وسيقوم الذكاء الاصطناعي بتحليل:</p>
+                        </div>
+
+                        <div class="row g-3 mb-5">
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-droplet" style="font-size: 1.5rem; color: #0B2E8A;"></i>
+                                    <p class="small mb-0 mt-2">نوع البشرة</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-palette" style="font-size: 1.5rem; color: #4F7DFF;"></i>
+                                    <p class="small mb-0 mt-2">درجة اللون</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-calendar3" style="font-size: 1.5rem; color: #FF6B9D;"></i>
+                                    <p class="small mb-0 mt-2">العمر التقريبي</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-emoji-smile" style="font-size: 1.5rem; color: #3DDC97;"></i>
+                                    <p class="small mb-0 mt-2">المزاج العام</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-grid-3x3" style="font-size: 1.5rem; color: #0B2E8A;"></i>
+                                    <p class="small mb-0 mt-2">هندسة الوجه</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-stars" style="font-size: 1.5rem; color: #4F7DFF;"></i>
+                                    <p class="small mb-0 mt-2">الـ Vibes</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-person-badge" style="font-size: 1.5rem; color: #FF6B9D;"></i>
+                                    <p class="small mb-0 mt-2">الشخصية</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="feature-item text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                                    <i class="bi bi-heart" style="font-size: 1.5rem; color: #3DDC97;"></i>
+                                    <p class="small mb-0 mt-2">كيمياء البشرة</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="image-upload-area mb-4" id="dropzone" style="border: 3px dashed #0B2E8A; border-radius: 20px; padding: 50px; text-align: center; background: linear-gradient(135deg, rgba(11, 46, 138, 0.05), rgba(79, 125, 255, 0.05)); cursor: pointer; transition: all 0.3s ease;">
+                            <div id="preview-container" style="display: none;">
+                                <img id="image-preview" src="" alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                                <button type="button" class="btn btn-outline-danger btn-sm mt-3" onclick="clearImage()">
+                                    <i class="bi bi-trash"></i> حذف الصورة
+                                </button>
+                            </div>
+                            <div id="upload-placeholder">
+                                <i class="bi bi-cloud-arrow-up" style="font-size: 4rem; color: #0B2E8A;"></i>
+                                <h4 class="mt-3" style="color: #0B2E8A;">اسحب الصورة هنا أو اضغط للرفع</h4>
+                                <p class="text-muted">PNG, JPG, JPEG (حد أقصى 10 ميجابايت)</p>
+                            </div>
+                            <input type="file" id="file-input" accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="row g-3 justify-content-center mb-4">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-lg w-100" id="upload-btn" style="background: linear-gradient(135deg, #0B2E8A, #4F7DFF); color: white; border-radius: 15px; padding: 15px;">
+                                    <i class="bi bi-upload"></i> رفع صورة
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-lg w-100" id="camera-btn" style="background: linear-gradient(135deg, #FF6B9D, #FF1493); color: white; border-radius: 15px; padding: 15px;">
+                                    <i class="bi bi-camera-video"></i> فتح الكاميرا
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="camera-container" style="display: none;">
+                            <div class="text-center mb-3">
+                                <video id="camera-preview" autoplay playsinline style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"></video>
+                            </div>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button type="button" class="btn btn-success btn-lg" id="capture-btn" style="border-radius: 50%; width: 70px; height: 70px;">
+                                    <i class="bi bi-camera"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-lg" id="close-camera-btn" style="border-radius: 50%; width: 70px; height: 70px;">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <canvas id="canvas" style="display: none;"></canvas>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-lg px-5" id="analyze-btn" disabled style="background: linear-gradient(135deg, #3DDC97, #20C997); color: white; border-radius: 15px; padding: 15px 50px; font-size: 1.2rem;">
+                                <i class="bi bi-magic"></i> تحليل الوجه
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="loading-section" style="display: none;">
+                        <div class="text-center py-5">
+                            <div class="spinner-grow text-primary mb-4" style="width: 4rem; height: 4rem;"></div>
+                            <h3 class="fw-bold" style="color: #0B2E8A;">جاري تحليل الملامح ونوع البشرة...</h3>
+                            <p class="text-muted" id="loading-step">قراءة ملامح الوجه...</p>
+                            <div class="progress mt-4" style="height: 10px; border-radius: 10px; max-width: 400px; margin: 0 auto;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" id="analysis-progress" style="width: 0%; background: linear-gradient(135deg, #0B2E8A, #4F7DFF);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="results-section" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-upload-area:hover {
+        border-color: #4F7DFF;
+        background: linear-gradient(135deg, rgba(11, 46, 138, 0.1), rgba(79, 125, 255, 0.1)) !important;
+    }
+    .feature-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(11, 46, 138, 0.15);
+    }
+    .result-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+    .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(11, 46, 138, 0.15);
+    }
+    .perfume-card {
+        background: linear-gradient(135deg, #F2F4F8, #FFFFFF);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    .perfume-card:hover {
+        border-color: #0B2E8A;
+        box-shadow: 0 8px 25px rgba(11, 46, 138, 0.12);
+    }
+    .signature-perfume {
+        background: linear-gradient(135deg, #0B2E8A, #4F7DFF);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+    }
+    .family-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin: 5px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+let imageData = null;
+let stream = null;
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+const imagePreview = document.getElementById('image-preview');
+const previewContainer = document.getElementById('preview-container');
+const uploadPlaceholder = document.getElementById('upload-placeholder');
+const analyzeBtn = document.getElementById('analyze-btn');
+const uploadBtn = document.getElementById('upload-btn');
+const cameraBtn = document.getElementById('camera-btn');
+const cameraContainer = document.getElementById('camera-container');
+const cameraPreview = document.getElementById('camera-preview');
+const captureBtn = document.getElementById('capture-btn');
+const closeCameraBtn = document.getElementById('close-camera-btn');
+const canvas = document.getElementById('canvas');
+
+dropzone.addEventListener('click', () => fileInput.click());
+uploadBtn.addEventListener('click', () => fileInput.click());
+
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.style.borderColor = '#4F7DFF';
+});
+
+dropzone.addEventListener('dragleave', () => {
+    dropzone.style.borderColor = '#0B2E8A';
+});
+
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.style.borderColor = '#0B2E8A';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        handleFile(file);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        handleFile(file);
+    }
+});
+
+function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imageData = e.target.result;
+        imagePreview.src = imageData;
+        previewContainer.style.display = 'block';
+        uploadPlaceholder.style.display = 'none';
+        analyzeBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearImage() {
+    imageData = null;
+    imagePreview.src = '';
+    previewContainer.style.display = 'none';
+    uploadPlaceholder.style.display = 'block';
+    analyzeBtn.disabled = true;
+    fileInput.value = '';
+}
+
+cameraBtn.addEventListener('click', async () => {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } 
+        });
+        cameraPreview.srcObject = stream;
+        cameraContainer.style.display = 'block';
+        dropzone.style.display = 'none';
+        document.querySelector('.row.g-3.justify-content-center.mb-4').style.display = 'none';
+    } catch (err) {
+        alert('لم نتمكن من الوصول للكاميرا. يرجى التأكد من منح الإذن.');
+        console.error(err);
+    }
+});
+
+captureBtn.addEventListener('click', () => {
+    canvas.width = cameraPreview.videoWidth;
+    canvas.height = cameraPreview.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(cameraPreview, 0, 0);
+    imageData = canvas.toDataURL('image/jpeg', 0.8);
+    
+    closeCamera();
+    
+    imagePreview.src = imageData;
+    previewContainer.style.display = 'block';
+    uploadPlaceholder.style.display = 'none';
+    analyzeBtn.disabled = false;
+});
+
+closeCameraBtn.addEventListener('click', closeCamera);
+
+function closeCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+    }
+    cameraContainer.style.display = 'none';
+    dropzone.style.display = 'block';
+    document.querySelector('.row.g-3.justify-content-center.mb-4').style.display = 'flex';
+}
+
+analyzeBtn.addEventListener('click', async () => {
+    if (!imageData) return;
+    
+    document.getElementById('upload-section').style.display = 'none';
+    document.getElementById('loading-section').style.display = 'block';
+    
+    const steps = [
+        'قراءة ملامح الوجه...',
+        'تحليل نوع البشرة...',
+        'تحديد درجة لون البشرة...',
+        'تحليل هندسة الوجه...',
+        'استخراج الشخصية من الملامح...',
+        'مطابقة العائلات العطرية...',
+        'اختيار العطور المناسبة...',
+        'تحديد عطر التوقيع...'
+    ];
+    
+    let stepIndex = 0;
+    const progressBar = document.getElementById('analysis-progress');
+    const loadingStep = document.getElementById('loading-step');
+    
+    const stepInterval = setInterval(() => {
+        if (stepIndex < steps.length) {
+            loadingStep.textContent = steps[stepIndex];
+            progressBar.style.width = ((stepIndex + 1) / steps.length * 80) + '%';
+            stepIndex++;
+        }
+    }, 1500);
+    
+    try {
+        const response = await fetch('/face-analyzer/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_data: imageData })
+        });
+        
+        clearInterval(stepInterval);
+        progressBar.style.width = '100%';
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayResults(data.analysis);
+        } else {
+            alert(data.error || 'حدث خطأ أثناء التحليل');
+            resetForm();
+        }
+    } catch (err) {
+        clearInterval(stepInterval);
+        alert('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.');
+        resetForm();
+    }
+});
+
+function resetForm() {
+    document.getElementById('loading-section').style.display = 'none';
+    document.getElementById('upload-section').style.display = 'block';
+}
+
+function displayResults(analysis) {
+    document.getElementById('loading-section').style.display = 'none';
+    const resultsSection = document.getElementById('results-section');
+    resultsSection.style.display = 'block';
+    
+    const familyColors = {
+        'Fresh Citrus': '#FFD93D',
+        'Woody Amber': '#8B4513',
+        'Floral': '#FF69B4',
+        'Oriental': '#800020',
+        'Aromatic': '#228B22',
+        'Leather': '#5C4033',
+        'Aquatic': '#00CED1',
+        'Gourmand': '#D2691E',
+        'Oud': '#4A0E0E',
+        'Musk': '#E6E6FA'
+    };
+    
+    let html = `
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #0B2E8A;">
+                <i class="bi bi-check-circle-fill text-success"></i> تم التحليل بنجاح!
+            </h2>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="result-card">
+                    <h4 class="fw-bold mb-4" style="color: #0B2E8A;">
+                        <i class="bi bi-person-badge"></i> تحليل الشخصية
+                    </h4>
+                    <div class="mb-3">
+                        <span class="text-muted">الشخصية:</span>
+                        <span class="fw-bold">${analysis.personality_analysis?.personality || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">الانطباع:</span>
+                        <span class="fw-bold">${analysis.personality_analysis?.impression || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">المزاج:</span>
+                        <span class="fw-bold">${analysis.personality_analysis?.mood || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">الـ Vibe:</span>
+                        <span class="fw-bold">${analysis.personality_analysis?.vibe || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">الأسلوب:</span>
+                        <span class="fw-bold">${analysis.personality_analysis?.style || 'غير محدد'}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="result-card">
+                    <h4 class="fw-bold mb-4" style="color: #4F7DFF;">
+                        <i class="bi bi-droplet"></i> تحليل البشرة
+                    </h4>
+                    <div class="mb-3">
+                        <span class="text-muted">نوع البشرة:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.skin_type || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">درجة اللون:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.skin_tone || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">العمر التقريبي:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.age_range || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">تأثيرها على العطر:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.perfume_effect || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">أفضل تركيز:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.best_concentration || 'غير محدد'}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="text-muted">ثبات متوقع:</span>
+                        <span class="fw-bold">${analysis.skin_analysis?.longevity_estimate || 'غير محدد'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-card mt-4">
+            <h4 class="fw-bold mb-4" style="color: #3DDC97;">
+                <i class="bi bi-collection"></i> العائلات العطرية الأنسب
+            </h4>
+            <div class="d-flex flex-wrap">
+    `;
+    
+    if (analysis.best_families && analysis.best_families.length > 0) {
+        analysis.best_families.forEach(family => {
+            const color = familyColors[family] || '#0B2E8A';
+            html += `<span class="family-badge" style="background: ${color}20; color: ${color}; border: 1px solid ${color};">${family}</span>`;
+        });
+    }
+    
+    html += `
+            </div>
+        </div>
+        
+        <div class="result-card mt-4">
+            <h4 class="fw-bold mb-4" style="color: #FF6B9D;">
+                <i class="bi bi-heart-fill"></i> أفضل 5 عطور لك
+            </h4>
+    `;
+    
+    if (analysis.recommended_perfumes && analysis.recommended_perfumes.length > 0) {
+        analysis.recommended_perfumes.forEach((perfume, index) => {
+            html += `
+                <div class="perfume-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="fw-bold mb-1" style="color: #0B2E8A;">${index + 1}. ${perfume.name}</h5>
+                            <p class="text-muted small mb-2">${perfume.brand || ''}</p>
+                        </div>
+                        <span class="badge" style="background: linear-gradient(135deg, #3DDC97, #20C997);">${perfume.match_score || 0}% توافق</span>
+                    </div>
+                    <p class="mb-2"><strong>لماذا يناسبك:</strong> ${perfume.why_suitable}</p>
+                    <p class="mb-2"><strong>نقاط القوة:</strong> ${perfume.strengths}</p>
+                    <p class="mb-0"><strong>أين تستخدمه:</strong> ${perfume.usage}</p>
+                </div>
+            `;
+        });
+    }
+    
+    html += `
+        </div>
+        
+        <div class="signature-perfume mt-4">
+            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="bi bi-star-fill" style="font-size: 2rem;"></i>
+            </div>
+            <h3 class="fw-bold mb-3">عطر التوقيع المناسب لك</h3>
+            <h2 class="fw-bold mb-3">${analysis.signature_perfume?.name || 'غير محدد'}</h2>
+            <p class="lead mb-0">${analysis.signature_perfume?.reason || ''}</p>
+        </div>
+        
+        <div class="result-card mt-4">
+            <h4 class="fw-bold mb-4" style="color: #0B2E8A;">
+                <i class="bi bi-calendar-week"></i> توصيات حسب المناسبة
+            </h4>
+            <div class="row g-3">
+    `;
+    
+    if (analysis.occasion_recommendations) {
+        const occasions = [
+            { key: 'daily', icon: 'bi-sun', label: 'يومي' },
+            { key: 'work', icon: 'bi-briefcase', label: 'عمل' },
+            { key: 'evening', icon: 'bi-moon-stars', label: 'مساء' },
+            { key: 'special', icon: 'bi-gem', label: 'مناسبات' }
+        ];
+        
+        occasions.forEach(occ => {
+            if (analysis.occasion_recommendations[occ.key]) {
+                html += `
+                    <div class="col-md-6 col-lg-3">
+                        <div class="text-center p-3" style="background: #F2F4F8; border-radius: 12px;">
+                            <i class="${occ.icon}" style="font-size: 1.5rem; color: #0B2E8A;"></i>
+                            <h6 class="fw-bold mt-2 mb-1">${occ.label}</h6>
+                            <p class="small mb-0">${analysis.occasion_recommendations[occ.key]}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    }
+    
+    html += `
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <button class="btn btn-lg px-5" onclick="location.reload()" style="background: linear-gradient(135deg, #0B2E8A, #4F7DFF); color: white; border-radius: 15px;">
+                <i class="bi bi-arrow-repeat"></i> تحليل صورة جديدة
+            </button>
+        </div>
+    `;
+    
+    resultsSection.innerHTML = html;
+}
+</script>
+{% endblock %}

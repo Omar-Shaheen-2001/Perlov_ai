@@ -53,6 +53,7 @@ def create_app():
     from app.routes.perfume_blend_predictor import perfume_blend_bp
     from app.routes.articles import articles_bp
     from app.routes.seo import seo_bp
+    from app.routes.face_analyzer import face_analyzer_bp
     
     # Register core blueprints
     app.register_blueprint(auth_bp)
@@ -83,6 +84,7 @@ def create_app():
     app.register_blueprint(perfume_blend_bp)
     app.register_blueprint(articles_bp)
     app.register_blueprint(seo_bp)
+    app.register_blueprint(face_analyzer_bp)
     
     # Add custom Jinja2 filters
     import json
