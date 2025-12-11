@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}المتجر{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold mb-3" style="color: #0B2E8A;">
+                <i class="bi bi-shop"></i> متجر PERLOV
+            </h1>
+            <p class="lead text-muted">
+                استكشف مجموعة حصرية من أفضل العطور المختارة بعناية من قبل خبرائنا
+            </p>
+        </div>
+        <div class="col-lg-4 d-flex align-items-center justify-content-end">
+            <div class="stats-box text-center p-4" style="background: linear-gradient(135deg, rgba(11, 46, 138, 0.1), rgba(79, 125, 255, 0.1)); border-radius: 15px;">
+                <h3 class="fw-bold" style="color: #0B2E8A;">{{ total_count }}</h3>
+                <p class="text-muted">منتج متاح</p>
+            </div>
+        </div>
+    </div>
+
+    {% if products %}
+    <!-- Products Grid -->
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-lg-6 col-xl-4">
+            <div class="product-card h-100" style="background: white; border: 1px solid #e0e0e0; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                
+                <!-- Product Image -->
+                {% if product.image_url %}
+                <div style="height: 280px; overflow: hidden; background: linear-gradient(135deg, #f5f7fa, #e8ecf1); display: flex; align-items: center; justify-content: center;">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                         style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 20px;">
+                </div>
+                {% else %}
+                <div style="height: 280px; background: linear-gradient(135deg, #0B2E8A, #4F7DFF); display: flex; align-items: center; justify-content: center; color: white;">
+                    <i class="bi bi-droplet-fill" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+
+                <!-- Product Info -->
+                <div class="p-4">
+                    <!-- Brand & Category -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 style="color: #0B2E8A; font-weight: 600; font-size: 0.85rem; margin: 0;">{{ product.brand }}</h5>
+                        </div>
+                        {% if product.gender %}
+                        <span class="badge" style="background: linear-gradient(135deg, #0B2E8A, #4F7DFF); color: white; padding: 5px 10px; font-size: 0.75rem;">
+                            {% if product.gender == 'M' %}
+                                <i class="bi bi-suit-heart"></i> رجالي
+                            {% elif product.gender == 'F' %}
+                                <i class="bi bi-suit-heart-fill"></i> نسائي
+                            {% else %}
+                                <i class="bi bi-hexagon"></i> للجميع
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Product Name -->
+                    <h5 class="fw-bold mb-2" style="color: #1C1C1C; line-height: 1.4;">{{ product.name }}</h5>
+
+                    <!-- Main Notes -->
+                    {% if product.main_notes %}
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 2rem;">
+                        <i class="bi bi-palette2" style="color: #4F7DFF;"></i>
+                        {{ product.main_notes }}
+                    </p>
+                    {% endif %}
+
+                    <!-- Description -->
+                    {% if product.description %}
+                    <p style="font-size: 0.85rem; color: #999; margin-bottom: 1.5rem; line-height: 1.5;">
+                        {{ product.description[:150] }}{% if product.description|length > 150 %}...{% endif %}
+                    </p>
+                    {% endif %}
+
+                    <!-- Price & Category -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid #e0e0e0;">
+                        {% if product.price_text %}
+                        <span style="color: #3DDC97; font-weight: 600; font-size: 1.1rem;">{{ product.price_text }}</span>
+                        {% endif %}
+                        {% if product.category %}
+                        <span style="font-size: 0.8rem; color: #666; background: #f5f5f5; padding: 5px 10px; border-radius: 20px;">
+                            {{ product.category }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Purchase Button -->
+                    {% if product.url %}
+                    <a href="{{ product.url }}" target="_blank" rel="noopener noreferrer" 
+                       class="btn w-100" style="background: linear-gradient(135deg, #0B2E8A, #4F7DFF); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 500; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="bi bi-bag-check"></i> اشتر الآن
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+        <h4 class="mt-3 text-muted">لا توجد منتجات متاحة حالياً</h4>
+        <p class="text-muted">سيتم إضافة منتجات قريباً...</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-3">
+            <i class="bi bi-arrow-left"></i> العودة للرئيسية
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .product-card:hover {
+        box-shadow: 0 12px 30px rgba(11, 46, 138, 0.15);
+        transform: translateY(-5px);
+    }
+
+    .product-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .product-card img {
+        transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .stats-box {
+            margin-top: 2rem;
+        }
+    }
+</style>
+{% endblock %}

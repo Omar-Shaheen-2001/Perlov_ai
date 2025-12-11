@@ -1,10 +1,34 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app import db
+from app.models import AffiliateProduct
 from app.real_products import search_products, get_featured_products, REAL_PERFUME_PRODUCTS
 from app.ai_service import search_real_perfume_products
 
 marketplace_bp = Blueprint('marketplace', __name__, url_prefix='/marketplace')
+
+@marketplace_bp.route('/affiliate')
+def affiliate_products():
+    """عرض جميع منتجات الافلييت التي أضافها الادمن"""
+    try:
+        products = AffiliateProduct.query.order_by(AffiliateProduct.created_at.desc()).all()
+        categories = {}
+        for product in products:
+            cat = product.category or 'أخرى'
+            if cat not in categories:
+                categories[cat] = []
+            categories[cat].append(product)
+        
+        return render_template('marketplace/affiliate.html', 
+                             products=products,
+                             categories=categories,
+                             total_count=len(products))
+    except Exception as e:
+        print(f"Error fetching affiliate products: {str(e)}")
+        return render_template('marketplace/affiliate.html', 
+                             products=[],
+                             categories={},
+                             total_count=0)
 
 @marketplace_bp.route('/')
 @login_required
