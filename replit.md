@@ -27,7 +27,7 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
     - **Scent DNA Analysis**: Discover unique fragrance personality.
     - **Custom Perfume Creator**: AI-designed personalized perfumes.
     - **AI Recommendations**: Perfume suggestions with affiliate links based on advanced DNA-focused matching.
-    - **19 Comprehensive Perfume Analysis Modules**: Including Bio-Scent AI, Skin Chemistry, Climate Engine, Neuroscience, Predictive Engine, Signature Scent Builder, Occasion Matcher, and the new Perfume Blend Predictor™.
+    - **20 Comprehensive Perfume Analysis Modules**: Including Bio-Scent AI, Skin Chemistry, Climate Engine, Neuroscience, Predictive Engine, Signature Scent Builder, Occasion Matcher, Perfume Blend Predictor™, and the new AI Face Scent Analyzer™.
     - **User Management System**: Admin panel for user search, lock/unlock, deletion, and activity tracking.
     - **Authentication & Security**: Session-based auth with Flask-Login, password hashing, and admin-only route protection.
     - **Marketplace**: Features 45+ real products across 6 categories with AI-powered search and direct purchase links.
@@ -38,6 +38,7 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
 - **Enhanced Bio-Scent Module**: AI-powered suggestions based on mood, speech speed, skin type, and fragrance predictions, returning personalized perfume suggestions.
 - **Enhanced Skin Chemistry Module**: Precise AI-driven analysis based on expanded inputs (skin type, sensitivity, body temperature, oily/dry areas, past reactions, preferences) to provide suitable perfumes, stability analysis, chemical considerations, and application tips.
 - **AI-Powered Article Generator**: Admin system for creating professional fragrance articles with AI assistance. Admins input topic, keywords, and tone → AI generates complete article with title, summary, and detailed content → Admin can edit and publish → Articles appear in public articles section visible to all users with dedicated articles page in navbar.
+- **AI Face Scent Analyzer™**: Advanced facial analysis module using OpenAI Vision API. Features: upload/camera image capture, skin type detection (dry/oily/combination/sensitive), skin tone analysis, age range estimation, personality mapping from facial features (mood, vibe, style), facial geometry analysis. Returns: best fragrance families, top 5 personalized perfume recommendations with match scores, signature perfume selection, and occasion-based recommendations (daily/work/evening/special).
 
 ## External Dependencies
 - **OpenAI**: For AI functionalities including scent DNA analysis, custom perfume creation, recommendations, and various module analyses (e.g., Perfume Blend Predictor™, Bio-Scent, Skin Chemistry).
