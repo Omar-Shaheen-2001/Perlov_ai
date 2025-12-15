@@ -1,7 +1,7 @@
 import json
 import os
 import requests
-from flask import Blueprint, redirect, request, url_for
+from flask import Blueprint, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from oauthlib.oauth2 import WebApplicationClient
 from app import db
@@ -17,37 +17,55 @@ google_auth_bp = Blueprint("google_auth", __name__)
 @google_auth_bp.route("/google_login")
 def google_login():
     if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
-        return "Google OAuth is not configured. Please set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET.", 500
+        flash("خدمة Google غير مفعّلة. تأكد من إضافة المفاتيح", "error")
+        return redirect(url_for('auth.login'))
     
     try:
-        google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
+        google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL, timeout=5).json()
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+        
+        # Build redirect URI correctly
+        redirect_uri = request.base_url + "callback"
+        if request.host.endswith(".replit.dev"):
+            redirect_uri = redirect_uri.replace("http://", "https://")
         
         request_uri = client.prepare_request_uri(
             authorization_endpoint,
-            redirect_uri=request.base_url.replace("http://", "https://") + "/callback",
+            redirect_uri=redirect_uri,
             scope=["openid", "email", "profile"],
         )
         return redirect(request_uri)
     except Exception as e:
-        print(f"Google login error: {str(e)}")
-        return "Error initiating Google login", 500
+        print(f"[GOOGLE] Login error: {e}", flush=True)
+        flash("خطأ في الاتصال بخدمة Google", "error")
+        return redirect(url_for('auth.login'))
 
 @google_auth_bp.route("/google_login/callback")
 def google_callback():
-    code = request.args.get("code")
-    
-    if not code:
-        return "Missing authorization code", 400
-    
     try:
-        google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
+        error = request.args.get("error")
+        if error:
+            print(f"[GOOGLE] Google error: {error}", flush=True)
+            flash("تم رفض الطلب من Google", "error")
+            return redirect(url_for('auth.login'))
+        
+        code = request.args.get("code")
+        if not code:
+            flash("خطأ: لم يتم استلام رمز المصادقة", "error")
+            return redirect(url_for('auth.login'))
+        
+        # Get token
+        google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL, timeout=5).json()
         token_endpoint = google_provider_cfg["token_endpoint"]
+        
+        redirect_uri = request.base_url.rsplit("/callback", 1)[0] + "/callback"
+        if request.host.endswith(".replit.dev"):
+            redirect_uri = redirect_uri.replace("http://", "https://")
         
         token_url, headers, body = client.prepare_token_request(
             token_endpoint,
-            authorization_response=request.url.replace("http://", "https://"),
-            redirect_url=request.base_url.replace("http://", "https://"),
+            authorization_response=request.url,
+            redirect_url=redirect_uri,
             code=code,
         )
         
@@ -56,40 +74,58 @@ def google_callback():
             headers=headers,
             data=body,
             auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+            timeout=10
         )
         
-        client.parse_request_body_response(json.dumps(token_response.json()))
+        if token_response.status_code != 200:
+            print(f"[GOOGLE] Token error: {token_response.text}", flush=True)
+            flash("فشل الحصول على رمز المصادقة من Google", "error")
+            return redirect(url_for('auth.login'))
         
+        token_json = token_response.json()
+        client.parse_request_body_response(json.dumps(token_json))
+        
+        # Get userinfo
         userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
         uri, headers, body = client.add_token(userinfo_endpoint)
-        userinfo_response = requests.get(uri, headers=headers, data=body)
+        userinfo_response = requests.get(uri, headers=headers, timeout=5)
+        
+        if userinfo_response.status_code != 200:
+            print(f"[GOOGLE] Userinfo error: {userinfo_response.text}", flush=True)
+            flash("فشل في الحصول على معلومات المستخدم", "error")
+            return redirect(url_for('auth.login'))
         
         userinfo = userinfo_response.json()
         
-        if userinfo.get("email_verified"):
-            users_email = userinfo["email"]
-            users_name = userinfo.get("given_name", userinfo.get("name", ""))
-        else:
-            return "User email not verified by Google", 400
+        if not userinfo.get("email_verified"):
+            flash("البريد الإلكتروني غير مُتحقق منه في Google", "error")
+            return redirect(url_for('auth.login'))
         
-        user = User.query.filter_by(email=users_email).first()
+        email = userinfo["email"]
+        name = userinfo.get("given_name", userinfo.get("name", ""))
         
+        # Get or create user
+        user = User.query.filter_by(email=email).first()
         if not user:
-            # Create new user with Google data
-            user = User(name=users_name, email=users_email)
-            user.set_password("google_oauth_user")  # Set placeholder password for OAuth users
+            user = User(name=name, email=email)
+            user.set_password("oauth_user")
             db.session.add(user)
             db.session.commit()
         
         login_user(user)
-        return redirect(url_for("main.dashboard"))
+        flash(f"مرحباً {name}! تم تسجيل دخول ناجح", "success")
+        return redirect(url_for("dashboard.index"))
     
     except Exception as e:
-        print(f"Google callback error: {str(e)}")
-        return "Error processing Google login", 500
+        print(f"[GOOGLE] Exception: {str(e)}", flush=True)
+        import traceback
+        traceback.print_exc()
+        flash("حدث خطأ أثناء معالجة دخول Google", "error")
+        return redirect(url_for('auth.login'))
 
 @google_auth_bp.route("/logout")
 @login_required
 def logout():
     logout_user()
+    flash("تم تسجيل الخروج بنجاح", "success")
     return redirect(url_for("main.index"))
