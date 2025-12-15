@@ -54,9 +54,11 @@ def create_app():
     from app.routes.articles import articles_bp
     from app.routes.seo import seo_bp
     from app.routes.face_analyzer import face_analyzer_bp
+    from app.routes.google_auth import google_auth_bp
     
     # Register core blueprints
     app.register_blueprint(auth_bp)
+    app.register_blueprint(google_auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(scent_dna_bp)
     app.register_blueprint(custom_perfume_bp)
