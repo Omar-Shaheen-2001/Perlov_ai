@@ -76,7 +76,8 @@ def google_callback():
         
         if not user:
             # Create new user with Google data
-            user = User(username=users_name, email=users_email)
+            user = User(name=users_name, email=users_email)
+            user.set_password("google_oauth_user")  # Set placeholder password for OAuth users
             db.session.add(user)
             db.session.commit()
         
