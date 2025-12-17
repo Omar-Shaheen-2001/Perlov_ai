@@ -24,10 +24,11 @@ def google_login():
         google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL, timeout=5).json()
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
         
-        redirect_uri = request.base_url + "callback"
+        redirect_uri = request.base_url.rstrip('/') + "/callback"
         if request.host.endswith(".replit.dev"):
             redirect_uri = redirect_uri.replace("http://", "https://")
         
+        print(f"[GOOGLE] Login redirect_uri: {redirect_uri}", flush=True)
         request_uri = client.prepare_request_uri(
             authorization_endpoint,
             redirect_uri=redirect_uri,
@@ -55,7 +56,7 @@ def google_callback():
         google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL, timeout=5).json()
         token_endpoint = google_provider_cfg["token_endpoint"]
         
-        redirect_uri = request.base_url.rsplit("/callback", 1)[0] + "/callback"
+        redirect_uri = request.base_url.rstrip('/')
         if request.host.endswith(".replit.dev"):
             redirect_uri = redirect_uri.replace("http://", "https://")
         
