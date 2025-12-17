@@ -71,14 +71,54 @@ def register():
         else:
             user = User(name=name, email=email)
             user.set_password(password)
+            verification_token = user.generate_verification_token()
             db.session.add(user)
             db.session.commit()
             
-            login_user(user)
-            flash('تم إنشاء الحساب بنجاح! مرحباً بك في PERLOV.ai', 'success')
-            return redirect(url_for('dashboard.index'))
+            verify_url = url_for('auth.verify_email', token=verification_token, _external=True)
+            
+            try:
+                msg = Message(
+                    'تحقق من بريدك الإلكتروني - PERLOV.ai',
+                    recipients=[email],
+                    html=f'''
+                    <div style="direction: rtl; font-family: Arial, sans-serif;">
+                        <h2>مرحباً {name}،</h2>
+                        <p>شكراً على التسجيل في PERLOV.ai!</p>
+                        <p>يرجى النقر على الرابط أدناه للتحقق من بريدك الإلكتروني (صالح لمدة 24 ساعة):</p>
+                        <p><a href="{verify_url}" style="background-color: #6366f1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">تحقق من البريد الإلكتروني</a></p>
+                        <p>أو انسخ والصق الرابط التالي في متصفحك:</p>
+                        <p>{verify_url}</p>
+                    </div>
+                    '''
+                )
+                mail.send(msg)
+                print(f"[EMAIL] Verification email sent to {email}", flush=True)
+                flash('تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتأكيد', 'success')
+            except Exception as e:
+                print(f"[EMAIL] Error sending verification email: {e}", flush=True)
+                print(f"[EMAIL] Verification link for testing: {verify_url}", flush=True)
+                flash('تم إنشاء الحساب. تحقق من سجلات الخادم للحصول على رابط التحقق (في الإنتاج سيتم إرسال بريد)', 'info')
+            
+            return redirect(url_for('auth.login'))
     
     return render_template('auth/register.html')
+
+@auth_bp.route('/verify_email/<token>')
+def verify_email(token):
+    user = User.query.filter_by(verification_token=token).first()
+    
+    if not user:
+        flash('رابط التحقق غير صالح', 'error')
+        return redirect(url_for('auth.login'))
+    
+    if user.verify_email(token):
+        db.session.commit()
+        flash('تم التحقق من بريدك الإلكتروني بنجاح! يمكنك الآن تسجيل الدخول', 'success')
+        return redirect(url_for('auth.login'))
+    else:
+        flash('انتهت صلاحية رابط التحقق أو أنه غير صالح', 'error')
+        return redirect(url_for('auth.login'))
 
 @auth_bp.route('/logout')
 @login_required

@@ -15,14 +15,29 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///perlov.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # Email configuration
-    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
-    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 25))
-    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', False)
-    app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', False)
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', None)
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', None)
-    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@perlov.ai')
+    # Email configuration with SendGrid
+    sendgrid_api_key = os.environ.get('SENDGRID_API_KEY', None)
+    sendgrid_from_email = os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@perlov.ai')
+    
+    if sendgrid_api_key:
+        app.config['MAIL_BACKEND'] = 'sendgrid'
+        app.config['SENDGRID_API_KEY'] = sendgrid_api_key
+        app.config['MAIL_DEFAULT_SENDER'] = sendgrid_from_email
+        # Use SendGrid SMTP
+        app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
+        app.config['MAIL_PORT'] = 587
+        app.config['MAIL_USE_TLS'] = True
+        app.config['MAIL_USERNAME'] = 'apikey'
+        app.config['MAIL_PASSWORD'] = sendgrid_api_key
+    else:
+        # Development configuration
+        app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
+        app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 25))
+        app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', False)
+        app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', False)
+        app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', None)
+        app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', None)
+        app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@perlov.ai')
     
     db.init_app(app)
     login_manager.init_app(app)

@@ -12,9 +12,13 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    email_verified = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
     lock_reason = db.Column(db.String(500), nullable=True)
     reset_token = db.Column(db.String(256), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
+    verification_token = db.Column(db.String(256), nullable=True)
+    verification_token_expiry = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     scent_profiles = db.relationship('ScentProfile', backref='user', lazy=True)
@@ -44,6 +48,22 @@ class User(UserMixin, db.Model):
     def clear_reset_token(self):
         self.reset_token = None
         self.reset_token_expiry = None
+    
+    def generate_verification_token(self):
+        token = secrets.token_urlsafe(32)
+        self.verification_token = token
+        self.verification_token_expiry = datetime.utcnow() + timedelta(hours=24)
+        return token
+    
+    def verify_email(self, token):
+        if self.verification_token != token or not self.verification_token_expiry:
+            return False
+        if datetime.utcnow() > self.verification_token_expiry:
+            return False
+        self.email_verified = True
+        self.verification_token = None
+        self.verification_token_expiry = None
+        return True
 
 class ScentProfile(db.Model):
     __tablename__ = 'scent_profiles'
