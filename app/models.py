@@ -1,7 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
+import secrets
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -12,6 +13,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     lock_reason = db.Column(db.String(500), nullable=True)
+    reset_token = db.Column(db.String(256), nullable=True)
+    reset_token_expiry = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     scent_profiles = db.relationship('ScentProfile', backref='user', lazy=True)
@@ -24,6 +27,23 @@ class User(UserMixin, db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def generate_reset_token(self):
+        token = secrets.token_urlsafe(32)
+        self.reset_token = token
+        self.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)
+        return token
+    
+    def verify_reset_token(self, token):
+        if self.reset_token != token or not self.reset_token_expiry:
+            return False
+        if datetime.utcnow() > self.reset_token_expiry:
+            return False
+        return True
+    
+    def clear_reset_token(self):
+        self.reset_token = None
+        self.reset_token_expiry = None
 
 class ScentProfile(db.Model):
     __tablename__ = 'scent_profiles'

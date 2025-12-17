@@ -2,9 +2,11 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -13,8 +15,18 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///perlov.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
+    # Email configuration
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 25))
+    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', False)
+    app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', False)
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', None)
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', None)
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@perlov.ai')
+    
     db.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
     login_manager.login_view = 'auth.login'  # type: ignore
     login_manager.login_message = 'يرجى تسجيل الدخول للوصول إلى هذه الصفحة'
     
