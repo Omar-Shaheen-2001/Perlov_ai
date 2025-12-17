@@ -7,6 +7,9 @@ from oauthlib.oauth2 import WebApplicationClient
 from app import db
 from app.models import User
 
+# Allow insecure transport for development
+os.environ.setdefault('OAUTHLIB_INSECURE_TRANSPORT', '1')
+
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET", "")
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
