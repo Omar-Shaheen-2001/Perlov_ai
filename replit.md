@@ -39,6 +39,13 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
 - **Enhanced Skin Chemistry Module**: Precise AI-driven analysis based on expanded inputs (skin type, sensitivity, body temperature, oily/dry areas, past reactions, preferences) to provide suitable perfumes, stability analysis, chemical considerations, and application tips.
 - **AI-Powered Article Generator**: Admin system for creating professional fragrance articles with AI assistance. Admins input topic, keywords, and tone → AI generates complete article with title, summary, and detailed content → Admin can edit and publish → Articles appear in public articles section visible to all users with dedicated articles page in navbar.
 - **AI Face Scent Analyzer™**: Advanced facial analysis module using OpenAI Vision API. Features: upload/camera image capture, skin type detection (dry/oily/combination/sensitive), skin tone analysis, age range estimation, personality mapping from facial features (mood, vibe, style), facial geometry analysis. Returns: best fragrance families, top 5 personalized perfume recommendations with match scores, signature perfume selection, and occasion-based recommendations (daily/work/evening/special).
+- **Database-Managed RAG System**: Complete RAG (Retrieval Augmented Generation) system using FAISS vector search for intelligent fragrance note retrieval. Features:
+    - **PerfumeNote Model**: Database table with 12 fields (name_en, name_ar, family, role, volatility, profile, works_well_with, avoid_with, best_for, concentration, origin, is_active).
+    - **Admin CRUD Interface**: Full management at `/admin/notes` - add, edit, toggle, delete notes with search and family filtering.
+    - **Dynamic FAISS Index**: Hash-based embeddings (MD5 + numpy, 384 dimensions) stored in `app/data/notes.index`.
+    - **Rebuild Button**: Admin can click "إعادة بناء الفهرس" to regenerate FAISS index from active database notes.
+    - **RAG Context Injection**: Automatically injects relevant notes into all AI prompts (Scent DNA, Custom Perfume, Articles, Face Analyzer).
+    - **Cache System**: `app/data/notes_cache.json` provides fast access with database fallback.
 
 ## External Dependencies
 - **OpenAI**: For AI functionalities including scent DNA analysis, custom perfume creation, recommendations, and various module analyses (e.g., Perfume Blend Predictor™, Bio-Scent, Skin Chemistry).
