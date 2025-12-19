@@ -31,7 +31,10 @@ def create_note_text(note_dict: dict) -> str:
         note_dict.get('family', ''),
         note_dict.get('role', ''),
         note_dict.get('profile', ''),
-        note_dict.get('volatility', '')
+        note_dict.get('volatility', ''),
+        note_dict.get('incense_style', ''),
+        str(note_dict.get('intensity_weight', 5)),
+        str(note_dict.get('formality_score', 5))
     ]
     
     works_with = note_dict.get('works_well_with', [])
@@ -97,7 +100,10 @@ def rebuild_faiss_index() -> dict:
                     'db_id': n['id'],
                     'note': n['note'],
                     'arabic': n['arabic'],
-                    'family': n['family']
+                    'family': n['family'],
+                    'incense_style': n.get('incense_style', 'clean'),
+                    'intensity_weight': n.get('intensity_weight', 5),
+                    'formality_score': n.get('formality_score', 5)
                 }
                 for i, n in enumerate(notes_dicts)
             ]

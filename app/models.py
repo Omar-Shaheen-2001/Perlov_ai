@@ -258,7 +258,10 @@ class PerfumeNote(db.Model):
             'avoid_with': safe_parse_json_list(self.avoid_with),
             'best_for': safe_parse_json_list(self.best_for),
             'concentration': self.concentration or '',
-            'origin': self.origin or ''
+            'origin': self.origin or '',
+            'incense_style': self.incense_style or 'clean',
+            'intensity_weight': self.intensity_weight or 5,
+            'formality_score': self.formality_score or 5
         }
     
     @staticmethod

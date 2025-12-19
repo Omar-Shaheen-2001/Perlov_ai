@@ -4,6 +4,9 @@ from openai import OpenAI
 from flask_login import current_user
 from app.rag_service import get_kb, get_rag_context, get_notes_by_family, get_similar_notes
 from app.notes_retriever import retrieve_notes, get_note_context as get_retriever_context, hybrid_retrieve, retrieve_notes_by_family, retrieve_notes_by_role
+from app.rag_engine import rag_run, get_rag_engine, RAGResult
+from app.validators.rag_validation import validate_and_sanitize, RAGValidator
+from app.constants.default_responses import get_default_response, get_safe_fallback, VALIDATION_FAILED_RESPONSE
 
 AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
@@ -59,60 +62,69 @@ def save_analysis_result(module_type, input_data, result_data):
     
     return analysis.id
 
-def get_rag_context_for_ai(query: str, top_k: int = 5, filters: dict = None) -> str:
+DEBUG_MODE = os.environ.get('RAG_DEBUG', 'false').lower() == 'true'
+
+def get_rag_context_for_ai(query: str, top_k: int = 5, filters: dict = None, module_type: str = 'default', debug: bool = None) -> tuple:
     """
-    توليد RAG context موحّد لجميع خدمات الذكاء الاصطناعي
+    توليد RAG context موحّد لجميع خدمات الذكاء الاصطناعي باستخدام RAG Engine
     
     Args:
         query: استعلام البحث
         top_k: عدد النتائج المطلوبة
-        filters: فلاتر اختيارية (family, role, use_case)
+        filters: فلاتر اختيارية (family, role, incense_style)
+        module_type: نوع الوحدة (scent_dna, custom_perfume, etc.)
+        debug: تفعيل وضع التصحيح
     
     Returns:
-        نصاً منسقاً جاهزاً للحقن في الـ prompt
+        tuple: (context_text, rag_result) - النص المنسق ونتيجة RAG الكاملة
     """
+    use_debug = debug if debug is not None else DEBUG_MODE
+    
     try:
-        # محاولة البحث الهجين أولاً إذا توفرت فلاتر
-        if filters:
-            retrieved_notes = hybrid_retrieve(query, filters, top_k)
-        else:
-            retrieved_notes = retrieve_notes(query, top_k)
+        rag_result = rag_run(
+            query=query,
+            filters=filters,
+            module_type=module_type,
+            top_k=top_k,
+            debug=use_debug
+        )
         
-        if not retrieved_notes:
-            return ""
-        
-        context = "📚 **قاعدة المعرفة العطرية المسترجعة:**\n" + "=" * 60 + "\n"
-        
-        for i, note in enumerate(retrieved_notes, 1):
-            score = note.get('similarity_score', 1.0)
-            works_with = note.get('works_well_with', [])
-            best_for = note.get('best_for', [])
-            avoid = note.get('avoid_with', [])
-            
-            if isinstance(works_with, list):
-                works_with = ', '.join(works_with[:3]) if works_with else 'N/A'
-            if isinstance(best_for, list):
-                best_for = ', '.join(best_for[:2]) if best_for else 'N/A'
-            if isinstance(avoid, list):
-                avoid = ', '.join(avoid[:2]) if avoid else 'N/A'
-            
-            context += f"""
-{i}. **{note.get('arabic', '')}** ({note.get('note', '')})
-   • العائلة: {note.get('family', 'N/A')} | الدور: {note.get('role', 'N/A')} | التطاير: {note.get('volatility', 'N/A')}
-   • الملف الشخصي: {note.get('profile', 'N/A')}
-   • مناسب للـ: {best_for}
-   • يعمل بشكل ممتاز مع: {works_with}
-   • تجنب مع: {avoid}
-   • درجة التطابق: {score:.0%}
-"""
-        
-        context += "=" * 60 + "\n"
-        return context
+        return rag_result.context_text, rag_result
     
     except Exception as e:
-        # إذا حدث خطأ، نرجع نصاً فارغاً ولا نوقف العملية
         print(f"⚠️ RAG Context Error: {str(e)}")
-        return ""
+        return "", RAGResult(is_valid=False, debug_info={'error': str(e)})
+
+
+def validate_ai_output(response: dict, rag_result: RAGResult, module_type: str, strict: bool = True) -> dict:
+    """
+    التحقق من صحة مخرجات AI مقابل قاعدة المعرفة
+    
+    Args:
+        response: استجابة AI
+        rag_result: نتيجة RAG
+        module_type: نوع الوحدة
+        strict: وضع صارم (يرفض المخالفات)
+    
+    Returns:
+        استجابة مُنظفة أو fallback آمن
+    """
+    if not rag_result.is_valid or not rag_result.notes:
+        return get_safe_fallback(module_type, "لا توجد بيانات RAG كافية")
+    
+    try:
+        sanitized, validation = validate_and_sanitize(response, rag_result, strict=strict)
+        
+        if not validation.is_valid and strict:
+            fallback = get_default_response(module_type)
+            fallback['_validation'] = validation.to_dict()
+            fallback['_fallback_reason'] = "فشل التحقق من الصحة"
+            return fallback
+        
+        return sanitized
+    
+    except Exception as e:
+        return get_safe_fallback(module_type, str(e))
 
 
 def parse_ai_response(content):
@@ -183,14 +195,29 @@ def get_ai_response(prompt, system_message="أنت خبير عطور محترف.
     except Exception as e:
         return {"error": str(e)}
 
-def generate_scent_dna_analysis(profile_data):
-    # 🔍 RAG Enhancement - Retrieve notes based on profile
+def generate_scent_dna_analysis(profile_data, debug: bool = None):
+    """تحليل DNA العطري باستخدام RAG كمصدر وحيد للحقيقة"""
+    
     query = f"{profile_data.get('gender', '')} {profile_data.get('personality_type', '')} {profile_data.get('favorite_notes', '')}"
-    rag_context = get_rag_context_for_ai(query, top_k=5)
+    rag_context, rag_result = get_rag_context_for_ai(query, top_k=6, module_type='scent_dna', debug=debug)
+    
+    if not rag_result.is_valid:
+        fallback = get_default_response('scent_dna')
+        fallback['_rag_status'] = 'no_data'
+        return fallback
+    
+    available_notes = ', '.join([n.get('arabic', n.get('note', '')) for n in rag_result.notes])
+    available_families = ', '.join(rag_result.families)
     
     prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
 
 {rag_context}
+
+⚠️ قواعد صارمة - يجب الالتزام بها:
+1. استخدم فقط النوتات المتاحة: {available_notes}
+2. استخدم فقط العائلات المتاحة: {available_families}
+3. لا تذكر أي نوتة أو عائلة غير موجودة في القائمة أعلاه
+4. إذا لم تجد نوتات مناسبة، قدم نصائح عامة بدون أسماء محددة
 
 بيانات المستخدم:
 - الجنس: {profile_data.get('gender', 'غير محدد')}
@@ -203,30 +230,20 @@ def generate_scent_dna_analysis(profile_data):
 
 قدم الإجابة بصيغة JSON فقط بالشكل التالي:
 {{
-    "scent_personality": "اسم الشخصية العطرية (مثل: العاطفي الكلاسيكي، الحيوي العصري، الغامض الشرقي)",
+    "scent_personality": "اسم الشخصية العطرية",
     "personality_description": "وصف مختصر للشخصية العطرية في 2-3 جمل",
-    "recommended_families": ["عائلة عطرية 1", "عائلة عطرية 2", "عائلة عطرية 3"],
-    "ideal_notes": ["نوتة 1", "نوتة 2", "نوتة 3", "نوتة 4", "نوتة 5"],
+    "recommended_families": ["عائلة من القائمة المتاحة فقط"],
+    "ideal_notes": ["نوتة من القائمة المتاحة فقط"],
     "notes_to_avoid": ["نوتة 1", "نوتة 2"],
     "season_recommendations": "توصيات حسب الموسم",
     "overall_analysis": "تحليل شامل في فقرة واحدة"
 }}"""
 
-    default_response = {
-        "scent_personality": "الكلاسيكي الأنيق",
-        "personality_description": "شخصية عطرية متوازنة تميل للأناقة والرقي",
-        "recommended_families": ["شرقية", "خشبية", "زهرية"],
-        "ideal_notes": ["عود", "فانيلا", "مسك", "ورد", "عنبر"],
-        "notes_to_avoid": profile_data.get('disliked_notes', '').split(',') if profile_data.get('disliked_notes') else [],
-        "season_recommendations": "مناسب لجميع الفصول مع تركيز على المساء",
-        "overall_analysis": "بناءً على تفضيلاتك، أنت تميل للعطور الكلاسيكية ذات الطابع الشرقي مع لمسات خشبية دافئة."
-    }
-
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "أنت خبير عطور محترف متخصص في تحليل الشخصيات العطرية. أجب دائمًا بصيغة JSON فقط."},
+                {"role": "system", "content": "أنت خبير عطور محترف. استخدم فقط النوتات والعائلات المذكورة في السياق. لا تخترع أي معلومات. أجب بصيغة JSON فقط."},
                 {"role": "user", "content": prompt}
             ],
             max_completion_tokens=1000
@@ -236,14 +253,23 @@ def generate_scent_dna_analysis(profile_data):
         parsed = parse_ai_response(content)
         
         if parsed is None:
-            return default_response
+            return get_default_response('scent_dna')
         
-        return parsed
+        validated = validate_ai_output(parsed, rag_result, 'scent_dna', strict=False)
+        
+        if debug or DEBUG_MODE:
+            validated['_debug'] = rag_result.debug_info
+        
+        return validated
+        
     except Exception as e:
-        default_response["error"] = str(e)
-        return default_response
+        fallback = get_default_response('scent_dna')
+        fallback['error'] = str(e)
+        return fallback
 
-def generate_custom_perfume(perfume_data, scent_profile=None):
+def generate_custom_perfume(perfume_data, scent_profile=None, debug: bool = None):
+    """تصميم عطر مخصص باستخدام RAG كمصدر وحيد للحقيقة"""
+    
     profile_context = ""
     if scent_profile:
         profile_context = f"""
@@ -253,13 +279,29 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
 - النوتات المكروهة: {scent_profile.disliked_notes or 'غير محدد'}
 """
     
-    # 🔍 RAG Enhancement - Retrieve relevant notes for perfume design
     query = f"{perfume_data.get('occasion', '')} {perfume_data.get('intensity', '')}"
-    rag_context = get_rag_context_for_ai(query, top_k=5)
+    rag_context, rag_result = get_rag_context_for_ai(query, top_k=8, module_type='custom_perfume', debug=debug)
+    
+    if not rag_result.is_valid:
+        fallback = get_default_response('custom_perfume')
+        fallback['_rag_status'] = 'no_data'
+        return fallback
+    
+    top_notes = [n.get('arabic', n.get('note', '')) for n in rag_result.notes if n.get('role', '').lower() == 'top']
+    heart_notes = [n.get('arabic', n.get('note', '')) for n in rag_result.notes if n.get('role', '').lower() == 'heart']
+    base_notes = [n.get('arabic', n.get('note', '')) for n in rag_result.notes if n.get('role', '').lower() == 'base']
+    all_notes = [n.get('arabic', n.get('note', '')) for n in rag_result.notes]
 
     prompt = f"""أنت صانع عطور محترف (Perfumer). قم بتصميم عطر شخصي فريد بناءً على المتطلبات التالية:
 
 {rag_context}
+
+⚠️ قواعد صارمة - يجب الالتزام بها:
+1. استخدم فقط النوتات العلوية المتاحة: {', '.join(top_notes) if top_notes else 'اختر من النوتات العامة'}
+2. استخدم فقط النوتات الوسطى المتاحة: {', '.join(heart_notes) if heart_notes else 'اختر من النوتات العامة'}
+3. استخدم فقط النوتات القاعدية المتاحة: {', '.join(base_notes) if base_notes else 'اختر من النوتات العامة'}
+4. جميع النوتات المتاحة: {', '.join(all_notes)}
+5. لا تذكر أي نوتة غير موجودة في القوائم أعلاه
 
 متطلبات العطر:
 - مناسبة الاستخدام: {perfume_data.get('occasion', 'يومي')}
@@ -271,9 +313,9 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
 {{
     "name": "اسم العطر المقترح (اسم إبداعي وجذاب)",
     "name_meaning": "معنى الاسم",
-    "top_notes": ["نوتة علوية 1", "نوتة علوية 2", "نوتة علوية 3"],
-    "heart_notes": ["نوتة وسطى 1", "نوتة وسطى 2", "نوتة وسطى 3"],
-    "base_notes": ["نوتة قاعدية 1", "نوتة قاعدية 2", "نوتة قاعدية 3"],
+    "top_notes": ["نوتة علوية من القائمة المتاحة فقط"],
+    "heart_notes": ["نوتة وسطى من القائمة المتاحة فقط"],
+    "base_notes": ["نوتة قاعدية من القائمة المتاحة فقط"],
     "description": "وصف تسويقي جذاب للعطر في 3-4 جمل",
     "match_score": 92,
     "usage_recommendations": "توصيات الاستخدام المثالية",
@@ -282,25 +324,11 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
     "best_seasons": ["الموسم 1", "الموسم 2"]
 }}"""
 
-    default_response = {
-        "name": "أريج الليل",
-        "name_meaning": "عطر الليالي الساحرة",
-        "top_notes": ["برغموت", "ليمون", "زنجبيل"],
-        "heart_notes": ["ورد", "ياسمين", "زعفران"],
-        "base_notes": ["عود", "مسك", "فانيلا"],
-        "description": "عطر شرقي فاخر يجمع بين الأناقة والغموض، مثالي للمناسبات الخاصة.",
-        "match_score": 90,
-        "usage_recommendations": "مثالي للمساء والمناسبات الخاصة",
-        "longevity": "8-10 ساعات",
-        "sillage": "متوسط إلى قوي",
-        "best_seasons": ["الخريف", "الشتاء"]
-    }
-
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "أنت صانع عطور محترف متخصص في ابتكار تركيبات عطرية فريدة. أجب دائمًا بصيغة JSON فقط."},
+                {"role": "system", "content": "أنت صانع عطور محترف. استخدم فقط النوتات المذكورة في السياق. لا تخترع أي نوتة جديدة. أجب بصيغة JSON فقط."},
                 {"role": "user", "content": prompt}
             ],
             max_completion_tokens=1000
@@ -310,12 +338,19 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
         parsed = parse_ai_response(content)
         
         if parsed is None:
-            return default_response
+            return get_default_response('custom_perfume')
         
-        return parsed
+        validated = validate_ai_output(parsed, rag_result, 'custom_perfume', strict=False)
+        
+        if debug or DEBUG_MODE:
+            validated['_debug'] = rag_result.debug_info
+        
+        return validated
+        
     except Exception as e:
-        default_response["error"] = str(e)
-        return default_response
+        fallback = get_default_response('custom_perfume')
+        fallback['error'] = str(e)
+        return fallback
 
 def search_real_perfume_products(search_query, category="all", price_range="all", web_search_results=None):
     """Search for real perfume products from online stores using AI with web search data."""
