@@ -1,0 +1,273 @@
+{
+  "model": "text-embedding-3-small",
+  "dimension": 384,
+  "total_notes": 38,
+  "notes": [
+    {
+      "id": 0,
+      "note": "Bergamot",
+      "arabic": "برغموت",
+      "family": "Citrus",
+      "text_length": 195
+    },
+    {
+      "id": 1,
+      "note": "Lemon",
+      "arabic": "ليمون",
+      "family": "Citrus",
+      "text_length": 192
+    },
+    {
+      "id": 2,
+      "note": "Ginger",
+      "arabic": "زنجبيل",
+      "family": "Spicy",
+      "text_length": 209
+    },
+    {
+      "id": 3,
+      "note": "Black Pepper",
+      "arabic": "فلفل أسود",
+      "family": "Spicy",
+      "text_length": 205
+    },
+    {
+      "id": 4,
+      "note": "Cardamom",
+      "arabic": "هيل",
+      "family": "Spicy",
+      "text_length": 193
+    },
+    {
+      "id": 5,
+      "note": "Jasmine",
+      "arabic": "ياسمين",
+      "family": "Floral",
+      "text_length": 212
+    },
+    {
+      "id": 6,
+      "note": "Rose",
+      "arabic": "ورد",
+      "family": "Floral",
+      "text_length": 220
+    },
+    {
+      "id": 7,
+      "note": "Iris",
+      "arabic": "سوسن",
+      "family": "Floral",
+      "text_length": 196
+    },
+    {
+      "id": 8,
+      "note": "Tuberose",
+      "arabic": "الزهر الأبيض",
+      "family": "Floral",
+      "text_length": 204
+    },
+    {
+      "id": 9,
+      "note": "Gardenia",
+      "arabic": "جاردينيا",
+      "family": "Floral",
+      "text_length": 193
+    },
+    {
+      "id": 10,
+      "note": "Incense",
+      "arabic": "بخور",
+      "family": "Resinous",
+      "text_length": 200
+    },
+    {
+      "id": 11,
+      "note": "Amber",
+      "arabic": "عنبر",
+      "family": "Resinous",
+      "text_length": 232
+    },
+    {
+      "id": 12,
+      "note": "Vanilla",
+      "arabic": "فانيليا",
+      "family": "Gourmand",
+      "text_length": 208
+    },
+    {
+      "id": 13,
+      "note": "Sandalwood",
+      "arabic": "صندل",
+      "family": "Woody",
+      "text_length": 191
+    },
+    {
+      "id": 14,
+      "note": "Cedarwood",
+      "arabic": "خشب الأرز",
+      "family": "Woody",
+      "text_length": 220
+    },
+    {
+      "id": 15,
+      "note": "Oud",
+      "arabic": "عود",
+      "family": "Woody",
+      "text_length": 198
+    },
+    {
+      "id": 16,
+      "note": "Patchouli",
+      "arabic": "باتشولي",
+      "family": "Woody",
+      "text_length": 191
+    },
+    {
+      "id": 17,
+      "note": "Vetiver",
+      "arabic": "عشبة الند",
+      "family": "Woody",
+      "text_length": 214
+    },
+    {
+      "id": 18,
+      "note": "Musk",
+      "arabic": "مسك",
+      "family": "Animalic",
+      "text_length": 211
+    },
+    {
+      "id": 19,
+      "note": "Leather",
+      "arabic": "جلد",
+      "family": "Animalic",
+      "text_length": 204
+    },
+    {
+      "id": 20,
+      "note": "Neroli",
+      "arabic": "نيرولي",
+      "family": "Citrus",
+      "text_length": 186
+    },
+    {
+      "id": 21,
+      "note": "Orange Blossom",
+      "arabic": "زهر البرتقال",
+      "family": "Floral",
+      "text_length": 219
+    },
+    {
+      "id": 22,
+      "note": "Lavender",
+      "arabic": "الخزامى",
+      "family": "Herbal",
+      "text_length": 206
+    },
+    {
+      "id": 23,
+      "note": "Rosemary",
+      "arabic": "إكليل الجبل",
+      "family": "Herbal",
+      "text_length": 191
+    },
+    {
+      "id": 24,
+      "note": "Mint",
+      "arabic": "نعناع",
+      "family": "Herbal",
+      "text_length": 172
+    },
+    {
+      "id": 25,
+      "note": "Coconut",
+      "arabic": "جوز الهند",
+      "family": "Gourmand",
+      "text_length": 197
+    },
+    {
+      "id": 26,
+      "note": "Caramel",
+      "arabic": "كراميل",
+      "family": "Gourmand",
+      "text_length": 194
+    },
+    {
+      "id": 27,
+      "note": "Tobacco",
+      "arabic": "تبغ",
+      "family": "Animalic",
+      "text_length": 192
+    },
+    {
+      "id": 28,
+      "note": "Aquatic",
+      "arabic": "مائي",
+      "family": "Fresh",
+      "text_length": 181
+    },
+    {
+      "id": 29,
+      "note": "Melon",
+      "arabic": "شمام",
+      "family": "Fruity",
+      "text_length": 171
+    },
+    {
+      "id": 30,
+      "note": "Peach",
+      "arabic": "خوخ",
+      "family": "Fruity",
+      "text_length": 194
+    },
+    {
+      "id": 31,
+      "note": "Raspberry",
+      "arabic": "توت العليق",
+      "family": "Fruity",
+      "text_length": 189
+    },
+    {
+      "id": 32,
+      "note": "Apple",
+      "arabic": "تفاح",
+      "family": "Fruity",
+      "text_length": 185
+    },
+    {
+      "id": 33,
+      "note": "Tonka Bean",
+      "arabic": "حبة التونكا",
+      "family": "Gourmand",
+      "text_length": 210
+    },
+    {
+      "id": 34,
+      "note": "Cinnamon",
+      "arabic": "قرفة",
+      "family": "Spicy",
+      "text_length": 199
+    },
+    {
+      "id": 35,
+      "note": "Clove",
+      "arabic": "مسمار",
+      "family": "Spicy",
+      "text_length": 195
+    },
+    {
+      "id": 36,
+      "note": "Almond",
+      "arabic": "لوز",
+      "family": "Gourmand",
+      "text_length": 185
+    },
+    {
+      "id": 37,
+      "note": "Pistachio",
+      "arabic": "فستق",
+      "family": "Gourmand",
+      "text_length": 187
+    }
+  ]
+}
