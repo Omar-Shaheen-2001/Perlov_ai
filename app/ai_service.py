@@ -3,6 +3,7 @@ import os
 from openai import OpenAI
 from flask_login import current_user
 from app.rag_service import get_kb, get_rag_context, get_notes_by_family, get_similar_notes
+from app.notes_retriever import retrieve_notes, get_note_context as get_retriever_context
 
 AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
@@ -350,16 +351,22 @@ def generate_recommendations(query, scent_profile=None, products=None):
 - النوتات المكروهة: {scent_profile.disliked_notes or 'غير محدد'}
 """
     
-    # 🔍 RAG Enhancement - Inject knowledge base context
+    # 🔍 RAG Enhancement - Retrieve relevant notes from knowledge base
     rag_context = ""
     try:
-        # Extract note names from query
-        kb = get_kb()
-        favorite_notes = profile_context.split("النوتات المفضلة:")[1].split("النوتات")[0].strip() if "النوتات المفضلة:" in profile_context else ""
-        
-        if favorite_notes and favorite_notes != "غير محدد":
-            notes_list = [n.strip() for n in favorite_notes.split(',')]
-            rag_context = get_rag_context(notes_list)
+        # Use retriever to fetch relevant notes based on query
+        retrieved_notes = retrieve_notes(query, top_k=5)
+        if retrieved_notes:
+            rag_context = "📚 النوتات المسترجعة من قاعدة المعرفة:\n" + "=" * 50 + "\n"
+            for note in retrieved_notes:
+                score = note.get('similarity_score', 0)
+                rag_context += f"""• {note['arabic']} ({note['note']})
+  العائلة: {note['family']} | الدور: {note['role']} | التطاير: {note['volatility']}
+  الملف: {note['profile']}
+  مناسبة للـ: {', '.join(note['best_for'][:2])}
+  يعمل بشكل جيد مع: {', '.join(note['works_well_with'][:3])}
+"""
+            rag_context += "=" * 50 + "\n\n"
     except Exception as e:
         pass  # Continue without RAG if there's an error
 
