@@ -33,6 +33,11 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
     - **Marketplace**: Features 45+ real products across 6 categories with AI-powered search and direct purchase links.
 
 ### Feature Specifications
+- **Scent DNA Analysis**: Dual-mode analysis system:
+    - **Primary Mode (RAG-Based)**: Uses FAISS vector search to extract notes from knowledge base (minimum 3+ notes). Enforces strict adherence to KB with no hallucination.
+    - **Fallback Mode (AI General)**: When KB has insufficient data (<3 notes), switches to AI expertise mode allowing general fragrance knowledge.
+    - **Mode Tracking**: Each result includes `_mode` (kb_primary/ai_general/fallback_safe) and `_kb_source` flag for transparency.
+    - **Data Points**: Analyzes gender, age range, personality type, preferred/disliked notes, climate, and skin type to generate scent personality, family recommendations, ideal notes, and seasonal guidance.
 - **Perfume Blend Predictor™**: AI-powered system predicting blend results from user inputs (perfume names, concentrations, blend ratio, goal, skin type, environment) and providing comprehensive results like expected scent, suggested name, harmony analysis, and recommendations.
 - **Expert-Level Precision Recommendations**: DNA-first scent matching system using 8 strict criteria focusing on fragrance DNA (style, character, family, usage, mood, atmosphere) and a 6-factor analysis for highly compatible suggestions and scientific exclusion lists.
 - **Enhanced Bio-Scent Module**: AI-powered suggestions based on mood, speech speed, skin type, and fragrance predictions, returning personalized perfume suggestions.
