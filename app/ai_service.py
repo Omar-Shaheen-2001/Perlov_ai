@@ -3,7 +3,7 @@ import os
 from openai import OpenAI
 from flask_login import current_user
 from app.rag_service import get_kb, get_rag_context, get_notes_by_family, get_similar_notes
-from app.notes_retriever import retrieve_notes, get_note_context as get_retriever_context
+from app.notes_retriever import retrieve_notes, get_note_context as get_retriever_context, hybrid_retrieve, retrieve_notes_by_family, retrieve_notes_by_role
 
 AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
@@ -58,6 +58,62 @@ def save_analysis_result(module_type, input_data, result_data):
     db.session.commit()
     
     return analysis.id
+
+def get_rag_context_for_ai(query: str, top_k: int = 5, filters: dict = None) -> str:
+    """
+    توليد RAG context موحّد لجميع خدمات الذكاء الاصطناعي
+    
+    Args:
+        query: استعلام البحث
+        top_k: عدد النتائج المطلوبة
+        filters: فلاتر اختيارية (family, role, use_case)
+    
+    Returns:
+        نصاً منسقاً جاهزاً للحقن في الـ prompt
+    """
+    try:
+        # محاولة البحث الهجين أولاً إذا توفرت فلاتر
+        if filters:
+            retrieved_notes = hybrid_retrieve(query, filters, top_k)
+        else:
+            retrieved_notes = retrieve_notes(query, top_k)
+        
+        if not retrieved_notes:
+            return ""
+        
+        context = "📚 **قاعدة المعرفة العطرية المسترجعة:**\n" + "=" * 60 + "\n"
+        
+        for i, note in enumerate(retrieved_notes, 1):
+            score = note.get('similarity_score', 1.0)
+            works_with = note.get('works_well_with', [])
+            best_for = note.get('best_for', [])
+            avoid = note.get('avoid_with', [])
+            
+            if isinstance(works_with, list):
+                works_with = ', '.join(works_with[:3]) if works_with else 'N/A'
+            if isinstance(best_for, list):
+                best_for = ', '.join(best_for[:2]) if best_for else 'N/A'
+            if isinstance(avoid, list):
+                avoid = ', '.join(avoid[:2]) if avoid else 'N/A'
+            
+            context += f"""
+{i}. **{note.get('arabic', '')}** ({note.get('note', '')})
+   • العائلة: {note.get('family', 'N/A')} | الدور: {note.get('role', 'N/A')} | التطاير: {note.get('volatility', 'N/A')}
+   • الملف الشخصي: {note.get('profile', 'N/A')}
+   • مناسب للـ: {best_for}
+   • يعمل بشكل ممتاز مع: {works_with}
+   • تجنب مع: {avoid}
+   • درجة التطابق: {score:.0%}
+"""
+        
+        context += "=" * 60 + "\n"
+        return context
+    
+    except Exception as e:
+        # إذا حدث خطأ، نرجع نصاً فارغاً ولا نوقف العملية
+        print(f"⚠️ RAG Context Error: {str(e)}")
+        return ""
+
 
 def parse_ai_response(content):
     """Safely parse AI response content, handling None and malformed JSON."""
@@ -129,17 +185,8 @@ def get_ai_response(prompt, system_message="أنت خبير عطور محترف.
 
 def generate_scent_dna_analysis(profile_data):
     # 🔍 RAG Enhancement - Retrieve notes based on profile
-    rag_context = ""
-    try:
-        query = f"{profile_data.get('gender', '')} {profile_data.get('personality_type', '')} {profile_data.get('favorite_notes', '')}"
-        retrieved_notes = retrieve_notes(query, top_k=5)
-        if retrieved_notes:
-            rag_context = "\n📚 النوتات المسترجعة الموصى بها:\n" + "-" * 50 + "\n"
-            for note in retrieved_notes:
-                rag_context += f"• {note['arabic']}: {note['profile']} (توافقية: {note.get('similarity_score', 1):.0%})\n"
-            rag_context += "-" * 50 + "\n"
-    except Exception as e:
-        pass
+    query = f"{profile_data.get('gender', '')} {profile_data.get('personality_type', '')} {profile_data.get('favorite_notes', '')}"
+    rag_context = get_rag_context_for_ai(query, top_k=5)
     
     prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
 
@@ -207,17 +254,8 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
 """
     
     # 🔍 RAG Enhancement - Retrieve relevant notes for perfume design
-    rag_context = ""
-    try:
-        query = f"{perfume_data.get('occasion', '')} {perfume_data.get('intensity', '')}"
-        retrieved_notes = retrieve_notes(query, top_k=5)
-        if retrieved_notes:
-            rag_context = "\n📚 النوتات المقترحة من قاعدة المعرفة:\n" + "-" * 50 + "\n"
-            for note in retrieved_notes:
-                rag_context += f"• {note['arabic']}: {note['role']} | استخدام: {', '.join(note['best_for'][:2])}\n"
-            rag_context += "-" * 50 + "\n"
-    except Exception as e:
-        pass
+    query = f"{perfume_data.get('occasion', '')} {perfume_data.get('intensity', '')}"
+    rag_context = get_rag_context_for_ai(query, top_k=5)
 
     prompt = f"""أنت صانع عطور محترف (Perfumer). قم بتصميم عطر شخصي فريد بناءً على المتطلبات التالية:
 
@@ -382,23 +420,7 @@ def generate_recommendations(query, scent_profile=None, products=None):
 """
     
     # 🔍 RAG Enhancement - Retrieve relevant notes from knowledge base
-    rag_context = ""
-    try:
-        # Use retriever to fetch relevant notes based on query
-        retrieved_notes = retrieve_notes(query, top_k=5)
-        if retrieved_notes:
-            rag_context = "📚 النوتات المسترجعة من قاعدة المعرفة:\n" + "=" * 50 + "\n"
-            for note in retrieved_notes:
-                score = note.get('similarity_score', 0)
-                rag_context += f"""• {note['arabic']} ({note['note']})
-  العائلة: {note['family']} | الدور: {note['role']} | التطاير: {note['volatility']}
-  الملف: {note['profile']}
-  مناسبة للـ: {', '.join(note['best_for'][:2])}
-  يعمل بشكل جيد مع: {', '.join(note['works_well_with'][:3])}
-"""
-            rag_context += "=" * 50 + "\n\n"
-    except Exception as e:
-        pass  # Continue without RAG if there's an error
+    rag_context = get_rag_context_for_ai(query, top_k=5)
 
     prompt = f"""أنت خبير عطور محترف ومحلّل روائح متخصص.
 
@@ -745,16 +767,7 @@ def generate_article(topic, keywords, tone, language='ar'):
     """Generate a professionally formatted article using AI"""
     
     # 🔍 RAG Enhancement - Retrieve relevant notes for article
-    rag_context = ""
-    try:
-        retrieved_notes = retrieve_notes(f"{topic} {keywords}", top_k=5)
-        if retrieved_notes:
-            rag_context = "\n📚 المراجع والنوتات المرتبطة بالموضوع:\n" + "-" * 50 + "\n"
-            for note in retrieved_notes:
-                rag_context += f"• {note['arabic']} ({note['note']}): {note['profile']}\n"
-            rag_context += "-" * 50 + "\n"
-    except Exception as e:
-        pass
+    rag_context = get_rag_context_for_ai(f"{topic} {keywords}", top_k=5)
     
     prompt = f"""
     أنت محرر ومؤلف محتوى محترف متخصص في مجال العطور والروائح.
@@ -959,16 +972,7 @@ def analyze_face_for_perfume(image_data):
     Analyze face image using OpenAI Vision to recommend perfumes.
     """
     # 🔍 RAG Enhancement - Retrieve notes for face analysis
-    rag_context = ""
-    try:
-        retrieved_notes = retrieve_notes("شخصية أنيقة رسمية فاخرة", top_k=5)
-        if retrieved_notes:
-            rag_context = "\n📚 النوتات الموصى بها الشائعة:\n" + "-" * 50 + "\n"
-            for note in retrieved_notes:
-                rag_context += f"• {note['arabic']}: {note['role']} - {note['profile']}\n"
-            rag_context += "-" * 50 + "\n"
-    except Exception as e:
-        pass
+    rag_context = get_rag_context_for_ai("شخصية أنيقة رسمية فاخرة", top_k=5)
     
     prompt = f"""أنت خبير متخصص في تحليل الوجه واختيار العطور المناسبة. قم بتحليل هذه الصورة بدقة عالية واستخرج:
 
