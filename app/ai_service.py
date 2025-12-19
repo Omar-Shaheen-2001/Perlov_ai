@@ -196,30 +196,58 @@ def get_ai_response(prompt, system_message="أنت خبير عطور محترف.
         return {"error": str(e)}
 
 def generate_scent_dna_analysis(profile_data, debug: bool = None):
-    """تحليل DNA العطري باستخدام RAG كمصدر وحيد للحقيقة"""
+    """تحليل DNA العطري باستخدام RAG كمصدر وحيد للحقيقة - بدون استخدام الذاكرة العامة"""
     
     query = f"{profile_data.get('gender', '')} {profile_data.get('personality_type', '')} {profile_data.get('favorite_notes', '')}"
-    rag_context, rag_result = get_rag_context_for_ai(query, top_k=6, module_type='scent_dna', debug=debug)
+    rag_context, rag_result = get_rag_context_for_ai(query, top_k=8, module_type='scent_dna', debug=debug)
     
-    if not rag_result.is_valid:
+    if not rag_result.is_valid or not rag_result.notes:
         fallback = get_default_response('scent_dna')
         fallback['_rag_status'] = 'no_data'
+        fallback['_message'] = 'لا توجد بيانات كافية في قاعدة المعرفة'
         return fallback
     
-    available_notes = ', '.join([n.get('arabic', n.get('note', '')) for n in rag_result.notes])
-    available_families = ', '.join(rag_result.families)
+    available_notes_ar = [n.get('arabic', n.get('note', '')) for n in rag_result.notes if n.get('arabic') or n.get('note')]
+    available_notes_en = [n.get('note', n.get('english', '')) for n in rag_result.notes if n.get('note') or n.get('english')]
+    available_families = list(rag_result.families) if rag_result.families else []
     
-    prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
+    notes_list_ar = ', '.join(available_notes_ar)
+    notes_list_en = ', '.join(available_notes_en)
+    families_list = ', '.join(available_families)
+    
+    notes_details = []
+    for n in rag_result.notes:
+        detail = f"- {n.get('arabic', n.get('note', 'غير معروف'))} ({n.get('note', '')}) - عائلة: {n.get('family', 'غير محدد')}"
+        if n.get('profile'):
+            detail += f" - وصف: {n.get('profile')}"
+        notes_details.append(detail)
+    notes_details_text = '\n'.join(notes_details)
+    
+    prompt = f"""أنت محلل عطور. مهمتك تحليل بيانات المستخدم وإنشاء ملف Scent DNA.
 
-{rag_context}
+═══════════════════════════════════════════════════════════
+🚫 تحذير صارم: قاعدة المعرفة هي المصدر الوحيد للحقيقة
+═══════════════════════════════════════════════════════════
 
-⚠️ قواعد صارمة - يجب الالتزام بها:
-1. استخدم فقط النوتات المتاحة: {available_notes}
-2. استخدم فقط العائلات المتاحة: {available_families}
-3. لا تذكر أي نوتة أو عائلة غير موجودة في القائمة أعلاه
-4. إذا لم تجد نوتات مناسبة، قدم نصائح عامة بدون أسماء محددة
+📋 النوتات المتاحة حصرياً (استخدم فقط من هذه القائمة):
+{notes_details_text}
 
-بيانات المستخدم:
+📋 العائلات المتاحة حصرياً:
+{families_list}
+
+═══════════════════════════════════════════════════════════
+⛔ قواعد إلزامية - أي مخالفة ستُرفض:
+═══════════════════════════════════════════════════════════
+1. ❌ ممنوع ذكر أي نوتة غير موجودة في القائمة أعلاه
+2. ❌ ممنوع ذكر أي عائلة غير موجودة في القائمة أعلاه  
+3. ❌ ممنوع استخدام معلوماتك العامة عن العطور
+4. ❌ ممنوع اختراع أسماء نوتات أو عائلات جديدة
+5. ✅ استخدم فقط النوتات والعائلات المذكورة أعلاه
+6. ✅ إذا لم تجد نوتات مناسبة، استخدم "غير محدد"
+
+═══════════════════════════════════════════════════════════
+👤 بيانات المستخدم للتحليل:
+═══════════════════════════════════════════════════════════
 - الجنس: {profile_data.get('gender', 'غير محدد')}
 - الفئة العمرية: {profile_data.get('age_range', 'غير محدد')}
 - نوع الشخصية: {profile_data.get('personality_type', 'غير محدد')}
@@ -228,37 +256,60 @@ def generate_scent_dna_analysis(profile_data, debug: bool = None):
 - المناخ: {profile_data.get('climate', 'غير محدد')}
 - نوع البشرة: {profile_data.get('skin_type', 'غير محدد')}
 
-قدم الإجابة بصيغة JSON فقط بالشكل التالي:
+═══════════════════════════════════════════════════════════
+📝 صيغة الإجابة المطلوبة (JSON فقط):
+═══════════════════════════════════════════════════════════
 {{
-    "scent_personality": "اسم الشخصية العطرية",
-    "personality_description": "وصف مختصر للشخصية العطرية في 2-3 جمل",
-    "recommended_families": ["عائلة من القائمة المتاحة فقط"],
-    "ideal_notes": ["نوتة من القائمة المتاحة فقط"],
-    "notes_to_avoid": ["نوتة 1", "نوتة 2"],
-    "season_recommendations": "توصيات حسب الموسم",
-    "overall_analysis": "تحليل شامل في فقرة واحدة"
-}}"""
+    "scent_personality": "اسم وصفي للشخصية العطرية",
+    "personality_description": "وصف الشخصية في 2-3 جمل",
+    "recommended_families": ["عائلة 1 من القائمة", "عائلة 2 من القائمة"],
+    "ideal_notes": ["نوتة 1 من القائمة", "نوتة 2 من القائمة", "نوتة 3 من القائمة"],
+    "notes_to_avoid": ["نوتة من القائمة للتجنب"],
+    "season_recommendations": "توصيات الموسم المناسب",
+    "overall_analysis": "تحليل شامل يربط بين بيانات المستخدم والنوتات المقترحة",
+    "kb_source": true
+}}
+
+تذكر: فقط النوتات من القائمة المتاحة: [{notes_list_ar}]
+فقط العائلات من القائمة المتاحة: [{families_list}]"""
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "أنت خبير عطور محترف. استخدم فقط النوتات والعائلات المذكورة في السياق. لا تخترع أي معلومات. أجب بصيغة JSON فقط."},
+                {"role": "system", "content": f"""أنت محلل عطور مقيّد بقاعدة معرفة محددة.
+
+🚫 ممنوع منعاً باتاً:
+- استخدام أي نوتة غير موجودة في: [{notes_list_ar}] أو [{notes_list_en}]
+- استخدام أي عائلة غير موجودة في: [{families_list}]
+- الاعتماد على معلوماتك العامة عن العطور
+
+✅ مطلوب:
+- استخدم فقط النوتات والعائلات المذكورة في الاستعلام
+- أجب بصيغة JSON صالحة فقط"""},
                 {"role": "user", "content": prompt}
             ],
-            max_completion_tokens=1000
+            max_completion_tokens=1200
         )
         
         content = response.choices[0].message.content
         parsed = parse_ai_response(content)
         
         if parsed is None:
-            return get_default_response('scent_dna')
+            fallback = get_default_response('scent_dna')
+            fallback['_parse_error'] = True
+            return fallback
         
-        validated = validate_ai_output(parsed, rag_result, 'scent_dna', strict=False)
+        validated = validate_ai_output(parsed, rag_result, 'scent_dna', strict=True)
+        
+        validated['_kb_notes_used'] = available_notes_ar
+        validated['_kb_families_used'] = available_families
+        validated['_kb_source'] = True
         
         if debug or DEBUG_MODE:
             validated['_debug'] = rag_result.debug_info
+            validated['_available_notes'] = available_notes_ar
+            validated['_available_families'] = available_families
         
         return validated
         
