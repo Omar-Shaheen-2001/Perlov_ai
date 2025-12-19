@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة النوتات العطرية - PERLOV.ai{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1"><i class="bi bi-flower1 me-2"></i>إدارة النوتات العطرية</h2>
+                    <p class="text-muted mb-0">قاعدة المعرفة الذكية لنظام RAG</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#rebuildIndexModal">
+                        <i class="bi bi-arrow-repeat me-1"></i>إعادة بناء الفهرس
+                    </button>
+                    <a href="{{ url_for('admin.add_note') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i>إضافة نوتة جديدة
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ stats.total }}</h3>
+                    <small>إجمالي النوتات</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ stats.active }}</h3>
+                    <small>نوتات فعّالة</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ stats.inactive }}</h3>
+                    <small>نوتات معطّلة</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ stats.families }}</h3>
+                    <small>عائلات عطرية</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <form method="GET" class="d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="بحث..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <select id="familyFilter" class="form-select" onchange="filterByFamily(this.value)">
+                <option value="">جميع العائلات</option>
+                {% for family in families %}
+                <option value="{{ family }}" {% if family_filter == family %}selected{% endif %}>{{ family }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم (EN)</th>
+                            <th>الاسم (AR)</th>
+                            <th>العائلة</th>
+                            <th>الدور</th>
+                            <th>التطاير</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for note in notes %}
+                        <tr>
+                            <td>{{ note.id }}</td>
+                            <td><strong>{{ note.name_en }}</strong></td>
+                            <td>{{ note.name_ar }}</td>
+                            <td><span class="badge bg-secondary">{{ note.family }}</span></td>
+                            <td>
+                                {% if note.role == 'Top' %}
+                                <span class="badge bg-info">علوية</span>
+                                {% elif note.role == 'Heart' %}
+                                <span class="badge bg-danger">قلب</span>
+                                {% elif note.role == 'Base' %}
+                                <span class="badge bg-dark">قاعدة</span>
+                                {% else %}
+                                <span class="badge bg-warning">{{ note.role }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ note.volatility }}</td>
+                            <td>
+                                {% if note.is_active %}
+                                <span class="badge bg-success">فعّال</span>
+                                {% else %}
+                                <span class="badge bg-danger">معطّل</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('admin.edit_note', id=note.id) }}" class="btn btn-outline-primary" title="تعديل">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="{{ url_for('admin.toggle_note', id=note.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-{{ 'warning' if note.is_active else 'success' }}" title="{{ 'تعطيل' if note.is_active else 'تفعيل' }}">
+                                            <i class="bi bi-{{ 'pause' if note.is_active else 'play' }}"></i>
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn btn-outline-danger" onclick="confirmDelete({{ note.id }}, '{{ note.name_en }}')" title="حذف">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                لا توجد نوتات
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rebuildIndexModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-arrow-repeat me-2"></i>إعادة بناء فهرس RAG</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    سيتم إعادة بناء فهرس FAISS من جميع النوتات الفعّالة في قاعدة البيانات.
+                </div>
+                <p>هذه العملية ستقوم بـ:</p>
+                <ul>
+                    <li>جلب جميع النوتات الفعّالة ({{ stats.active }} نوتة)</li>
+                    <li>توليد Embeddings جديدة</li>
+                    <li>إعادة بناء فهرس FAISS</li>
+                    <li>تحديث نظام RAG</li>
+                </ul>
+                <div id="rebuildProgress" class="d-none">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                    </div>
+                    <p class="text-center mt-2 text-muted">جاري إعادة البناء...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <form action="{{ url_for('admin.rebuild_rag_index') }}" method="POST" id="rebuildForm">
+                    <button type="submit" class="btn btn-warning" id="rebuildBtn">
+                        <i class="bi bi-arrow-repeat me-1"></i>إعادة البناء الآن
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد الحذف</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف النوتة: <strong id="deleteNoteName"></strong>؟</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger">حذف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterByFamily(family) {
+    const url = new URL(window.location.href);
+    if (family) {
+        url.searchParams.set('family', family);
+    } else {
+        url.searchParams.delete('family');
+    }
+    window.location.href = url.toString();
+}
+
+function confirmDelete(id, name) {
+    document.getElementById('deleteNoteName').textContent = name;
+    document.getElementById('deleteForm').action = `/admin/notes/delete/${id}`;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+document.getElementById('rebuildForm').addEventListener('submit', function() {
+    document.getElementById('rebuildProgress').classList.remove('d-none');
+    document.getElementById('rebuildBtn').disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'تعديل' if note else 'إضافة' }} نوتة عطرية - PERLOV.ai{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">لوحة التحكم</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin.notes') }}">النوتات العطرية</a></li>
+                    <li class="breadcrumb-item active">{{ 'تعديل' if note else 'إضافة' }}</li>
+                </ol>
+            </nav>
+            <h2><i class="bi bi-flower1 me-2"></i>{{ 'تعديل النوتة' if note else 'إضافة نوتة جديدة' }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">الاسم بالإنجليزية <span class="text-danger">*</span></label>
+                                <input type="text" name="name_en" class="form-control" required 
+                                       value="{{ note.name_en if note else '' }}" placeholder="Bergamot">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">الاسم بالعربية <span class="text-danger">*</span></label>
+                                <input type="text" name="name_ar" class="form-control" required 
+                                       value="{{ note.name_ar if note else '' }}" placeholder="برغموت">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">العائلة العطرية <span class="text-danger">*</span></label>
+                                <select name="family" class="form-select" required>
+                                    <option value="">اختر العائلة</option>
+                                    {% for fam in ['Citrus', 'Floral', 'Woody', 'Oriental', 'Fresh', 'Spicy', 'Aromatic', 'Gourmand', 'Musk', 'Amber', 'Leather', 'Aquatic', 'Green', 'Fruity'] %}
+                                    <option value="{{ fam }}" {% if note and note.family == fam %}selected{% endif %}>{{ fam }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">الدور <span class="text-danger">*</span></label>
+                                <select name="role" class="form-select" required>
+                                    <option value="">اختر الدور</option>
+                                    {% for role in ['Top', 'Heart', 'Base', 'Top-Heart', 'Heart-Base'] %}
+                                    <option value="{{ role }}" {% if note and note.role == role %}selected{% endif %}>{{ role }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">التطاير <span class="text-danger">*</span></label>
+                                <select name="volatility" class="form-select" required>
+                                    <option value="">اختر التطاير</option>
+                                    {% for vol in ['High', 'Medium-High', 'Medium', 'Low-Medium', 'Low'] %}
+                                    <option value="{{ vol }}" {% if note and note.volatility == vol %}selected{% endif %}>{{ vol }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">الملف الشخصي (Profile) <span class="text-danger">*</span></label>
+                            <textarea name="profile" class="form-control" rows="2" required 
+                                      placeholder="Fresh, bright, slightly bitter, zesty">{{ note.profile if note else '' }}</textarea>
+                            <small class="text-muted">وصف مختصر للرائحة بالإنجليزية</small>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">التركيز المناسب</label>
+                                <input type="text" name="concentration" class="form-control" 
+                                       value="{{ note.concentration if note else '' }}" placeholder="EDT/EDP">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">الأصل/المنشأ</label>
+                                <input type="text" name="origin" class="form-control" 
+                                       value="{{ note.origin if note else '' }}" placeholder="Sicily, Italy">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">تعمل جيداً مع (Works Well With)</label>
+                            <input type="text" name="works_well_with" class="form-control" 
+                                   value="{{ note.works_well_with if note else '' }}" 
+                                   placeholder='["lavender", "amber", "musk"]'>
+                            <small class="text-muted">قائمة JSON بالنوتات المتوافقة</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">تجنب مع (Avoid With)</label>
+                            <input type="text" name="avoid_with" class="form-control" 
+                                   value="{{ note.avoid_with if note else '' }}" 
+                                   placeholder='["heavy oud", "dark patchouli"]'>
+                            <small class="text-muted">قائمة JSON بالنوتات غير المتوافقة</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">الأفضل لـ (Best For)</label>
+                            <input type="text" name="best_for" class="form-control" 
+                                   value="{{ note.best_for if note else '' }}" 
+                                   placeholder='["summer", "daytime", "fresh scents"]'>
+                            <small class="text-muted">قائمة JSON بأفضل الاستخدامات</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
+                                       {% if not note or note.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">نوتة فعّالة (تظهر في نظام RAG)</label>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>{{ 'حفظ التعديلات' if note else 'إضافة النوتة' }}
+                            </button>
+                            <a href="{{ url_for('admin.notes') }}" class="btn btn-secondary">إلغاء</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>إرشادات</h6>
+                </div>
+                <div class="card-body">
+                    <h6>العائلات العطرية:</h6>
+                    <ul class="small text-muted">
+                        <li><strong>Citrus:</strong> حمضيات (برتقال، ليمون)</li>
+                        <li><strong>Floral:</strong> زهرية (ورد، ياسمين)</li>
+                        <li><strong>Woody:</strong> خشبية (صندل، أرز)</li>
+                        <li><strong>Oriental:</strong> شرقية (عود، عنبر)</li>
+                        <li><strong>Spicy:</strong> توابل (هيل، قرفة)</li>
+                    </ul>
+
+                    <h6>الأدوار:</h6>
+                    <ul class="small text-muted">
+                        <li><strong>Top:</strong> النوتات العلوية (أول ما يُشم)</li>
+                        <li><strong>Heart:</strong> قلب العطر (الجزء الرئيسي)</li>
+                        <li><strong>Base:</strong> القاعدة (الثبات الطويل)</li>
+                    </ul>
+
+                    <h6>التطاير:</h6>
+                    <ul class="small text-muted">
+                        <li><strong>High:</strong> سريع التبخر</li>
+                        <li><strong>Medium:</strong> متوسط</li>
+                        <li><strong>Low:</strong> بطيء (يدوم طويلاً)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -205,3 +205,53 @@ class ArticleLike(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User', backref=db.backref('article_likes', lazy=True))
+
+
+class PerfumeNote(db.Model):
+    """نموذج النوتات العطرية لنظام RAG"""
+    __tablename__ = 'perfume_notes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name_en = db.Column(db.String(100), nullable=False, unique=True)
+    name_ar = db.Column(db.String(100), nullable=False)
+    family = db.Column(db.String(50), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    volatility = db.Column(db.String(20), nullable=False)
+    profile = db.Column(db.Text, nullable=False)
+    works_well_with = db.Column(db.Text)
+    avoid_with = db.Column(db.Text)
+    best_for = db.Column(db.Text)
+    concentration = db.Column(db.String(50))
+    origin = db.Column(db.String(100))
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        """تحويل النوتة إلى قاموس للاستخدام في RAG"""
+        import json
+        return {
+            'id': self.id,
+            'note': self.name_en,
+            'arabic': self.name_ar,
+            'family': self.family,
+            'role': self.role,
+            'volatility': self.volatility,
+            'profile': self.profile,
+            'works_well_with': json.loads(self.works_well_with) if self.works_well_with else [],
+            'avoid_with': json.loads(self.avoid_with) if self.avoid_with else [],
+            'best_for': json.loads(self.best_for) if self.best_for else [],
+            'concentration': self.concentration or '',
+            'origin': self.origin or ''
+        }
+    
+    @staticmethod
+    def get_active_notes():
+        """جلب جميع النوتات الفعّالة"""
+        return PerfumeNote.query.filter_by(is_active=True).all()
+    
+    @staticmethod
+    def get_all_notes_as_dict():
+        """جلب جميع النوتات الفعّالة كقائمة قواميس"""
+        notes = PerfumeNote.get_active_notes()
+        return [note.to_dict() for note in notes]

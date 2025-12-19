@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user
 from app import db
-from app.models import User, ScentProfile, CustomPerfume, AffiliateProduct, Recommendation, Article
+from app.models import User, ScentProfile, CustomPerfume, AffiliateProduct, Recommendation, Article, PerfumeNote
 from app.ai_service import generate_article
 import json
 from datetime import datetime
@@ -331,3 +331,193 @@ def delete_article(id):
     
     flash(f'تم حذف المقال "{title}" بنجاح', 'success')
     return redirect(url_for('admin.articles'))
+
+
+@admin_bp.route('/notes')
+@admin_required
+def notes():
+    """عرض جميع النوتات العطرية"""
+    search_query = request.args.get('search', '').strip()
+    family_filter = request.args.get('family', '').strip()
+    
+    query = PerfumeNote.query.order_by(PerfumeNote.name_en.asc())
+    
+    if search_query:
+        query = query.filter(
+            (PerfumeNote.name_en.ilike(f'%{search_query}%')) |
+            (PerfumeNote.name_ar.ilike(f'%{search_query}%'))
+        )
+    
+    if family_filter:
+        query = query.filter(PerfumeNote.family == family_filter)
+    
+    notes_list = query.all()
+    
+    families = db.session.query(PerfumeNote.family).distinct().all()
+    families = [f[0] for f in families]
+    
+    stats = {
+        'total': PerfumeNote.query.count(),
+        'active': PerfumeNote.query.filter_by(is_active=True).count(),
+        'inactive': PerfumeNote.query.filter_by(is_active=False).count(),
+        'families': len(families)
+    }
+    
+    return render_template('admin/notes.html', 
+                         notes=notes_list, 
+                         stats=stats, 
+                         families=families,
+                         search_query=search_query,
+                         family_filter=family_filter)
+
+
+@admin_bp.route('/notes/add', methods=['GET', 'POST'])
+@admin_required
+def add_note():
+    """إضافة نوتة جديدة"""
+    if request.method == 'POST':
+        try:
+            note = PerfumeNote(
+                name_en=request.form.get('name_en', '').strip(),
+                name_ar=request.form.get('name_ar', '').strip(),
+                family=request.form.get('family', ''),
+                role=request.form.get('role', ''),
+                volatility=request.form.get('volatility', ''),
+                profile=request.form.get('profile', '').strip(),
+                works_well_with=request.form.get('works_well_with', '').strip() or '[]',
+                avoid_with=request.form.get('avoid_with', '').strip() or '[]',
+                best_for=request.form.get('best_for', '').strip() or '[]',
+                concentration=request.form.get('concentration', '').strip(),
+                origin=request.form.get('origin', '').strip(),
+                is_active='is_active' in request.form
+            )
+            db.session.add(note)
+            db.session.commit()
+            flash(f'تم إضافة النوتة "{note.name_en}" بنجاح', 'success')
+            return redirect(url_for('admin.notes'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'خطأ في إضافة النوتة: {str(e)}', 'error')
+    
+    return render_template('admin/note_form.html', note=None)
+
+
+@admin_bp.route('/notes/edit/<int:id>', methods=['GET', 'POST'])
+@admin_required
+def edit_note(id):
+    """تعديل نوتة"""
+    note = PerfumeNote.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        try:
+            note.name_en = request.form.get('name_en', '').strip()
+            note.name_ar = request.form.get('name_ar', '').strip()
+            note.family = request.form.get('family', '')
+            note.role = request.form.get('role', '')
+            note.volatility = request.form.get('volatility', '')
+            note.profile = request.form.get('profile', '').strip()
+            note.works_well_with = request.form.get('works_well_with', '').strip() or '[]'
+            note.avoid_with = request.form.get('avoid_with', '').strip() or '[]'
+            note.best_for = request.form.get('best_for', '').strip() or '[]'
+            note.concentration = request.form.get('concentration', '').strip()
+            note.origin = request.form.get('origin', '').strip()
+            note.is_active = 'is_active' in request.form
+            
+            db.session.commit()
+            flash(f'تم تحديث النوتة "{note.name_en}" بنجاح', 'success')
+            return redirect(url_for('admin.notes'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'خطأ في تحديث النوتة: {str(e)}', 'error')
+    
+    return render_template('admin/note_form.html', note=note)
+
+
+@admin_bp.route('/notes/toggle/<int:id>', methods=['POST'])
+@admin_required
+def toggle_note(id):
+    """تفعيل/تعطيل نوتة"""
+    note = PerfumeNote.query.get_or_404(id)
+    note.is_active = not note.is_active
+    db.session.commit()
+    
+    status = 'تفعيل' if note.is_active else 'تعطيل'
+    flash(f'تم {status} النوتة "{note.name_en}"', 'success')
+    return redirect(url_for('admin.notes'))
+
+
+@admin_bp.route('/notes/delete/<int:id>', methods=['POST'])
+@admin_required
+def delete_note(id):
+    """حذف نوتة"""
+    note = PerfumeNote.query.get_or_404(id)
+    name = note.name_en
+    db.session.delete(note)
+    db.session.commit()
+    
+    flash(f'تم حذف النوتة "{name}" بنجاح', 'success')
+    return redirect(url_for('admin.notes'))
+
+
+@admin_bp.route('/notes/rebuild-index', methods=['POST'])
+@admin_required
+def rebuild_rag_index():
+    """إعادة بناء فهرس FAISS من قاعدة البيانات"""
+    try:
+        from app.rag_builder import rebuild_faiss_index
+        
+        result = rebuild_faiss_index()
+        
+        if result['success']:
+            flash(f'تم إعادة بناء الفهرس بنجاح! ({result["notes_count"]} نوتة)', 'success')
+        else:
+            flash(f'خطأ في إعادة بناء الفهرس: {result["error"]}', 'error')
+    except Exception as e:
+        flash(f'خطأ: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.notes'))
+
+
+@admin_bp.route('/notes/migrate-json', methods=['POST'])
+@admin_required
+def migrate_notes_from_json():
+    """نقل النوتات من ملف JSON إلى قاعدة البيانات"""
+    try:
+        import json
+        
+        with open('notes_kb.json', 'r', encoding='utf-8') as f:
+            notes_data = json.load(f)
+        
+        imported = 0
+        skipped = 0
+        
+        for note_data in notes_data:
+            existing = PerfumeNote.query.filter_by(name_en=note_data['note']).first()
+            if existing:
+                skipped += 1
+                continue
+            
+            note = PerfumeNote(
+                name_en=note_data['note'],
+                name_ar=note_data['arabic'],
+                family=note_data['family'],
+                role=note_data['role'],
+                volatility=note_data['volatility'],
+                profile=note_data['profile'],
+                works_well_with=json.dumps(note_data.get('works_well_with', []), ensure_ascii=False),
+                avoid_with=json.dumps(note_data.get('avoid_with', []), ensure_ascii=False),
+                best_for=json.dumps(note_data.get('best_for', []), ensure_ascii=False),
+                concentration=note_data.get('concentration', ''),
+                origin=note_data.get('origin', ''),
+                is_active=True
+            )
+            db.session.add(note)
+            imported += 1
+        
+        db.session.commit()
+        flash(f'تم استيراد {imported} نوتة بنجاح ({skipped} موجودة مسبقاً)', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'خطأ في الاستيراد: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.notes'))

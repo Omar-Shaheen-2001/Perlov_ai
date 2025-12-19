@@ -1,0 +1,986 @@
+[
+  {
+    "id": 1,
+    "note": "Bergamot",
+    "arabic": "برغموت",
+    "family": "Citrus",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Fresh, bright, slightly bitter, zesty",
+    "works_well_with": [
+      "lavender",
+      "ginger",
+      "amber",
+      "musk",
+      "neroli"
+    ],
+    "avoid_with": [
+      "heavy oud",
+      "dark patchouli"
+    ],
+    "best_for": [
+      "summer",
+      "daytime",
+      "fresh scents",
+      "morning"
+    ],
+    "concentration": "EDT/EDC",
+    "origin": "Sicily, Italy"
+  },
+  {
+    "id": 2,
+    "note": "Lemon",
+    "arabic": "ليمون",
+    "family": "Citrus",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Crisp, clean, sharp, energetic",
+    "works_well_with": [
+      "white flowers",
+      "mint",
+      "rosemary",
+      "jasmine"
+    ],
+    "avoid_with": [
+      "heavy florals",
+      "deep woods"
+    ],
+    "best_for": [
+      "summer",
+      "office",
+      "fresh",
+      "unisex"
+    ],
+    "concentration": "EDT",
+    "origin": "Southern Europe, Mediterranean"
+  },
+  {
+    "id": 3,
+    "note": "Ginger",
+    "arabic": "زنجبيل",
+    "family": "Spicy",
+    "role": "Top-Heart",
+    "volatility": "Medium-High",
+    "profile": "Warm, peppery, slightly sweet, spicy",
+    "works_well_with": [
+      "bergamot",
+      "cardamom",
+      "amber",
+      "woods"
+    ],
+    "avoid_with": [
+      "baby powder",
+      "extreme florals"
+    ],
+    "best_for": [
+      "autumn",
+      "evening",
+      "warm scents",
+      "spicy"
+    ],
+    "concentration": "EDP",
+    "origin": "Southeast Asia, India"
+  },
+  {
+    "id": 4,
+    "note": "Black Pepper",
+    "arabic": "فلفل أسود",
+    "family": "Spicy",
+    "role": "Top-Heart",
+    "volatility": "Medium",
+    "profile": "Peppery, sharp, spicy, slightly woody",
+    "works_well_with": [
+      "bergamot",
+      "amber",
+      "cedar",
+      "leather"
+    ],
+    "avoid_with": [
+      "sweet gourmands"
+    ],
+    "best_for": [
+      "evening",
+      "formal",
+      "masculine",
+      "spicy"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "India, Vietnam"
+  },
+  {
+    "id": 5,
+    "note": "Cardamom",
+    "arabic": "هيل",
+    "family": "Spicy",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Warm, slightly sweet, aromatic, complex",
+    "works_well_with": [
+      "ginger",
+      "cinnamon",
+      "amber",
+      "woods"
+    ],
+    "avoid_with": [
+      "light aquatics"
+    ],
+    "best_for": [
+      "winter",
+      "evening",
+      "oriental",
+      "warm"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "India, Guatemala"
+  },
+  {
+    "id": 6,
+    "note": "Jasmine",
+    "arabic": "ياسمين",
+    "family": "Floral",
+    "role": "Heart-Base",
+    "volatility": "Low-Medium",
+    "profile": "Romantic, sensual, sweet, intoxicating",
+    "works_well_with": [
+      "rose",
+      "sandalwood",
+      "amber",
+      "musk"
+    ],
+    "avoid_with": [
+      "sharp citrus"
+    ],
+    "best_for": [
+      "evening",
+      "formal",
+      "feminine",
+      "romantic"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "India, Egypt, France"
+  },
+  {
+    "id": 7,
+    "note": "Rose",
+    "arabic": "ورد",
+    "family": "Floral",
+    "role": "Heart",
+    "volatility": "Low-Medium",
+    "profile": "Classic, elegant, romantic, slightly honeyed",
+    "works_well_with": [
+      "jasmine",
+      "oud",
+      "patchouli",
+      "amber"
+    ],
+    "avoid_with": [
+      "overly fruity"
+    ],
+    "best_for": [
+      "all seasons",
+      "formal",
+      "classic",
+      "feminine"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "Bulgaria, Turkey, Iran, Grasse"
+  },
+  {
+    "id": 8,
+    "note": "Iris",
+    "arabic": "سوسن",
+    "family": "Floral",
+    "role": "Heart-Base",
+    "volatility": "Low",
+    "profile": "Powdery, rooty, slightly creamy, elegant",
+    "works_well_with": [
+      "rose",
+      "amber",
+      "woods",
+      "musk"
+    ],
+    "avoid_with": [
+      "aggressive citrus"
+    ],
+    "best_for": [
+      "day",
+      "formal",
+      "sophisticated",
+      "feminine"
+    ],
+    "concentration": "Parfum/EDP",
+    "origin": "Italy, France"
+  },
+  {
+    "id": 9,
+    "note": "Tuberose",
+    "arabic": "الزهر الأبيض",
+    "family": "Floral",
+    "role": "Heart-Base",
+    "volatility": "Low",
+    "profile": "Creamy, sweet, intoxicating, rich",
+    "works_well_with": [
+      "gardenia",
+      "sandalwood",
+      "amber",
+      "musk"
+    ],
+    "avoid_with": [
+      "light aquatics"
+    ],
+    "best_for": [
+      "evening",
+      "summer",
+      "sensual",
+      "feminine"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "Mexico, Madagascar"
+  },
+  {
+    "id": 10,
+    "note": "Gardenia",
+    "arabic": "جاردينيا",
+    "family": "Floral",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Sweet, tropical, creamy, lush",
+    "works_well_with": [
+      "tuberose",
+      "orange blossom",
+      "sandalwood"
+    ],
+    "avoid_with": [
+      "dark woods"
+    ],
+    "best_for": [
+      "summer",
+      "evening",
+      "tropical",
+      "feminine"
+    ],
+    "concentration": "EDP",
+    "origin": "Tropical regions"
+  },
+  {
+    "id": 11,
+    "note": "Incense",
+    "arabic": "بخور",
+    "family": "Resinous",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Smoky, dry, spiritual, mysterious",
+    "works_well_with": [
+      "amber",
+      "patchouli",
+      "woods",
+      "oud"
+    ],
+    "avoid_with": [
+      "sweet aquatic",
+      "light fruity"
+    ],
+    "best_for": [
+      "evening",
+      "formal",
+      "winter",
+      "unisex"
+    ],
+    "concentration": "Parfum",
+    "origin": "Middle East, India, Madagascar"
+  },
+  {
+    "id": 12,
+    "note": "Amber",
+    "arabic": "عنبر",
+    "family": "Resinous",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Warm, sensual, slightly sweet, enveloping",
+    "works_well_with": [
+      "rose",
+      "oud",
+      "musk",
+      "vanilla",
+      "woods"
+    ],
+    "avoid_with": [
+      "extreme freshness"
+    ],
+    "best_for": [
+      "evening",
+      "autumn",
+      "winter",
+      "all genders"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic (ambroxan), Baltic amber inspiration"
+  },
+  {
+    "id": 13,
+    "note": "Vanilla",
+    "arabic": "فانيليا",
+    "family": "Gourmand",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Sweet, creamy, warm, comforting",
+    "works_well_with": [
+      "caramel",
+      "tonka",
+      "amber",
+      "sandalwood"
+    ],
+    "avoid_with": [
+      "sharp citrus"
+    ],
+    "best_for": [
+      "evening",
+      "all seasons",
+      "unisex",
+      "comfort"
+    ],
+    "concentration": "Parfum",
+    "origin": "Madagascar, Tahiti, Mexico"
+  },
+  {
+    "id": 14,
+    "note": "Sandalwood",
+    "arabic": "صندل",
+    "family": "Woody",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Warm, creamy, slightly sweet, woody",
+    "works_well_with": [
+      "rose",
+      "jasmine",
+      "amber",
+      "vanilla"
+    ],
+    "avoid_with": [
+      "extreme fruity"
+    ],
+    "best_for": [
+      "evening",
+      "all seasons",
+      "unisex",
+      "warm"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "India, Australia"
+  },
+  {
+    "id": 15,
+    "note": "Cedarwood",
+    "arabic": "خشب الأرز",
+    "family": "Woody",
+    "role": "Heart-Base",
+    "volatility": "Medium-Low",
+    "profile": "Dry, woody, warm, slightly spicy",
+    "works_well_with": [
+      "amber",
+      "bergamot",
+      "patchouli",
+      "leather"
+    ],
+    "avoid_with": [
+      "overly sweet"
+    ],
+    "best_for": [
+      "all seasons",
+      "masculine",
+      "formal",
+      "woody"
+    ],
+    "concentration": "EDP/Parfum",
+    "origin": "Middle East, Virginia, India"
+  },
+  {
+    "id": 16,
+    "note": "Oud",
+    "arabic": "عود",
+    "family": "Woody",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Deep, smoky, woody, animal, complex",
+    "works_well_with": [
+      "rose",
+      "amber",
+      "musk",
+      "spices"
+    ],
+    "avoid_with": [
+      "light florals"
+    ],
+    "best_for": [
+      "evening",
+      "formal",
+      "oriental",
+      "winter"
+    ],
+    "concentration": "Parfum",
+    "origin": "Middle East, Southeast Asia"
+  },
+  {
+    "id": 17,
+    "note": "Patchouli",
+    "arabic": "باتشولي",
+    "family": "Woody",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Earthy, slightly sweet, dark, rich",
+    "works_well_with": [
+      "amber",
+      "oud",
+      "rose",
+      "incense"
+    ],
+    "avoid_with": [
+      "extreme freshness"
+    ],
+    "best_for": [
+      "evening",
+      "autumn",
+      "winter",
+      "oriental"
+    ],
+    "concentration": "Parfum",
+    "origin": "Indonesia, India"
+  },
+  {
+    "id": 18,
+    "note": "Vetiver",
+    "arabic": "عشبة الند",
+    "family": "Woody",
+    "role": "Heart-Base",
+    "volatility": "Medium",
+    "profile": "Dry, grassy, slightly sweet, earthy",
+    "works_well_with": [
+      "citrus",
+      "amber",
+      "spices",
+      "woods"
+    ],
+    "avoid_with": [
+      "overly fruity"
+    ],
+    "best_for": [
+      "day",
+      "summer",
+      "fresh woody",
+      "masculine"
+    ],
+    "concentration": "EDT/EDP",
+    "origin": "Haiti, Java, Reunion Island"
+  },
+  {
+    "id": 19,
+    "note": "Musk",
+    "arabic": "مسك",
+    "family": "Animalic",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Warm, sensual, enveloping, skin-like",
+    "works_well_with": [
+      "rose",
+      "amber",
+      "vanilla",
+      "florals"
+    ],
+    "avoid_with": [
+      "nothing - universal"
+    ],
+    "best_for": [
+      "evening",
+      "all seasons",
+      "unisex",
+      "sensual"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic (for ethical reasons)"
+  },
+  {
+    "id": 20,
+    "note": "Leather",
+    "arabic": "جلد",
+    "family": "Animalic",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Smoky, dry, animalic, sophisticated",
+    "works_well_with": [
+      "birch tar",
+      "tobacco",
+      "woods",
+      "spices"
+    ],
+    "avoid_with": [
+      "light florals"
+    ],
+    "best_for": [
+      "evening",
+      "masculine",
+      "formal",
+      "bold"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic (birch tar derivative)"
+  },
+  {
+    "id": 21,
+    "note": "Neroli",
+    "arabic": "نيرولي",
+    "family": "Citrus",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Fresh, floral, slightly sweet, bright",
+    "works_well_with": [
+      "bergamot",
+      "white flowers",
+      "amber"
+    ],
+    "avoid_with": [
+      "dark woods"
+    ],
+    "best_for": [
+      "day",
+      "summer",
+      "fresh",
+      "all genders"
+    ],
+    "concentration": "EDT/EDP",
+    "origin": "Sicily, Italy"
+  },
+  {
+    "id": 22,
+    "note": "Orange Blossom",
+    "arabic": "زهر البرتقال",
+    "family": "Floral",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Sweet, floral, slightly bitter, bright",
+    "works_well_with": [
+      "bergamot",
+      "neroli",
+      "jasmine",
+      "amber"
+    ],
+    "avoid_with": [
+      "overly dark bases"
+    ],
+    "best_for": [
+      "day",
+      "spring",
+      "romantic",
+      "feminine"
+    ],
+    "concentration": "EDP",
+    "origin": "North Africa, Mediterranean"
+  },
+  {
+    "id": 23,
+    "note": "Lavender",
+    "arabic": "الخزامى",
+    "family": "Herbal",
+    "role": "Top-Heart",
+    "volatility": "High",
+    "profile": "Fresh, herbal, slightly sweet, calming",
+    "works_well_with": [
+      "bergamot",
+      "citrus",
+      "rosemary",
+      "amber"
+    ],
+    "avoid_with": [
+      "heavy orientals"
+    ],
+    "best_for": [
+      "day",
+      "all seasons",
+      "fresh",
+      "unisex"
+    ],
+    "concentration": "EDT/EDP",
+    "origin": "France, Spain, Bulgaria"
+  },
+  {
+    "id": 24,
+    "note": "Rosemary",
+    "arabic": "إكليل الجبل",
+    "family": "Herbal",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Fresh, herbal, woody, aromatic",
+    "works_well_with": [
+      "lavender",
+      "citrus",
+      "mint",
+      "woods"
+    ],
+    "avoid_with": [
+      "sweet florals"
+    ],
+    "best_for": [
+      "day",
+      "fresh",
+      "masculine",
+      "herbal"
+    ],
+    "concentration": "EDT",
+    "origin": "Mediterranean region"
+  },
+  {
+    "id": 25,
+    "note": "Mint",
+    "arabic": "نعناع",
+    "family": "Herbal",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Fresh, cool, crisp, invigorating",
+    "works_well_with": [
+      "lavender",
+      "citrus",
+      "woods",
+      "spices"
+    ],
+    "avoid_with": [
+      "heavy orientals"
+    ],
+    "best_for": [
+      "day",
+      "summer",
+      "fresh",
+      "masculine"
+    ],
+    "concentration": "EDT",
+    "origin": "Worldwide"
+  },
+  {
+    "id": 26,
+    "note": "Coconut",
+    "arabic": "جوز الهند",
+    "family": "Gourmand",
+    "role": "Heart-Base",
+    "volatility": "Low",
+    "profile": "Creamy, tropical, sweet, warm",
+    "works_well_with": [
+      "vanilla",
+      "amber",
+      "florals",
+      "sandalwood"
+    ],
+    "avoid_with": [
+      "dark woods"
+    ],
+    "best_for": [
+      "summer",
+      "tropical",
+      "feminine",
+      "sensual"
+    ],
+    "concentration": "EDP",
+    "origin": "Tropical regions"
+  },
+  {
+    "id": 27,
+    "note": "Caramel",
+    "arabic": "كراميل",
+    "family": "Gourmand",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Sweet, slightly bitter, warm, comforting",
+    "works_well_with": [
+      "vanilla",
+      "amber",
+      "musk",
+      "woods"
+    ],
+    "avoid_with": [
+      "fresh citrus"
+    ],
+    "best_for": [
+      "evening",
+      "autumn",
+      "winter",
+      "comfort"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 28,
+    "note": "Tobacco",
+    "arabic": "تبغ",
+    "family": "Animalic",
+    "role": "Heart-Base",
+    "volatility": "Low",
+    "profile": "Smoky, warm, slightly sweet, complex",
+    "works_well_with": [
+      "leather",
+      "amber",
+      "spices",
+      "woods"
+    ],
+    "avoid_with": [
+      "light freshness"
+    ],
+    "best_for": [
+      "evening",
+      "masculine",
+      "formal",
+      "oriental"
+    ],
+    "concentration": "Parfum",
+    "origin": "Worldwide"
+  },
+  {
+    "id": 29,
+    "note": "Aquatic",
+    "arabic": "مائي",
+    "family": "Fresh",
+    "role": "Top-Heart",
+    "volatility": "High",
+    "profile": "Fresh, ozonic, clean, watery",
+    "works_well_with": [
+      "citrus",
+      "white flowers",
+      "woods"
+    ],
+    "avoid_with": [
+      "heavy orientals"
+    ],
+    "best_for": [
+      "day",
+      "summer",
+      "fresh",
+      "unisex"
+    ],
+    "concentration": "EDT",
+    "origin": "Synthetic (Calone)"
+  },
+  {
+    "id": 30,
+    "note": "Melon",
+    "arabic": "شمام",
+    "family": "Fruity",
+    "role": "Top",
+    "volatility": "High",
+    "profile": "Sweet, juicy, fresh, fruity",
+    "works_well_with": [
+      "florals",
+      "citrus",
+      "vanilla"
+    ],
+    "avoid_with": [
+      "heavy woods"
+    ],
+    "best_for": [
+      "summer",
+      "feminine",
+      "fruity",
+      "daytime"
+    ],
+    "concentration": "EDT",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 31,
+    "note": "Peach",
+    "arabic": "خوخ",
+    "family": "Fruity",
+    "role": "Top-Heart",
+    "volatility": "Medium-High",
+    "profile": "Juicy, sweet, slightly peachy, fruity",
+    "works_well_with": [
+      "florals",
+      "amber",
+      "vanilla"
+    ],
+    "avoid_with": [
+      "dark woods"
+    ],
+    "best_for": [
+      "summer",
+      "feminine",
+      "fruity",
+      "romantic"
+    ],
+    "concentration": "EDP",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 32,
+    "note": "Raspberry",
+    "arabic": "توت العليق",
+    "family": "Fruity",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Fruity, slightly tart, sweet, juicy",
+    "works_well_with": [
+      "florals",
+      "vanilla",
+      "amber"
+    ],
+    "avoid_with": [
+      "overly dark bases"
+    ],
+    "best_for": [
+      "day",
+      "feminine",
+      "fruity",
+      "summer"
+    ],
+    "concentration": "EDP",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 33,
+    "note": "Apple",
+    "arabic": "تفاح",
+    "family": "Fruity",
+    "role": "Top-Heart",
+    "volatility": "Medium-High",
+    "profile": "Fresh, crisp, slightly tart, fruity",
+    "works_well_with": [
+      "citrus",
+      "florals",
+      "amber"
+    ],
+    "avoid_with": [
+      "heavy orientals"
+    ],
+    "best_for": [
+      "day",
+      "fresh",
+      "fruity",
+      "unisex"
+    ],
+    "concentration": "EDT",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 34,
+    "note": "Tonka Bean",
+    "arabic": "حبة التونكا",
+    "family": "Gourmand",
+    "role": "Base",
+    "volatility": "Very Low",
+    "profile": "Sweet, slightly bitter, creamy, warm",
+    "works_well_with": [
+      "vanilla",
+      "amber",
+      "spices"
+    ],
+    "avoid_with": [
+      "extreme freshness"
+    ],
+    "best_for": [
+      "evening",
+      "autumn",
+      "winter",
+      "sensual"
+    ],
+    "concentration": "Parfum",
+    "origin": "Venezuela, Madagascar"
+  },
+  {
+    "id": 35,
+    "note": "Cinnamon",
+    "arabic": "قرفة",
+    "family": "Spicy",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Warm, spicy, slightly sweet, cozy",
+    "works_well_with": [
+      "amber",
+      "vanilla",
+      "woods",
+      "cardamom"
+    ],
+    "avoid_with": [
+      "light florals"
+    ],
+    "best_for": [
+      "autumn",
+      "winter",
+      "evening",
+      "warm"
+    ],
+    "concentration": "EDP",
+    "origin": "Sri Lanka, Indonesia, Vietnam"
+  },
+  {
+    "id": 36,
+    "note": "Clove",
+    "arabic": "مسمار",
+    "family": "Spicy",
+    "role": "Heart",
+    "volatility": "Medium",
+    "profile": "Warm, spicy, slightly medicinal, complex",
+    "works_well_with": [
+      "amber",
+      "cinnamon",
+      "woods",
+      "florals"
+    ],
+    "avoid_with": [
+      "sharp citrus"
+    ],
+    "best_for": [
+      "evening",
+      "oriental",
+      "winter",
+      "formal"
+    ],
+    "concentration": "EDP",
+    "origin": "Indonesia, India"
+  },
+  {
+    "id": 37,
+    "note": "Almond",
+    "arabic": "لوز",
+    "family": "Gourmand",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Sweet, slightly bitter, creamy, nutty",
+    "works_well_with": [
+      "vanilla",
+      "caramel",
+      "florals"
+    ],
+    "avoid_with": [
+      "sharp woods"
+    ],
+    "best_for": [
+      "evening",
+      "feminine",
+      "gourmand",
+      "autumn"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic"
+  },
+  {
+    "id": 38,
+    "note": "Pistachio",
+    "arabic": "فستق",
+    "family": "Gourmand",
+    "role": "Base",
+    "volatility": "Low",
+    "profile": "Nutty, slightly salty, warm, creamy",
+    "works_well_with": [
+      "vanilla",
+      "amber",
+      "florals"
+    ],
+    "avoid_with": [
+      "extreme freshness"
+    ],
+    "best_for": [
+      "evening",
+      "oriental",
+      "gourmand",
+      "winter"
+    ],
+    "concentration": "Parfum",
+    "origin": "Synthetic"
+  }
+]
