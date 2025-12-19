@@ -455,7 +455,10 @@ def generate_recommendations(query, scent_profile=None, products=None):
 """
     
     # 🔍 RAG Enhancement - Retrieve relevant notes from knowledge base
-    rag_context = get_rag_context_for_ai(query, top_k=5)
+    rag_context, rag_result = get_rag_context_for_ai(query, top_k=10, module_type='recommendations')
+    
+    if not rag_result.is_valid:
+        return get_default_response('recommendations')
 
     prompt = f"""أنت خبير عطور محترف ومحلّل روائح متخصص.
 
@@ -802,12 +805,15 @@ def generate_article(topic, keywords, tone, language='ar'):
     """Generate a professionally formatted article using AI"""
     
     # 🔍 RAG Enhancement - Retrieve relevant notes for article
-    rag_context = get_rag_context_for_ai(f"{topic} {keywords}", top_k=5)
+    rag_context, rag_result = get_rag_context_for_ai(f"{topic} {keywords}", top_k=5, module_type='article')
+    
+    if not rag_result.is_valid:
+        rag_context = ""
     
     prompt = f"""
     أنت محرر ومؤلف محتوى محترف متخصص في مجال العطور والروائح.
     
-{rag_context}
+{rag_context if rag_context else "⚠️ لا توجد نوتات مسترجعة - قدم محتوى تعليمي عام بدون أسماء عطور محددة."}
     
     قم بإنشاء مقال شامل واحترافي حول الموضوع التالي:
     الموضوع: {topic}
@@ -1002,12 +1008,15 @@ def generate_article(topic, keywords, tone, language='ar'):
         return default_article
 
 
-def analyze_face_for_perfume(image_data):
+def analyze_face_for_perfume(image_data, debug: bool = None):
     """
     Analyze face image using OpenAI Vision to recommend perfumes.
     """
     # 🔍 RAG Enhancement - Retrieve notes for face analysis
-    rag_context = get_rag_context_for_ai("شخصية أنيقة رسمية فاخرة", top_k=5)
+    rag_context, rag_result = get_rag_context_for_ai("شخصية أنيقة رسمية فاخرة", top_k=6, module_type='face_analyzer', debug=debug)
+    
+    if not rag_result.is_valid:
+        return get_default_response('face_analyzer')
     
     prompt = f"""أنت خبير متخصص في تحليل الوجه واختيار العطور المناسبة. قم بتحليل هذه الصورة بدقة عالية واستخرج:
 
