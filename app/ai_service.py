@@ -128,7 +128,22 @@ def get_ai_response(prompt, system_message="أنت خبير عطور محترف.
         return {"error": str(e)}
 
 def generate_scent_dna_analysis(profile_data):
+    # 🔍 RAG Enhancement - Retrieve notes based on profile
+    rag_context = ""
+    try:
+        query = f"{profile_data.get('gender', '')} {profile_data.get('personality_type', '')} {profile_data.get('favorite_notes', '')}"
+        retrieved_notes = retrieve_notes(query, top_k=5)
+        if retrieved_notes:
+            rag_context = "\n📚 النوتات المسترجعة الموصى بها:\n" + "-" * 50 + "\n"
+            for note in retrieved_notes:
+                rag_context += f"• {note['arabic']}: {note['profile']} (توافقية: {note.get('similarity_score', 1):.0%})\n"
+            rag_context += "-" * 50 + "\n"
+    except Exception as e:
+        pass
+    
     prompt = f"""أنت خبير عطور محترف. قم بتحليل البيانات التالية وأنشئ ملفًا عطريًا شخصيًا (Scent DNA) للمستخدم.
+
+{rag_context}
 
 بيانات المستخدم:
 - الجنس: {profile_data.get('gender', 'غير محدد')}
@@ -190,8 +205,23 @@ def generate_custom_perfume(perfume_data, scent_profile=None):
 - النوتات المفضلة: {scent_profile.favorite_notes or 'غير محدد'}
 - النوتات المكروهة: {scent_profile.disliked_notes or 'غير محدد'}
 """
+    
+    # 🔍 RAG Enhancement - Retrieve relevant notes for perfume design
+    rag_context = ""
+    try:
+        query = f"{perfume_data.get('occasion', '')} {perfume_data.get('intensity', '')}"
+        retrieved_notes = retrieve_notes(query, top_k=5)
+        if retrieved_notes:
+            rag_context = "\n📚 النوتات المقترحة من قاعدة المعرفة:\n" + "-" * 50 + "\n"
+            for note in retrieved_notes:
+                rag_context += f"• {note['arabic']}: {note['role']} | استخدام: {', '.join(note['best_for'][:2])}\n"
+            rag_context += "-" * 50 + "\n"
+    except Exception as e:
+        pass
 
     prompt = f"""أنت صانع عطور محترف (Perfumer). قم بتصميم عطر شخصي فريد بناءً على المتطلبات التالية:
+
+{rag_context}
 
 متطلبات العطر:
 - مناسبة الاستخدام: {perfume_data.get('occasion', 'يومي')}
@@ -714,8 +744,22 @@ def detect_article_services(title, summary, content, keywords):
 def generate_article(topic, keywords, tone, language='ar'):
     """Generate a professionally formatted article using AI"""
     
+    # 🔍 RAG Enhancement - Retrieve relevant notes for article
+    rag_context = ""
+    try:
+        retrieved_notes = retrieve_notes(f"{topic} {keywords}", top_k=5)
+        if retrieved_notes:
+            rag_context = "\n📚 المراجع والنوتات المرتبطة بالموضوع:\n" + "-" * 50 + "\n"
+            for note in retrieved_notes:
+                rag_context += f"• {note['arabic']} ({note['note']}): {note['profile']}\n"
+            rag_context += "-" * 50 + "\n"
+    except Exception as e:
+        pass
+    
     prompt = f"""
     أنت محرر ومؤلف محتوى محترف متخصص في مجال العطور والروائح.
+    
+{rag_context}
     
     قم بإنشاء مقال شامل واحترافي حول الموضوع التالي:
     الموضوع: {topic}
@@ -914,7 +958,21 @@ def analyze_face_for_perfume(image_data):
     """
     Analyze face image using OpenAI Vision to recommend perfumes.
     """
-    prompt = """أنت خبير متخصص في تحليل الوجه واختيار العطور المناسبة. قم بتحليل هذه الصورة بدقة عالية واستخرج:
+    # 🔍 RAG Enhancement - Retrieve notes for face analysis
+    rag_context = ""
+    try:
+        retrieved_notes = retrieve_notes("شخصية أنيقة رسمية فاخرة", top_k=5)
+        if retrieved_notes:
+            rag_context = "\n📚 النوتات الموصى بها الشائعة:\n" + "-" * 50 + "\n"
+            for note in retrieved_notes:
+                rag_context += f"• {note['arabic']}: {note['role']} - {note['profile']}\n"
+            rag_context += "-" * 50 + "\n"
+    except Exception as e:
+        pass
+    
+    prompt = f"""أنت خبير متخصص في تحليل الوجه واختيار العطور المناسبة. قم بتحليل هذه الصورة بدقة عالية واستخرج:
+
+{rag_context}
 
 1. **تحليل البشرة**:
    - نوع البشرة (جافة - دهنية - مختلطة - حساسة - عادية)
