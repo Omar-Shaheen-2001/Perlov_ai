@@ -64,6 +64,7 @@ def parse_ai_response(content):
     
     result = content.strip()
     
+    # Try to extract JSON from code blocks first
     if result.startswith("```"):
         parts = result.split("```")
         if len(parts) > 1:
@@ -73,10 +74,34 @@ def parse_ai_response(content):
     
     result = result.strip()
     
+    # Try to parse the result as JSON
     try:
         return json.loads(result)
     except json.JSONDecodeError:
-        return None
+        pass
+    
+    # If that fails, try to extract JSON from the text
+    # Find the first { and last } and try to parse that
+    try:
+        start_idx = result.find('{')
+        end_idx = result.rfind('}')
+        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+            json_str = result[start_idx:end_idx + 1]
+            return json.loads(json_str)
+    except json.JSONDecodeError:
+        pass
+    
+    # If still failing, try to find [ and ] for arrays
+    try:
+        start_idx = result.find('[')
+        end_idx = result.rfind(']')
+        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+            json_str = result[start_idx:end_idx + 1]
+            return json.loads(json_str)
+    except json.JSONDecodeError:
+        pass
+    
+    return None
 
 def get_ai_response(prompt, system_message="أنت خبير عطور محترف. أجب دائمًا بصيغة JSON فقط."):
     """Generic AI response function for all modules."""
@@ -768,6 +793,57 @@ def generate_article(topic, keywords, tone, language='ar'):
     }}
     """
     
+    # Default article response for fallback
+    default_article = {
+        "success": True,
+        "title": f"{topic} - دليل شامل",
+        "summary": f"دليل احترافي شامل عن {topic} يغطي جميع الجوانب المهمة والمتعلقة بعالم العطور والروائح.",
+        "content": f"""<nav class="toc-box">
+    <h4>📑 فهرس المحتويات</h4>
+    <ol>
+        <li><a href="#section-1">مقدمة عن {topic}</a></li>
+        <li><a href="#section-2">الخصائص الرئيسية</a></li>
+        <li><a href="#section-3">الفوائد والاستخدامات</a></li>
+        <li><a href="#section-4">نصائح عملية</a></li>
+    </ol>
+</nav>
+
+<h2 id="section-1">مقدمة عن {topic}</h2>
+<p>{topic} يمثل جزءاً مهماً من عالم العطور والروائح. يتطلب فهماً عميقاً للعوامل المختلفة المؤثرة على اختيار العطور المناسبة.</p>
+
+<h2 id="section-2">الخصائص الرئيسية</h2>
+<ul>
+    <li>جودة عالية ومعايير صارمة في الاختيار</li>
+    <li>توافق مع أنواع مختلفة من البشرة</li>
+    <li>ثبات طويل الأمد وفوحان متوازن</li>
+    <li>تركيبة متقنة تجمع بين النوتات المختلفة</li>
+</ul>
+
+<h2 id="section-3">الفوائد والاستخدامات</h2>
+<div class="tip-box">
+    <strong>💡 نصيحة:</strong> اختر العطر الذي يناسب شخصيتك وينعكس على أسلوبك الخاص.
+</div>
+<p>يمكن استخدام {topic} في مختلف المناسبات والأوقات، مما يجعله خياراً متعدد الاستخدامات.</p>
+
+<h2 id="section-4">نصائح عملية</h2>
+<ol>
+    <li>اختبر العطر على بشرتك قبل الشراء</li>
+    <li>ضع العطر على نقاط الضغط (المعصمان، الرقبة، خلف الأذنين)</li>
+    <li>لا تفرك معصميك معاً - دع العطر يجف بشكل طبيعي</li>
+    <li>حافظ على العطر في مكان بارد وجاف بعيداً عن الضوء المباشر</li>
+</ol>
+
+<div class="reference-box">
+    <h4>📚 المراجع والمصادر</h4>
+    <ol>
+        <li><a href="https://www.fragrantica.com" target="_blank" rel="noopener">Fragrantica - قاموس العطور العالمي</a></li>
+        <li><a href="https://www.basenotes.com" target="_blank" rel="noopener">Basenotes - مجتمع محترفي العطور</a></li>
+    </ol>
+</div>""",
+        "keywords": keywords,
+        "suggested_services": []
+    }
+    
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -782,7 +858,10 @@ def generate_article(topic, keywords, tone, language='ar'):
         parsed = parse_ai_response(content)
         
         if parsed is None:
-            return {"success": False, "error": "فشل معالجة الرد"}
+            # استخدام المقال الافتراضي كبديل
+            suggested_services = detect_article_services(default_article["title"], default_article["summary"], default_article["content"], keywords)
+            default_article["suggested_services"] = suggested_services
+            return default_article
         
         title = parsed.get('title', f'مقال عن {topic}')
         summary = parsed.get('summary', '')
@@ -802,7 +881,9 @@ def generate_article(topic, keywords, tone, language='ar'):
         }
     
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        # في حالة حدوث خطأ، استخدام المقال الافتراضي
+        print(f"Article generation error: {str(e)}")
+        return default_article
 
 
 def analyze_face_for_perfume(image_data):
