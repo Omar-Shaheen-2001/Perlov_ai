@@ -2,6 +2,7 @@ import json
 import os
 from openai import OpenAI
 from flask_login import current_user
+from app.rag_service import get_kb, get_rag_context, get_notes_by_family, get_similar_notes
 
 AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
@@ -348,8 +349,24 @@ def generate_recommendations(query, scent_profile=None, products=None):
 - النوتات المفضلة: {scent_profile.favorite_notes or 'غير محدد'}
 - النوتات المكروهة: {scent_profile.disliked_notes or 'غير محدد'}
 """
+    
+    # 🔍 RAG Enhancement - Inject knowledge base context
+    rag_context = ""
+    try:
+        # Extract note names from query
+        kb = get_kb()
+        favorite_notes = profile_context.split("النوتات المفضلة:")[1].split("النوتات")[0].strip() if "النوتات المفضلة:" in profile_context else ""
+        
+        if favorite_notes and favorite_notes != "غير محدد":
+            notes_list = [n.strip() for n in favorite_notes.split(',')]
+            rag_context = get_rag_context(notes_list)
+    except Exception as e:
+        pass  # Continue without RAG if there's an error
 
     prompt = f"""أنت خبير عطور محترف ومحلّل روائح متخصص.
+
+{rag_context}
+
 مهمتك هي تحديد العطور التي تطابق وصف المستخدم بأعلى دقة ممكنة.
 التركيز الأساسي: روح العطر (DNA) وليس مجرد تطابق النوتات.
 
