@@ -270,9 +270,7 @@ def generate_scent_dna_analysis(profile_data, debug: bool = None):
         "heart_notes": ["نوتة 1 - السبب", "نوتة 2 - السبب"],
         "base_notes": ["نوتة 1 - السبب", "نوتة 2 - السبب"]
     }},
-    "notes_to_avoid": [
-        {{"note": "اسم النوتة", "reason": "السبب العلمي للتجنب"}}
-    ],
+    "notes_to_avoid": "نص واضح يصف النوتات التي يجب تجنبها مع الأسباب العلمية (مثال: يُفضل تجنب النوتة X لأن... و النوتة Y لأن...)",
     "skin_chemistry_analysis": "شرح تفصيلي لكيف ستتفاعل العطور مع بشرة المستخدم",
     "seasonal_recommendations": {{
         "spring": "توصيات الربيع المفصلة",
@@ -371,9 +369,7 @@ def generate_scent_dna_analysis(profile_data, debug: bool = None):
         "heart_notes": ["نوتة 1 - (السبب العلمي)", "نوتة 2 - (السبب العلمي)"],
         "base_notes": ["نوتة 1 - (السبب العلمي)", "نوتة 2 - (السبب العلمي)"]
     }},
-    "notes_to_avoid": [
-        {{"note": "اسم النوتة", "reason": "السبب العلمي أو الشخصي للتجنب"}}
-    ],
+    "notes_to_avoid": "نص واضح ومفصل يصف النوتات التي يُفضل تجنبها مع الأسباب العلمية الدقيقة",
     "skin_chemistry_analysis": "تحليل متقدم لكيفية تفاعل العطور مع البشرة (تأثر بـ: نوع البشرة، الحموضة، الزيوت)",
     "seasonal_recommendations": {{
         "spring": "عطور الربيع المناسبة مع التفاصيل",
