@@ -3,31 +3,186 @@
 {% block content %}
 <div class="page-header text-center">
     <div class="container">
-        <h1>خطتك العطرية</h1>
-        <p class="opacity-75">خطة أسبوعية وشهرية لعطورك</p>
+        <h1>خطتك العطرية الشخصية</h1>
+        <p class="opacity-75">خطة مخصصة بناءً على ملفك العطري</p>
     </div>
 </div>
 <div class="container py-5">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-10 offset-md-1">
             <div class="card shadow-sm rounded-4 border-0" style="background: rgba(255, 255, 255, 0.95);">
                 <div class="card-body p-4">
                     <div id="inputs-section">
-                        <h2 class="fw-bold mb-4 text-center">مدخلات التخطيط</h2>
+                        <h2 class="fw-bold mb-4 text-center">استبيان الملف العطري</h2>
                         <form id="analysis-form">
+                            <!-- 1️⃣ الجنس -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>الجنس</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="gender" id="gender_male" value="ذكر" required>
+                                    <label class="btn btn-outline-primary rounded-3" for="gender_male">ذكر</label>
+                                    
+                                    <input type="radio" class="btn-check" name="gender" id="gender_female" value="أنثى">
+                                    <label class="btn btn-outline-primary rounded-3" for="gender_female">أنثى</label>
+                                    
+                                    <input type="radio" class="btn-check" name="gender" id="gender_prefer" value="يفضّل عدم التحديد">
+                                    <label class="btn btn-outline-primary rounded-3" for="gender_prefer">يفضّل عدم التحديد</label>
+                                </div>
+                            </div>
+
+                            <!-- 2️⃣ العمر أو الفئة العمرية -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-calendar me-2"></i>الفئة العمرية</label>
+                                <select class="form-select form-select-lg rounded-3" id="age_range" required>
+                                    <option value="">اختر فئتك العمرية</option>
+                                    <option value="18-25">18–25 سنة</option>
+                                    <option value="26-35">26–35 سنة</option>
+                                    <option value="36-45">36–45 سنة</option>
+                                    <option value="+45">45 سنة فما فوق</option>
+                                </select>
+                            </div>
+
+                            <!-- 3️⃣ المناخ / البيئة -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-cloud-sun me-2"></i>المناخ / البيئة</label>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="climate" id="climate_hot" value="حار" required>
+                                            <label class="form-check-label" for="climate_hot">حار</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="climate" id="climate_moderate" value="معتدل">
+                                            <label class="form-check-label" for="climate_moderate">معتدل</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="climate" id="climate_cold" value="بارد">
+                                            <label class="form-check-label" for="climate_cold">بارد</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="climate" id="climate_humid" value="رطب">
+                                            <label class="form-check-label" for="climate_humid">رطب</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="climate" id="climate_dry" value="جاف">
+                                            <label class="form-check-label" for="climate_dry">جاف</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4️⃣ نوع البشرة -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-droplet me-2"></i>نوع البشرة</label>
+                                <select class="form-select form-select-lg rounded-3" id="skin_type" required>
+                                    <option value="">اختر نوع بشرتك</option>
+                                    <option value="جافة">جافة</option>
+                                    <option value="دهنية">دهنية</option>
+                                    <option value="مختلطة">مختلطة</option>
+                                    <option value="حساسة">حساسة</option>
+                                </select>
+                            </div>
+
+                            <!-- 5️⃣ تفضيل الفوحان -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-wind me-2"></i>تفضيل قوة الفوحان</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <small>خفيف</small>
+                                    <input type="range" class="form-range" id="scent_intensity" min="1" max="3" value="2" required>
+                                    <small>قوي</small>
+                                </div>
+                                <small class="text-muted d-block mt-2">القيمة الحالية: <span id="intensity-value">متوسط</span></small>
+                            </div>
+
+                            <!-- 6️⃣ تفضيل الثبات -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-hourglass me-2"></i>تفضيل ثبات العطر</label>
+                                <select class="form-select form-select-lg rounded-3" id="longevity" required>
+                                    <option value="">اختر المدة المفضلة</option>
+                                    <option value="متوسط">متوسط (3-4 ساعات)</option>
+                                    <option value="طويل">طويل (6-8 ساعات)</option>
+                                    <option value="طويل جدًا">طويل جدًا (12+ ساعات)</option>
+                                </select>
+                            </div>
+
+                            <!-- 7️⃣ العائلات العطرية المفضلة -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-flower1 me-2"></i>العائلات العطرية المفضلة</label>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="حمضية" id="frag_citrus">
+                                            <label class="form-check-label" for="frag_citrus">حمضية (Citrus)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="خشبية" id="frag_woody">
+                                            <label class="form-check-label" for="frag_woody">خشبية (Woody)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="شرقية" id="frag_oriental">
+                                            <label class="form-check-label" for="frag_oriental">شرقية (Oriental)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="أروماتيك" id="frag_aromatic">
+                                            <label class="form-check-label" for="frag_aromatic">أروماتيك (Aromatic)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="جلدية" id="frag_leather">
+                                            <label class="form-check-label" for="frag_leather">جلدية (Leather)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="بودرية" id="frag_powdery">
+                                            <label class="form-check-label" for="frag_powdery">بودرية (Powdery)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="مسكية" id="frag_musk">
+                                            <label class="form-check-label" for="frag_musk">مسكية (Musk)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="بخورية" id="frag_incense">
+                                            <label class="form-check-label" for="frag_incense">بخورية (Incense)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="مائية" id="frag_aquatic">
+                                            <label class="form-check-label" for="frag_aquatic">مائية (Aquatic)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input fragrance-check" type="checkbox" name="fragrance_family" value="زهرية" id="frag_floral">
+                                            <label class="form-check-label" for="frag_floral">زهرية (Floral)</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 8️⃣ الجدول الأسبوعي -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><i class="bi bi-calendar-week me-2"></i>جدولك الأسبوعي</label>
                                 <textarea class="form-control rounded-3" id="schedule" rows="3" placeholder="صف جدولك الأسبوعي: أيام العمل، الإجازات، المناسبات..." required></textarea>
                             </div>
+
+                            <!-- 9️⃣ النشاط اليومي -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold"><i class="bi bi-activity me-2"></i>النشاط اليومي</label>
-                                <select class="form-select form-select-lg rounded-3" id="daily_activities">
+                                <select class="form-select form-select-lg rounded-3" id="daily_activities" required>
+                                    <option value="">اختر نوع نشاطك</option>
                                     <option value="مكتبي">عمل مكتبي في الغالب</option>
                                     <option value="متنوع">نشاط متنوع</option>
                                     <option value="حركي">عمل حركي ونشط</option>
                                     <option value="اجتماعي">لقاءات واجتماعات كثيرة</option>
                                 </select>
                             </div>
+
+                            <!-- 🔟 العطور الحالية -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="bi bi-list me-2"></i>العطور الحالية لديك (اختياري)</label>
+                                <input type="text" class="form-control rounded-3" id="current_perfumes" placeholder="مثال: Dior Sauvage, Bleu de Chanel, Versace Dylan Blue...">
+                                <small class="text-muted">أدخل أسماء العطور التي تمتلكها حالياً، مفصولة بفواصل</small>
+                            </div>
+
                             <div class="text-center">
                                 <button type="button" class="btn btn-gradient btn-lg rounded-pill px-5" id="analyze-btn">
                                     <i class="bi bi-calendar-check me-2"></i>ابدأ التخطيط
@@ -50,12 +205,38 @@
     </div>
 </div>
 <script>
+// تحديث قيمة الفوحان
+document.getElementById('scent_intensity').addEventListener('change', function() {
+    const intensityMap = { '1': 'خفيف', '2': 'متوسط', '3': 'قوي' };
+    document.getElementById('intensity-value').textContent = intensityMap[this.value];
+});
+
 document.getElementById('analyze-btn').addEventListener('click', function() {
     const btn = this;
+    const form = document.getElementById('analysis-form');
+    
+    // التحقق من الحقول المطلوبة
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const fragranceFamily = Array.from(document.querySelectorAll('.fragrance-check:checked'))
+        .map(el => el.value);
+    
     const data = {
+        gender: document.querySelector('input[name="gender"]:checked').value,
+        age_range: document.getElementById('age_range').value,
+        climate: document.querySelector('input[name="climate"]:checked').value,
+        skin_type: document.getElementById('skin_type').value,
+        scent_intensity: document.getElementById('scent_intensity').value,
+        longevity: document.getElementById('longevity').value,
+        fragrance_family: fragranceFamily,
         schedule: document.getElementById('schedule').value,
-        daily_activities: document.getElementById('daily_activities').value
+        daily_activities: document.getElementById('daily_activities').value,
+        current_perfumes: document.getElementById('current_perfumes').value
     };
+    
     showLoading(btn);
     fetch('{{ url_for("habit_planner.analyze") }}', {
         method: 'POST',
@@ -94,6 +275,7 @@ document.getElementById('analyze-btn').addEventListener('click', function() {
         showError('حدث خطأ، يرجى المحاولة مرة أخرى');
     });
 });
+
 document.getElementById('back-btn').addEventListener('click', function() {
     document.getElementById('results-section').classList.add('d-none');
     document.getElementById('inputs-section').classList.remove('d-none');

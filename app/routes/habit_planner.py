@@ -15,14 +15,46 @@ def form():
 def analyze():
     data = request.get_json()
     
+    gender = data.get('gender', '')
+    age_range = data.get('age_range', '')
+    climate = data.get('climate', '')
+    skin_type = data.get('skin_type', '')
+    scent_intensity = data.get('scent_intensity', '2')
+    longevity = data.get('longevity', '')
+    fragrance_family = data.get('fragrance_family', [])
     schedule = data.get('schedule', '')
     daily_activities = data.get('daily_activities', '')
+    current_perfumes = data.get('current_perfumes', '')
     
-    prompt = f"""أنت خبير في تخطيط العطور. أنشئ خطة عطرية بناءً على:
-    - جدول المستخدم: {schedule}
-    - النشاط اليومي: {daily_activities}
+    # تحويل قيم الفوحان والثبات
+    intensity_map = {'1': 'خفيف', '2': 'متوسط', '3': 'قوي'}
+    intensity_text = intensity_map.get(scent_intensity, 'متوسط')
     
-    قدم خطة 7 أيام وخطة شهرية."""
+    fragrance_text = ', '.join(fragrance_family) if fragrance_family else 'متنوعة'
+    current_perf_text = current_perfumes if current_perfumes else 'لا توجد عطور حالية'
+    
+    prompt = f"""أنت خبير في تخطيط العطور المتقدم. أنشئ خطة عطرية شاملة بناءً على المعلومات التالية:
+
+المعلومات الشخصية:
+- الجنس: {gender}
+- الفئة العمرية: {age_range}
+- المناخ: {climate}
+- نوع البشرة: {skin_type}
+- قوة الفوحان المفضلة: {intensity_text}
+- ثبات العطر المفضل: {longevity}
+
+التفضيلات العطرية:
+- العائلات المفضلة: {fragrance_text}
+- العطور الحالية: {current_perf_text}
+
+جدول الحياة:
+- الجدول الأسبوعي: {schedule}
+- النشاط اليومي: {daily_activities}
+
+قدم:
+1. خطة 7 أيام محددة مع عطر مناسب لكل يوم
+2. نصائح شهرية مخصصة لهذا الملف العطري
+3. توصيات بناءً على نوع البشرة والمناخ"""
     
     default_analysis = {
         'weekly_plan': {
