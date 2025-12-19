@@ -64,10 +64,8 @@
                         <i class="bi bi-x-circle text-warning"></i>
                         نوتات يُفضل تجنبها
                     </h5>
-                    <div class="notes-list">
-                        {% for note in analysis.get('notes_to_avoid', []) %}
-                        <span class="note-badge base">{{ note }}</span>
-                        {% endfor %}
+                    <div class="alert alert-warning">
+                        <p class="mb-0">{{ analysis.get('notes_to_avoid', '') }}</p>
                     </div>
                 </div>
                 {% endif %}
