@@ -371,6 +371,25 @@ def notes():
                          family_filter=family_filter)
 
 
+def parse_list_input(value):
+    """Convert comma-separated or JSON input to JSON string"""
+    if not value or not value.strip():
+        return '[]'
+    
+    value = value.strip()
+    
+    if value.startswith('[') and value.endswith(']'):
+        try:
+            parsed = json.loads(value)
+            if isinstance(parsed, list):
+                return json.dumps(parsed, ensure_ascii=False)
+        except json.JSONDecodeError:
+            pass
+    
+    items = [item.strip().strip('"\'') for item in value.split(',') if item.strip()]
+    return json.dumps(items, ensure_ascii=False)
+
+
 @admin_bp.route('/notes/add', methods=['GET', 'POST'])
 @admin_required
 def add_note():
@@ -384,9 +403,9 @@ def add_note():
                 role=request.form.get('role', ''),
                 volatility=request.form.get('volatility', ''),
                 profile=request.form.get('profile', '').strip(),
-                works_well_with=request.form.get('works_well_with', '').strip() or '[]',
-                avoid_with=request.form.get('avoid_with', '').strip() or '[]',
-                best_for=request.form.get('best_for', '').strip() or '[]',
+                works_well_with=parse_list_input(request.form.get('works_well_with', '')),
+                avoid_with=parse_list_input(request.form.get('avoid_with', '')),
+                best_for=parse_list_input(request.form.get('best_for', '')),
                 concentration=request.form.get('concentration', '').strip(),
                 origin=request.form.get('origin', '').strip(),
                 is_active='is_active' in request.form
@@ -416,9 +435,9 @@ def edit_note(id):
             note.role = request.form.get('role', '')
             note.volatility = request.form.get('volatility', '')
             note.profile = request.form.get('profile', '').strip()
-            note.works_well_with = request.form.get('works_well_with', '').strip() or '[]'
-            note.avoid_with = request.form.get('avoid_with', '').strip() or '[]'
-            note.best_for = request.form.get('best_for', '').strip() or '[]'
+            note.works_well_with = parse_list_input(request.form.get('works_well_with', ''))
+            note.avoid_with = parse_list_input(request.form.get('avoid_with', ''))
+            note.best_for = parse_list_input(request.form.get('best_for', ''))
             note.concentration = request.form.get('concentration', '').strip()
             note.origin = request.form.get('origin', '').strip()
             note.is_active = 'is_active' in request.form

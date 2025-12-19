@@ -230,6 +230,19 @@ class PerfumeNote(db.Model):
     def to_dict(self):
         """تحويل النوتة إلى قاموس للاستخدام في RAG"""
         import json
+        
+        def safe_parse_json_list(value):
+            """Safely parse JSON list, handling malformed data"""
+            if not value:
+                return []
+            try:
+                parsed = json.loads(value)
+                if isinstance(parsed, list):
+                    return parsed
+                return [str(parsed)]
+            except (json.JSONDecodeError, TypeError):
+                return [item.strip() for item in str(value).split(',') if item.strip()]
+        
         return {
             'id': self.id,
             'note': self.name_en,
@@ -238,9 +251,9 @@ class PerfumeNote(db.Model):
             'role': self.role,
             'volatility': self.volatility,
             'profile': self.profile,
-            'works_well_with': json.loads(self.works_well_with) if self.works_well_with else [],
-            'avoid_with': json.loads(self.avoid_with) if self.avoid_with else [],
-            'best_for': json.loads(self.best_for) if self.best_for else [],
+            'works_well_with': safe_parse_json_list(self.works_well_with),
+            'avoid_with': safe_parse_json_list(self.avoid_with),
+            'best_for': safe_parse_json_list(self.best_for),
             'concentration': self.concentration or '',
             'origin': self.origin or ''
         }
