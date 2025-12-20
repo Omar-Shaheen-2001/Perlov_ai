@@ -1509,6 +1509,7 @@ def find_similar_notes(name_en: str, threshold: float = 0.7) -> list:
         قائمة بالنوتات المتشابهة
     """
     from difflib import SequenceMatcher
+    from app.models import PerfumeNote
     
     all_notes = PerfumeNote.query.all()
     similar_notes = []
