@@ -1562,16 +1562,8 @@ def generate_daily_scent_suggestion(user):
         ).limit(5).all()
         
         if not analyses:
-            # اقتراح افتراضي جميل عندما لا توجد تحليلات
-            return {
-                'success': True,
-                'perfume_name': 'Bleu de Chanel',
-                'description': 'عطر كلاسيكي وأنيق بطابع حمضي طازج مع نوتات خشبية دافئة. مثالي للبدء في رحلتك العطرية.',
-                'reasoning': 'نوصيك بهذا العطر الشهير لأنه يعتبر نقطة انطلاق رائعة. استكشف المزيد من التحليلات للحصول على اقتراحات مخصصة أكثر!',
-                'character_type': 'حمضي - خشبي',
-                'is_default': True,
-                'from_cache': False
-            }
+            # لا توجد تحليلات - لا نعرض اقتراح
+            return {'success': False, 'error': 'لا توجد تحليلات سابقة'}
         
         analyses_summary = []
         for a in analyses:

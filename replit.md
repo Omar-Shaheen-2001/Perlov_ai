@@ -66,8 +66,8 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
 - **Added**: API endpoint /dashboard/api/daily-suggestion for fetching suggestions
 - **Fixed**: PerfumeNote import error in find_similar_notes() function
 - **Improved**: Dashboard form submission with inline onclick handler for reliable functionality
-- **Fixed**: Added beautiful default perfume suggestion (Bleu de Chanel) when user has no prior analyses
-- **Improved**: Daily suggestion now displays for all users, even those without analysis history
+- **Fixed**: Removed default perfume suggestion - only show real personalized suggestions based on actual user analysis data
+- **Improved**: Daily suggestion now only displays when user has analysis history; otherwise shows encouraging message to start analyses
 
 ## External Dependencies
 - **OpenAI**: For AI functionalities including scent DNA analysis, custom perfume creation, recommendations, various module analyses, and automated note bulk import with detailed analysis.

@@ -25,6 +25,23 @@
             </div>
         </div>
     </div>
+    {% elif not analysis_results %}
+    <div class="alert alert-warning border-0 shadow-sm mb-5 rounded-4" style="background: linear-gradient(135deg, #FFB347 0%, #FF8C00 100%); border-left: 5px solid #FF6347;">
+        <div class="alert-body text-white">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-star fs-5 me-3 mt-1" style="flex-shrink: 0;"></i>
+                <div>
+                    <h5 class="fw-bold mb-2">✨ ابدأ رحلتك العطرية</h5>
+                    <p class="mb-2">لم تقم بأي تحليلات بعد. قم بإجراء بعض التحليلات لنتمكن من تقديم اقتراحات عطرية مخصصة لك!</p>
+                    <div>
+                        <a href="{{ url_for('scent_dna.form') }}" class="btn btn-light btn-sm">
+                            <i class="bi bi-play-circle me-1"></i> ابدأ بـ Scent DNA
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
 
     <div class="row g-4 mb-5">
