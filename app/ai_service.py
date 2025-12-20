@@ -1535,8 +1535,9 @@ def find_similar_notes(name_en: str, threshold: float = 0.7) -> list:
 def generate_daily_scent_suggestion(user):
     """
     تحليل جميع تحليلات المستخدم السابقة وتقديم اقتراح عطري يومي
+    التسلسل الهرمي: AnalysisResults → ScentProfile → CustomPerfume
     """
-    from app.models import AnalysisResult, DailyScentSuggestion
+    from app.models import AnalysisResult, DailyScentSuggestion, ScentProfile, CustomPerfume
     from datetime import datetime, date
     from app import db
     import re
@@ -1557,28 +1558,91 @@ def generate_daily_scent_suggestion(user):
                 'from_cache': True
             }
         
+        # 1️⃣ محاولة الحصول على AnalysisResults (التحليلات الكاملة)
         analyses = AnalysisResult.query.filter_by(user_id=user.id).order_by(
             AnalysisResult.created_at.desc()
         ).limit(5).all()
         
-        if not analyses:
-            # لا توجد تحليلات - لا نعرض اقتراح
+        context_data = None
+        source_type = None
+        
+        if analyses:
+            # استخدام AnalysisResults
+            analyses_summary = []
+            for a in analyses:
+                try:
+                    data = json.loads(a.result_data) if a.result_data else {}
+                    analyses_summary.append({
+                        'module': a.module_name_ar,
+                        'data': data
+                    })
+                except:
+                    pass
+            context_data = analyses_summary
+            source_type = 'analysis_results'
+        else:
+            # 2️⃣ محاولة الحصول على ScentProfile (تحليلات DNA)
+            scent_profiles = ScentProfile.query.filter_by(user_id=user.id).order_by(
+                ScentProfile.created_at.desc()
+            ).limit(3).all()
+            
+            if scent_profiles:
+                profiles_summary = []
+                for p in scent_profiles:
+                    profiles_summary.append({
+                        'scent_personality': p.scent_personality,
+                        'gender': p.gender,
+                        'age_range': p.age_range,
+                        'personality_type': p.personality_type,
+                        'favorite_notes': p.favorite_notes,
+                        'climate': p.climate,
+                        'skin_type': p.skin_type
+                    })
+                context_data = profiles_summary
+                source_type = 'scent_profile'
+            else:
+                # 3️⃣ محاولة الحصول على CustomPerfume (العطور المصممة)
+                custom_perfumes = CustomPerfume.query.filter_by(user_id=user.id).order_by(
+                    CustomPerfume.created_at.desc()
+                ).limit(3).all()
+                
+                if custom_perfumes:
+                    perfumes_summary = []
+                    for p in custom_perfumes:
+                        perfumes_summary.append({
+                            'name': p.name,
+                            'top_notes': p.top_notes,
+                            'heart_notes': p.heart_notes,
+                            'base_notes': p.base_notes,
+                            'occasion': p.occasion,
+                            'intensity': p.intensity
+                        })
+                    context_data = perfumes_summary
+                    source_type = 'custom_perfume'
+        
+        # 4️⃣ إذا لم يوجد أي بيانات
+        if not context_data:
             return {'success': False, 'error': 'لا توجد تحليلات سابقة'}
         
-        analyses_summary = []
-        for a in analyses:
-            try:
-                data = json.loads(a.result_data) if a.result_data else {}
-                analyses_summary.append({
-                    'module': a.module_name_ar,
-                    'data': data
-                })
-            except:
-                pass
-        
-        prompt = f"""أنت خبير عطور متخصص. بناءً على تحليلات المستخدم أدناه، قدم اقتراح عطر يومي بصيغة JSON:
+        # بناء الـ prompt بناءً على نوع المصدر
+        if source_type == 'analysis_results':
+            prompt = f"""أنت خبير عطور متخصص. بناءً على تحليلات المستخدم الشاملة أدناه، قدم اقتراح عطر يومي مخصص بصيغة JSON:
 
-التحليلات: {json.dumps(analyses_summary, ensure_ascii=False)[:1000]}
+التحليلات: {json.dumps(context_data, ensure_ascii=False)[:1200]}
+
+صيغة JSON (فقط):
+{{"perfume_name": "...", "character_type": "...", "description": "...", "reasoning": "..."}}"""
+        elif source_type == 'scent_profile':
+            prompt = f"""أنت خبير عطور متخصص. بناءً على بصمة عطرية للمستخدم (Scent DNA) أدناه، قدم اقتراح عطر يومي مخصص بصيغة JSON:
+
+بصمته العطرية: {json.dumps(context_data, ensure_ascii=False)[:1200]}
+
+صيغة JSON (فقط):
+{{"perfume_name": "...", "character_type": "...", "description": "...", "reasoning": "..."}}"""
+        else:  # custom_perfume
+            prompt = f"""أنت خبير عطور متخصص. بناءً على العطور المصممة من قبل المستخدم أدناه، قدم اقتراح عطر يومي مخصص بصيغة JSON:
+
+عطوره المصممة: {json.dumps(context_data, ensure_ascii=False)[:1200]}
 
 صيغة JSON (فقط):
 {{"perfume_name": "...", "character_type": "...", "description": "...", "reasoning": "..."}}"""
