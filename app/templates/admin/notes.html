@@ -158,7 +158,7 @@
                 <h5 class="modal-title"><i class="bi bi-upload me-2"></i>استيراد نوتات عطرية</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ url_for('admin.bulk_import_notes') }}" method="POST">
+            <form action="{{ url_for('admin.bulk_import_notes') }}" method="POST" id="bulkImportForm">
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
@@ -270,6 +270,47 @@ function confirmDelete(id, name) {
     document.getElementById('deleteForm').action = `/admin/notes/delete/${id}`;
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
+
+// Bulk Import with Loading Alert
+document.getElementById('bulkImportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const notesText = document.getElementById('notesText').value.trim();
+    if (!notesText) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'تنبيه!',
+            text: 'يرجى إدخال النوتات قبل الاستيراج',
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#0B2E8A'
+        });
+        return;
+    }
+    
+    // Show loading alert
+    Swal.fire({
+        icon: 'info',
+        title: 'جاري الاستيراج...',
+        text: 'يرجى الانتظار قليلاً، النظام يقوم بتحليل وإضافة النوتات',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Close modal and submit form
+    const modal = bootstrap.Modal.getInstance(document.getElementById('bulkImportModal'));
+    if (modal) modal.hide();
+    
+    // Submit the form
+    this.submit();
+    
+    // Reload page after submission (approximately 5 seconds)
+    setTimeout(() => {
+        location.reload();
+    }, 3000);
+});
 
 document.getElementById('rebuildForm').addEventListener('submit', function() {
     document.getElementById('rebuildProgress').classList.remove('d-none');
