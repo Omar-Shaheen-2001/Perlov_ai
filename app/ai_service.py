@@ -1530,3 +1530,91 @@ def find_similar_notes(name_en: str, threshold: float = 0.7) -> list:
     similar_notes.sort(key=lambda x: x['similarity_ratio'], reverse=True)
     
     return similar_notes
+
+
+def generate_daily_scent_suggestion(user):
+    """
+    تحليل جميع تحليلات المستخدم السابقة وتقديم اقتراح عطري يومي
+    """
+    from app.models import AnalysisResult, DailyScentSuggestion
+    from datetime import datetime, date
+    from app import db
+    import re
+    
+    try:
+        today = date.today()
+        existing = DailyScentSuggestion.query.filter_by(
+            user_id=user.id, date=today
+        ).first()
+        
+        if existing:
+            return {
+                'success': True,
+                'perfume_name': existing.perfume_name,
+                'description': existing.description,
+                'reasoning': existing.reasoning,
+                'character_type': existing.character_type,
+                'from_cache': True
+            }
+        
+        analyses = AnalysisResult.query.filter_by(user_id=user.id).order_by(
+            AnalysisResult.created_at.desc()
+        ).limit(5).all()
+        
+        if not analyses:
+            return {'success': False, 'error': 'لا توجد تحليلات سابقة'}
+        
+        analyses_summary = []
+        for a in analyses:
+            try:
+                data = json.loads(a.result_data) if a.result_data else {}
+                analyses_summary.append({
+                    'module': a.module_name_ar,
+                    'data': data
+                })
+            except:
+                pass
+        
+        prompt = f"""أنت خبير عطور متخصص. بناءً على تحليلات المستخدم أدناه، قدم اقتراح عطر يومي بصيغة JSON:
+
+التحليلات: {json.dumps(analyses_summary, ensure_ascii=False)[:1000]}
+
+صيغة JSON (فقط):
+{{"perfume_name": "...", "character_type": "...", "description": "...", "reasoning": "..."}}"""
+
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
+            max_tokens=500
+        )
+        
+        text = response.choices[0].message.content
+        match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', text, re.DOTALL)
+        
+        if match:
+            data = json.loads(match.group())
+            suggestion = DailyScentSuggestion(
+                user_id=user.id,
+                perfume_name=data.get('perfume_name', 'عطر مقترح'),
+                description=data.get('description', ''),
+                reasoning=data.get('reasoning', ''),
+                character_type=data.get('character_type', ''),
+                date=today
+            )
+            db.session.add(suggestion)
+            db.session.commit()
+            
+            return {
+                'success': True,
+                'perfume_name': data.get('perfume_name'),
+                'description': data.get('description'),
+                'reasoning': data.get('reasoning'),
+                'character_type': data.get('character_type'),
+                'from_cache': False
+            }
+        
+        return {'success': False, 'error': 'فشل في معالجة الرد'}
+    
+    except Exception as e:
+        return {'success': False, 'error': str(e)}

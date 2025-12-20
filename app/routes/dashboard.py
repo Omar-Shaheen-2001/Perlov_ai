@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, session
 from flask_login import login_required, current_user
-from app.models import ScentProfile, CustomPerfume, Recommendation, AnalysisResult
+from app.models import ScentProfile, CustomPerfume, Recommendation, AnalysisResult, DailyScentSuggestion
+from app.ai_service import generate_daily_scent_suggestion
 import json
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -16,6 +17,13 @@ def index():
     latest_profile = scent_profiles[0] if scent_profiles else None
     latest_perfume = custom_perfumes[0] if custom_perfumes else None
     
+    # الحصول على الاقتراح العطري اليومي
+    daily_suggestion = None
+    if analysis_results:
+        result = generate_daily_scent_suggestion(current_user)
+        if result.get('success'):
+            daily_suggestion = result
+    
     stats = {
         'profiles_count': len(scent_profiles),
         'perfumes_count': len(custom_perfumes),
@@ -30,6 +38,7 @@ def index():
                          custom_perfumes=custom_perfumes,
                          recommendations=recommendations,
                          analysis_results=analysis_results,
+                         daily_suggestion=daily_suggestion,
                          stats=stats)
 
 @dashboard_bp.route('/dashboard/analysis/<int:analysis_id>')
@@ -94,3 +103,9 @@ def api_analysis(analysis_id):
         'result_data': result_data,
         'created_at': analysis.created_at.strftime('%Y-%m-%d %H:%M')
     })
+
+@dashboard_bp.route('/dashboard/api/daily-suggestion')
+@login_required
+def api_daily_suggestion():
+    result = generate_daily_scent_suggestion(current_user)
+    return jsonify(result)

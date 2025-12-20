@@ -274,3 +274,20 @@ class PerfumeNote(db.Model):
         """جلب جميع النوتات الفعّالة كقائمة قواميس"""
         notes = PerfumeNote.get_active_notes()
         return [note.to_dict() for note in notes]
+
+
+class DailyScentSuggestion(db.Model):
+    """نموذج الاقتراح العطري اليومي للمستخدمين"""
+    __tablename__ = 'daily_scent_suggestions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    perfume_name = db.Column(db.String(150), nullable=False)
+    perfume_brand = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.Text, nullable=False)
+    reasoning = db.Column(db.Text, nullable=False)
+    character_type = db.Column(db.String(100), nullable=True)
+    date = db.Column(db.Date, nullable=False, default=lambda: datetime.utcnow().date())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user = db.relationship('User', backref=db.backref('daily_suggestions', lazy=True))
