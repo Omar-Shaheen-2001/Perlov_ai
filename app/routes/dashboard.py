@@ -19,10 +19,9 @@ def index():
     
     # الحصول على الاقتراح العطري اليومي
     daily_suggestion = None
-    if analysis_results:
-        result = generate_daily_scent_suggestion(current_user)
-        if result.get('success'):
-            daily_suggestion = result
+    result = generate_daily_scent_suggestion(current_user)
+    if result.get('success'):
+        daily_suggestion = result
     
     stats = {
         'profiles_count': len(scent_profiles),
