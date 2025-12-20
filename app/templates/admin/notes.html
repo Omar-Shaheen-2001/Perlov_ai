@@ -271,7 +271,7 @@ function confirmDelete(id, name) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
-// Bulk Import with Loading Alert
+// Bulk Import with Loading Alert using AJAX
 document.getElementById('bulkImportForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -299,17 +299,34 @@ document.getElementById('bulkImportForm').addEventListener('submit', function(e)
         }
     });
     
-    // Close modal and submit form
+    // Close modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('bulkImportModal'));
     if (modal) modal.hide();
     
-    // Submit the form
-    this.submit();
+    // Submit form using AJAX
+    const formData = new FormData(this);
     
-    // Reload page after submission (approximately 5 seconds)
-    setTimeout(() => {
-        location.reload();
-    }, 3000);
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(() => {
+        // Reload page to show results
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ!',
+            text: 'حدث خطأ أثناء الاستيراج. يرجى المحاولة مرة أخرى.',
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#0B2E8A'
+        });
+    });
 });
 
 document.getElementById('rebuildForm').addEventListener('submit', function() {

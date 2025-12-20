@@ -1,6 +1,6 @@
 {
-  "created_at": "2025-12-19T17:26:18.472042",
-  "notes_count": 38,
+  "created_at": "2025-12-20T16:33:42.165424",
+  "notes_count": 48,
   "embedding_dim": 384,
   "source": "database",
   "notes": [
@@ -9,266 +9,480 @@
       "db_id": 1,
       "note": "Bergamot",
       "arabic": "برغموت",
-      "family": "Citrus"
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 1,
       "db_id": 2,
       "note": "Lemon",
       "arabic": "ليمون",
-      "family": "Citrus"
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 2,
       "db_id": 3,
       "note": "Ginger",
       "arabic": "زنجبيل",
-      "family": "Spicy"
+      "family": "Spicy",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 3,
       "db_id": 4,
       "note": "Black Pepper",
       "arabic": "فلفل أسود",
-      "family": "Spicy"
+      "family": "Spicy",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 4,
       "db_id": 5,
       "note": "Cardamom",
       "arabic": "هيل",
-      "family": "Spicy"
+      "family": "Spicy",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 5,
       "db_id": 6,
       "note": "Jasmine",
       "arabic": "ياسمين",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 6,
       "db_id": 7,
       "note": "Rose",
       "arabic": "ورد",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 7,
       "db_id": 8,
       "note": "Iris",
       "arabic": "سوسن",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 8,
       "db_id": 9,
       "note": "Tuberose",
       "arabic": "الزهر الأبيض",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 9,
       "db_id": 10,
       "note": "Gardenia",
       "arabic": "جاردينيا",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 10,
       "db_id": 11,
       "note": "Incense",
       "arabic": "بخور",
-      "family": "Resinous"
+      "family": "Resinous",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 11,
       "db_id": 12,
       "note": "Amber",
       "arabic": "عنبر",
-      "family": "Resinous"
+      "family": "Resinous",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 12,
       "db_id": 13,
       "note": "Vanilla",
       "arabic": "فانيليا",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 13,
       "db_id": 14,
       "note": "Sandalwood",
       "arabic": "صندل",
-      "family": "Woody"
+      "family": "Woody",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 14,
       "db_id": 15,
       "note": "Cedarwood",
       "arabic": "خشب الأرز",
-      "family": "Woody"
+      "family": "Woody",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 15,
       "db_id": 16,
       "note": "Oud",
       "arabic": "عود",
-      "family": "Woody"
+      "family": "Woody",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 16,
       "db_id": 17,
       "note": "Patchouli",
       "arabic": "باتشولي",
-      "family": "Woody"
+      "family": "Woody",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 17,
       "db_id": 18,
       "note": "Vetiver",
       "arabic": "عشبة الند",
-      "family": "Woody"
+      "family": "Woody",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 18,
       "db_id": 19,
       "note": "Musk",
       "arabic": "مسك",
-      "family": "Animalic"
+      "family": "Animalic",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 19,
       "db_id": 20,
       "note": "Leather",
       "arabic": "جلد",
-      "family": "Animalic"
+      "family": "Animalic",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 20,
       "db_id": 21,
       "note": "Neroli",
       "arabic": "نيرولي",
-      "family": "Citrus"
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 21,
       "db_id": 22,
       "note": "Orange Blossom",
       "arabic": "زهر البرتقال",
-      "family": "Floral"
+      "family": "Floral",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 22,
       "db_id": 23,
       "note": "Lavender",
       "arabic": "الخزامى",
-      "family": "Herbal"
+      "family": "Herbal",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 23,
       "db_id": 24,
       "note": "Rosemary",
       "arabic": "إكليل الجبل",
-      "family": "Herbal"
+      "family": "Herbal",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 24,
       "db_id": 25,
       "note": "Mint",
       "arabic": "نعناع",
-      "family": "Herbal"
+      "family": "Herbal",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 25,
       "db_id": 26,
       "note": "Coconut",
       "arabic": "جوز الهند",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 26,
       "db_id": 27,
       "note": "Caramel",
       "arabic": "كراميل",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 27,
       "db_id": 28,
       "note": "Tobacco",
       "arabic": "تبغ",
-      "family": "Animalic"
+      "family": "Animalic",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 28,
       "db_id": 29,
       "note": "Aquatic",
       "arabic": "مائي",
-      "family": "Fresh"
+      "family": "Fresh",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 29,
       "db_id": 30,
       "note": "Melon",
       "arabic": "شمام",
-      "family": "Fruity"
+      "family": "Fruity",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 30,
       "db_id": 31,
       "note": "Peach",
       "arabic": "خوخ",
-      "family": "Fruity"
+      "family": "Fruity",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 31,
       "db_id": 32,
       "note": "Raspberry",
       "arabic": "توت العليق",
-      "family": "Fruity"
+      "family": "Fruity",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 32,
       "db_id": 33,
       "note": "Apple",
       "arabic": "تفاح",
-      "family": "Fruity"
+      "family": "Fruity",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 33,
       "db_id": 34,
       "note": "Tonka Bean",
       "arabic": "حبة التونكا",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 34,
       "db_id": 35,
       "note": "Cinnamon",
       "arabic": "قرفة",
-      "family": "Spicy"
+      "family": "Spicy",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 35,
       "db_id": 36,
       "note": "Clove",
       "arabic": "مسمار",
-      "family": "Spicy"
+      "family": "Spicy",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 36,
       "db_id": 37,
       "note": "Almond",
       "arabic": "لوز",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     },
     {
       "id": 37,
       "db_id": 38,
       "note": "Pistachio",
       "arabic": "فستق",
-      "family": "Gourmand"
+      "family": "Gourmand",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 38,
+      "db_id": 39,
+      "note": "Lemon Hatkora",
+      "arabic": "ليمون هاتكورا",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 39,
+      "db_id": 40,
+      "note": "Bigarade",
+      "arabic": "البرتقال المر",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 40,
+      "db_id": 41,
+      "note": "Buddha's Hand",
+      "arabic": "يد بوذا",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 41,
+      "db_id": 42,
+      "note": "Calamansi",
+      "arabic": "كالامانسي",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 42,
+      "db_id": 43,
+      "note": "Candied Lemon",
+      "arabic": "ليمون مسكر",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 43,
+      "db_id": 44,
+      "note": "Chen Pi",
+      "arabic": "قشر اليوسفي المجفف",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 44,
+      "db_id": 45,
+      "note": "Chinotto",
+      "arabic": "تشينوتو",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 45,
+      "db_id": 46,
+      "note": "Citrus Japonica",
+      "arabic": "الحمضيات اليابانية",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 46,
+      "db_id": 47,
+      "note": "Grapefruit Peel",
+      "arabic": "قشر الجريب فروت",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
+    },
+    {
+      "id": 47,
+      "db_id": 48,
+      "note": "Yuzu",
+      "arabic": "يوزو",
+      "family": "Citrus",
+      "incense_style": "clean",
+      "intensity_weight": 5,
+      "formality_score": 5
     }
   ]
 }
