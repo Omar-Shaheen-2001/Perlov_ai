@@ -187,7 +187,7 @@ Citrus, منعش، عائلة حمضيات، دور علوي
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-success" id="importBtn">
+                    <button type="submit" class="btn btn-success" id="importBtn" onclick="handleBulkImport(event)">
                         <i class="bi bi-upload me-1"></i>استيراد الآن
                     </button>
                 </div>
@@ -271,12 +271,12 @@ function confirmDelete(id, name) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
-// Bulk Import with Loading Alert using AJAX
-document.getElementById('bulkImportForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
+// Bulk Import Handler
+function handleBulkImport(event) {
     const notesText = document.getElementById('notesText').value.trim();
+    
     if (!notesText) {
+        event.preventDefault();
         Swal.fire({
             icon: 'warning',
             title: 'تنبيه!',
@@ -284,7 +284,7 @@ document.getElementById('bulkImportForm').addEventListener('submit', function(e)
             confirmButtonText: 'حسناً',
             confirmButtonColor: '#0B2E8A'
         });
-        return;
+        return false;
     }
     
     // Show loading alert
@@ -299,39 +299,18 @@ document.getElementById('bulkImportForm').addEventListener('submit', function(e)
         }
     });
     
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('bulkImportModal'));
-    if (modal) modal.hide();
-    
-    // Submit form using AJAX
-    const formData = new FormData(this);
-    
-    fetch(this.action, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(() => {
-        // Reload page to show results
-        setTimeout(() => {
-            location.reload();
-        }, 1000);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'خطأ!',
-            text: 'حدث خطأ أثناء الاستيراج. يرجى المحاولة مرة أخرى.',
-            confirmButtonText: 'حسناً',
-            confirmButtonColor: '#0B2E8A'
-        });
-    });
-});
+    // Allow form to submit
+    return true;
+}
 
-document.getElementById('rebuildForm').addEventListener('submit', function() {
-    document.getElementById('rebuildProgress').classList.remove('d-none');
-    document.getElementById('rebuildBtn').disabled = true;
+document.addEventListener('DOMContentLoaded', function() {
+    const rebuildForm = document.getElementById('rebuildForm');
+    if (rebuildForm) {
+        rebuildForm.addEventListener('submit', function() {
+            document.getElementById('rebuildProgress').classList.remove('d-none');
+            document.getElementById('rebuildBtn').disabled = true;
+        });
+    }
 });
 </script>
 {% endblock %}
