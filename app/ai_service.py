@@ -1434,8 +1434,20 @@ def analyze_perfume_notes_bulk_import(text: str) -> dict:
         
         content = response.choices[0].message.content
         
-        # حاول استخراج JSON من الرد
+        # حاول استخراج JSON من الرد (قد يكون مغلف بـ markdown code block)
         try:
+            # إذا كان الرد مغلف بـ markdown code block، استخرجه
+            if '```json' in content:
+                start = content.find('```json') + 7
+                end = content.find('```', start)
+                if end > start:
+                    content = content[start:end].strip()
+            elif '```' in content:
+                start = content.find('```') + 3
+                end = content.find('```', start)
+                if end > start:
+                    content = content[start:end].strip()
+            
             parsed = json.loads(content)
             if isinstance(parsed, list):
                 # تحقق من صحة البيانات
@@ -1462,10 +1474,10 @@ def analyze_perfume_notes_bulk_import(text: str) -> dict:
                     'error': 'صيغة الرد غير صحيحة',
                     'notes': []
                 }
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             return {
                 'success': False,
-                'error': f'خطأ في تحليل الرد: {content[:100]}',
+                'error': f'خطأ في تحليل الرد: {str(e)[:100]}',
                 'notes': []
             }
             
