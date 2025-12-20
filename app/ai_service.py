@@ -1369,3 +1369,109 @@ def analyze_face_for_perfume(image_data, debug: bool = None):
     except Exception as e:
         print(f"Face analysis error: {str(e)}")
         return default_response
+
+
+def analyze_perfume_notes_bulk_import(text: str) -> dict:
+    """
+    تحليل نص يحتوي على نوتات عطرية واستخراج البيانات المنسقة
+    Returns: {
+        'success': bool,
+        'notes': [{'name_en': str, 'name_ar': str, 'family': str, 'role': str, ...}],
+        'error': str (if any)
+    }
+    """
+    if not text or not text.strip():
+        return {'success': False, 'error': 'يجب إدخال نص يحتوي على النوتات'}
+    
+    prompt = f"""أنت متخصص في العطور والنوتات العطرية. قم بتحليل النص التالي واستخرج معلومات النوتات العطرية.
+
+النص المدخل:
+{text}
+
+قم بـ:
+1. استخراج أسماء النوتات (إنجليزي وعربي)
+2. تصنيف العائلة العطرية (Floral, Woody, Oriental, Fresh, Fruity, Herbal, Spicy, Amber, Green, Aromatic, Citrus, etc.)
+3. تحديد الدور: Top, Heart, Base
+4. تحديد التطاير: High, Medium, Low
+5. وصف قصير للنوتة (profile)
+6. الاستخدام الأمثل (best_for)
+7. النوتات التي تتناسب معها (works_well_with)
+8. النوتات التي لا تتناسب معها (avoid_with)
+
+أرجع النتيجة كـ JSON array من النوتات، كل نوتة تحتوي على:
+{{
+    "name_en": "اسم إنجليزي فريد",
+    "name_ar": "اسم عربي",
+    "family": "عائلة عطرية",
+    "role": "Top/Heart/Base",
+    "volatility": "High/Medium/Low",
+    "profile": "وصف قصير للنوتة",
+    "best_for": ["استخدام1", "استخدام2"],
+    "works_well_with": ["نوتة1", "نوتة2"],
+    "avoid_with": ["نوتة1"],
+    "concentration": "نسبة مئوية مقترحة",
+    "origin": "منشأ أو مصدر النوتة"
+}}
+
+تأكد أن كل نوتة لها بيانات كاملة. رد بـ JSON فقط، بدون نص إضافي."""
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "أنت خبير في العطور والنوتات العطرية. رد بـ JSON فقط، بدون شرح إضافي."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            max_tokens=4000,
+            temperature=0.3
+        )
+        
+        content = response.choices[0].message.content
+        
+        # حاول استخراج JSON من الرد
+        try:
+            parsed = json.loads(content)
+            if isinstance(parsed, list):
+                # تحقق من صحة البيانات
+                valid_notes = []
+                for note in parsed:
+                    if isinstance(note, dict) and note.get('name_en') and note.get('name_ar'):
+                        valid_notes.append(note)
+                
+                if valid_notes:
+                    return {
+                        'success': True,
+                        'notes': valid_notes,
+                        'error': None
+                    }
+                else:
+                    return {
+                        'success': False,
+                        'error': 'لم يتم استخراج نوتات صحيحة من النص',
+                        'notes': []
+                    }
+            else:
+                return {
+                    'success': False,
+                    'error': 'صيغة الرد غير صحيحة',
+                    'notes': []
+                }
+        except json.JSONDecodeError:
+            return {
+                'success': False,
+                'error': f'خطأ في تحليل الرد: {content[:100]}',
+                'notes': []
+            }
+            
+    except Exception as e:
+        return {
+            'success': False,
+            'error': f'خطأ في الاتصال بـ OpenAI: {str(e)}',
+            'notes': []
+        }

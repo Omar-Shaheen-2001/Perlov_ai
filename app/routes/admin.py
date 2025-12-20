@@ -540,3 +540,89 @@ def migrate_notes_from_json():
         flash(f'خطأ في الاستيراد: {str(e)}', 'error')
     
     return redirect(url_for('admin.notes'))
+
+
+@admin_bp.route('/notes/bulk-import', methods=['POST'])
+@admin_required
+def bulk_import_notes():
+    """استيراد نوتات متعددة من حقل نصي مع تحليل AI تلقائي"""
+    from app.ai_service import analyze_perfume_notes_bulk_import
+    
+    notes_text = request.form.get('notes_text', '').strip()
+    
+    if not notes_text:
+        flash('يجب إدخال نص يحتوي على النوتات', 'error')
+        return redirect(url_for('admin.notes'))
+    
+    # تحليل النص باستخدام AI
+    analysis = analyze_perfume_notes_bulk_import(notes_text)
+    
+    if not analysis['success']:
+        flash(f'خطأ في التحليل: {analysis.get("error", "حدث خطأ غير معروف")}', 'error')
+        return redirect(url_for('admin.notes'))
+    
+    # استيراد النوتات
+    imported = 0
+    skipped = 0
+    duplicates = []
+    
+    try:
+        for note_data in analysis.get('notes', []):
+            # تحقق من عدم التكرار
+            existing = PerfumeNote.query.filter_by(name_en=note_data['name_en']).first()
+            if existing:
+                skipped += 1
+                duplicates.append(note_data['name_en'])
+                continue
+            
+            # تحضير البيانات
+            works_well_with = note_data.get('works_well_with', [])
+            avoid_with = note_data.get('avoid_with', [])
+            best_for = note_data.get('best_for', [])
+            
+            if not isinstance(works_well_with, (list, str)):
+                works_well_with = []
+            if not isinstance(avoid_with, (list, str)):
+                avoid_with = []
+            if not isinstance(best_for, (list, str)):
+                best_for = []
+            
+            if isinstance(works_well_with, list):
+                works_well_with = json.dumps(works_well_with, ensure_ascii=False)
+            if isinstance(avoid_with, list):
+                avoid_with = json.dumps(avoid_with, ensure_ascii=False)
+            if isinstance(best_for, list):
+                best_for = json.dumps(best_for, ensure_ascii=False)
+            
+            # إنشاء النوتة
+            new_note = PerfumeNote(
+                name_en=note_data['name_en'],
+                name_ar=note_data['name_ar'],
+                family=note_data.get('family', 'Other'),
+                role=note_data.get('role', 'Heart'),
+                volatility=note_data.get('volatility', 'Medium'),
+                profile=note_data.get('profile', ''),
+                works_well_with=works_well_with,
+                avoid_with=avoid_with,
+                best_for=best_for,
+                concentration=note_data.get('concentration', ''),
+                origin=note_data.get('origin', ''),
+                is_active=True
+            )
+            db.session.add(new_note)
+            imported += 1
+        
+        db.session.commit()
+        
+        # رسالة النجاح
+        msg = f'تم استيراد {imported} نوتة بنجاح'
+        if skipped > 0:
+            msg += f' ({skipped} نوتة موجودة مسبقاً)'
+        
+        flash(msg, 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'خطأ في الاستيراد: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.notes'))

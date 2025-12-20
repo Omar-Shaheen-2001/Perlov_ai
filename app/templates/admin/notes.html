@@ -12,6 +12,9 @@
                     <p class="text-muted mb-0">قاعدة المعرفة الذكية لنظام RAG</p>
                 </div>
                 <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bulkImportModal">
+                        <i class="bi bi-upload me-1"></i>استيراد نوتات
+                    </button>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#rebuildIndexModal">
                         <i class="bi bi-arrow-repeat me-1"></i>إعادة بناء الفهرس
                     </button>
@@ -144,6 +147,51 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="bulkImportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-upload me-2"></i>استيراد نوتات عطرية</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.bulk_import_notes') }}" method="POST">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>كيفية الاستخدام:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>أدخل معلومات النوتات العطرية في الحقل أدناه</li>
+                            <li>يمكنك إدخال نوتة واحدة أو عدة نوتات</li>
+                            <li>النظام سيحلل النص تلقائياً ويستخرج البيانات (الاسم، العائلة، الدور، إلخ)</li>
+                            <li>سيتم تصنيف النوتات حسب العائلات تلقائياً</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notesText" class="form-label">النوتات العطرية <span class="text-danger">*</span></label>
+                        <textarea name="notes_text" id="notesText" class="form-control" rows="8" 
+                                  placeholder="مثال:
+Rose note, أنثوي، عائلة زهرية، دور قلب الرائحة
+Amber, ذهبي دافئ، عائلة شرقية، دور قاعدة
+Citrus, منعش، عائلة حمضيات، دور علوي
+
+أو صيغة حرة: وصف العطر والنوتات المراد إضافتها..."
+                              required></textarea>
+                        <small class="text-muted d-block mt-2">
+                            يمكنك استخدام أي صيغة نصية. سيقوم الذكاء الاصطناعي بتحليلها وتصنيفها تلقائياً.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success" id="importBtn">
+                        <i class="bi bi-upload me-1"></i>استيراد الآن
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
