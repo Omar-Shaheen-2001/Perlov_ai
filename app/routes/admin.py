@@ -545,8 +545,8 @@ def migrate_notes_from_json():
 @admin_bp.route('/notes/bulk-import', methods=['POST'])
 @admin_required
 def bulk_import_notes():
-    """استيراد نوتات متعددة من حقل نصي مع تحليل AI تلقائي"""
-    from app.ai_service import analyze_perfume_notes_bulk_import
+    """استيراد نوتات متعددة من حقل نصي مع تحليل AI تلقائي وكشف التشابه"""
+    from app.ai_service import analyze_perfume_notes_bulk_import, find_similar_notes
     
     notes_text = request.form.get('notes_text', '').strip()
     
@@ -561,18 +561,29 @@ def bulk_import_notes():
         flash(f'خطأ في التحليل: {analysis.get("error", "حدث خطأ غير معروف")}', 'error')
         return redirect(url_for('admin.notes'))
     
-    # استيراد النوتات
+    # استيراد النوتات مع كشف التشابه
     imported = 0
     skipped = 0
-    duplicates = []
+    similar_skipped = []
+    exact_duplicates = []
     
     try:
         for note_data in analysis.get('notes', []):
-            # تحقق من عدم التكرار
-            existing = PerfumeNote.query.filter_by(name_en=note_data['name_en']).first()
+            note_name = note_data.get('name_en', '').strip()
+            
+            # التحقق من exact match
+            existing = PerfumeNote.query.filter_by(name_en=note_name).first()
             if existing:
                 skipped += 1
-                duplicates.append(note_data['name_en'])
+                exact_duplicates.append(f"{note_name} ({existing.name_ar})")
+                continue
+            
+            # البحث عن نوتات متشابهة (fuzzy matching)
+            similar = find_similar_notes(note_name, threshold=0.75)
+            if similar:
+                skipped += 1
+                similar_names = ', '.join([f"{s['name_en']} ({s['similarity_ratio']}%)" for s in similar[:2]])
+                similar_skipped.append(f"{note_name} ~ متشابهة مع: {similar_names}")
                 continue
             
             # تحضير البيانات
@@ -594,10 +605,15 @@ def bulk_import_notes():
             if isinstance(best_for, list):
                 best_for = json.dumps(best_for, ensure_ascii=False)
             
+            # التحقق من أن البيانات الحد الأدنى موجودة
+            if not note_data.get('name_en') or not note_data.get('name_ar') or not note_data.get('family'):
+                skipped += 1
+                continue
+            
             # إنشاء النوتة
             new_note = PerfumeNote(
-                name_en=note_data['name_en'],
-                name_ar=note_data['name_ar'],
+                name_en=note_data['name_en'].strip(),
+                name_ar=note_data['name_ar'].strip(),
                 family=note_data.get('family', 'Other'),
                 role=note_data.get('role', 'Heart'),
                 volatility=note_data.get('volatility', 'Medium'),
@@ -614,10 +630,18 @@ def bulk_import_notes():
         
         db.session.commit()
         
-        # رسالة النجاح
-        msg = f'تم استيراد {imported} نوتة بنجاح'
-        if skipped > 0:
-            msg += f' ({skipped} نوتة موجودة مسبقاً)'
+        # رسالة النجاح مع التفاصيل
+        msg = f'✅ تم استيراد {imported} نوتة بنجاح'
+        
+        if exact_duplicates:
+            msg += f'\n\n⚠️ تم تخطي {len(exact_duplicates)} نوتة موجودة بالفعل:\n' + '\n'.join(exact_duplicates[:5])
+            if len(exact_duplicates) > 5:
+                msg += f'\n... و {len(exact_duplicates) - 5} أخرى'
+        
+        if similar_skipped:
+            msg += f'\n\n🔍 تم تخطي {len(similar_skipped)} نوتة متشابهة:\n' + '\n'.join(similar_skipped[:5])
+            if len(similar_skipped) > 5:
+                msg += f'\n... و {len(similar_skipped) - 5} أخرى'
         
         flash(msg, 'success')
         

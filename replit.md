@@ -47,7 +47,7 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
 - **Database-Managed RAG System**: Complete RAG (Retrieval Augmented Generation) system using FAISS vector search for intelligent fragrance note retrieval. Features:
     - **PerfumeNote Model**: Database table with 15 fields (name_en, name_ar, family, role, volatility, profile, works_well_with, avoid_with, best_for, concentration, origin, incense_style, intensity_weight, formality_score, is_active).
     - **Admin CRUD Interface**: Full management at `/admin/notes` - add, edit, toggle, delete notes with search and family filtering.
-    - **Bulk Import with AI Analysis**: `/admin/notes/bulk-import` - Add notes via text field. AI automatically analyzes the input and extracts note data (name, family, role, volatility, profile, etc.), then organizes them by family.
+    - **Smart Bulk Import with AI Analysis & Deduplication**: `/admin/notes/bulk-import` - Add notes via text field. AI automatically analyzes input with detailed instructions (accurate family classification, role determination, volatility assessment, unique names enforcement). Advanced duplicate detection: exact match prevention + fuzzy matching (70%+ similarity detection) to prevent adding similar notes.
     - **Dynamic FAISS Index**: Hash-based embeddings (MD5 + numpy, 384 dimensions) stored in `app/data/notes.index`.
     - **Rebuild Button**: Admin can click "إعادة بناء الفهرس" to regenerate FAISS index from active database notes.
     - **RAG Context Injection**: Automatically injects relevant notes into all AI prompts (Scent DNA, Custom Perfume, Articles, Face Analyzer).
@@ -56,12 +56,16 @@ PERLOV is a premium Flask-based perfume discovery platform offering Scent DNA An
 ## Recent Changes (Dec 20, 2025)
 - Fixed template bug: corrected display of `notes_to_avoid` in Scent DNA results from looping through characters to displaying as plain text in warning box.
 - Added Bulk Import feature for perfume notes: New `/admin/notes/bulk-import` route with AI-powered text analysis that automatically extracts and organizes notes by family.
-- New `analyze_perfume_notes_bulk_import()` function in `ai_service.py` handles automated note data extraction from free-form text input.
-- Updated admin notes interface with new "استيراد نوتات" (Import Notes) button that opens modal for bulk import.
+- New `analyze_perfume_notes_bulk_import()` function in `ai_service.py` handles automated note data extraction from free-form text input with highly detailed analysis instructions.
+- New `find_similar_notes()` function implements fuzzy matching (SequenceMatcher) to detect similar notes and prevent duplicates.
+- Enhanced admin bulk import route to check both exact duplicates and similar notes (70%+ threshold), with detailed feedback to users about skipped entries.
+- Improved AI prompt with detailed instructions for accurate fragrance classification, role assignment, and volatility assessment.
+- Updated admin notes interface with new "استيراد نوتات" (Import Notes) button and modal with comprehensive usage instructions.
 
 ## External Dependencies
-- **OpenAI**: For AI functionalities including scent DNA analysis, custom perfume creation, recommendations, various module analyses, and automated note bulk import.
+- **OpenAI**: For AI functionalities including scent DNA analysis, custom perfume creation, recommendations, various module analyses, and automated note bulk import with detailed analysis.
 - **SQLAlchemy**: ORM for database interactions.
 - **Flask-Login**: For user session management and authentication.
 - **Bootstrap 5 RTL**: Frontend framework for responsive and RTL-enabled design.
 - **werkzeug**: For password hashing in authentication.
+- **difflib**: Python standard library for fuzzy string matching in duplicate detection.

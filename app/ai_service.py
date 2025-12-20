@@ -1383,37 +1383,45 @@ def analyze_perfume_notes_bulk_import(text: str) -> dict:
     if not text or not text.strip():
         return {'success': False, 'error': 'يجب إدخال نص يحتوي على النوتات'}
     
-    prompt = f"""أنت متخصص في العطور والنوتات العطرية. قم بتحليل النص التالي واستخرج معلومات النوتات العطرية.
+    prompt = f"""أنت متخصص عالمي في العطور والنوتات العطرية. قم بتحليل دقيق وتفصيلي للنص التالي واستخرج معلومات النوتات العطرية بعناية.
 
 النص المدخل:
 {text}
 
-قم بـ:
-1. استخراج أسماء النوتات (إنجليزي وعربي)
-2. تصنيف العائلة العطرية (Floral, Woody, Oriental, Fresh, Fruity, Herbal, Spicy, Amber, Green, Aromatic, Citrus, etc.)
-3. تحديد الدور: Top, Heart, Base
-4. تحديد التطاير: High, Medium, Low
-5. وصف قصير للنوتة (profile)
-6. الاستخدام الأمثل (best_for)
-7. النوتات التي تتناسب معها (works_well_with)
-8. النوتات التي لا تتناسب معها (avoid_with)
+تعليمات التحليل الدقيقة:
+1. اقرأ النص بعناية واستخرج جميع النوتات المذكورة صراحة
+2. أسماء النوتات يجب أن تكون فريدة وليست متكررة (تجنب النسخ المكررة)
+3. استخرج الاسم الإنجليزي والعربي لكل نوتة (إذا لم يكن العربي موجود، قم بترجمة احترافية)
+4. صنف العائلة العطرية بدقة: Floral, Woody, Oriental, Fresh, Fruity, Herbal, Spicy, Amber, Green, Aromatic, Citrus, Oceanic, Gourmand, Chypre, Fougère
+5. حدد الدور بناءً على خصائص النوتة: Top (الطيار، الخفيف، التطاير العالي)، Heart/Middle (القلب، الرئيسي)، Base (القاعدة، الثقيل، التطاير المنخفض)
+6. حدد التطاير بدقة: High (يتلاشى سريع: 0-30 دقيقة)، Medium (متوسط: 30 دقيقة - 2 ساعة)، Low (ثقيل، يدوم طويل: +2 ساعة)
+7. اكتب وصفاً دقيقاً وعمليّاً للنوتة (profile) يعكس خصائصها الحقيقية
+8. حدد الاستخدام الأمثل (best_for): مثل "يومي، مناسبات، عمل، مساء، رياضة، الطقس الدافئ، الطقس البارد" إلخ
+9. اذكر النوتات التي تتناسب معها بناءً على الكيمياء العطرية
+10. اذكر النوتات التي يجب تجنبها (قد تسبب نتائج سيئة)
 
-أرجع النتيجة كـ JSON array من النوتات، كل نوتة تحتوي على:
-{{
-    "name_en": "اسم إنجليزي فريد",
-    "name_ar": "اسم عربي",
-    "family": "عائلة عطرية",
-    "role": "Top/Heart/Base",
-    "volatility": "High/Medium/Low",
-    "profile": "وصف قصير للنوتة",
-    "best_for": ["استخدام1", "استخدام2"],
-    "works_well_with": ["نوتة1", "نوتة2"],
-    "avoid_with": ["نوتة1"],
-    "concentration": "نسبة مئوية مقترحة",
-    "origin": "منشأ أو مصدر النوتة"
-}}
+الصيغة المطلوبة (JSON array نقي):
+[
+    {{
+        "name_en": "اسم إنجليزي (فريد، واضح، صحيح)",
+        "name_ar": "الاسم العربي الدقيق",
+        "family": "العائلة العطرية",
+        "role": "Top أو Heart أو Base",
+        "volatility": "High أو Medium أو Low",
+        "profile": "وصف دقيق وعمليّ للنوتة (50-100 كلمة)",
+        "best_for": ["استخدام1", "استخدام2", "استخدام3"],
+        "works_well_with": ["نوتة1", "نوتة2"],
+        "avoid_with": ["نوتة1", "نوتة2"],
+        "concentration": "نسبة مئوية (10%, 20%, إلخ)",
+        "origin": "منشأ، منطقة، أو نوع النبات"
+    }}
+]
 
-تأكد أن كل نوتة لها بيانات كاملة. رد بـ JSON فقط، بدون نص إضافي."""
+متطلبات أساسية:
+- NO duplicate names - كل نوتة يجب أن تكون فريدة
+- ALL fields must be filled - جميع الحقول مطلوبة وممتلئة
+- Accuracy first - الدقة أهم من الكثرة
+- Valid JSON only - JSON صحيح فقط بدون نصوص إضافية"""
     
     try:
         response = client.chat.completions.create(
@@ -1487,3 +1495,37 @@ def analyze_perfume_notes_bulk_import(text: str) -> dict:
             'error': f'خطأ في الاتصال بـ OpenAI: {str(e)}',
             'notes': []
         }
+
+
+def find_similar_notes(name_en: str, threshold: float = 0.7) -> list:
+    """
+    البحث عن نوتات متشابهة في قاعدة البيانات باستخدام fuzzy matching
+    
+    Args:
+        name_en: اسم النوتة الإنجليزية
+        threshold: حد التشابه (0-1)، الافتراضي 0.7
+    
+    Returns:
+        قائمة بالنوتات المتشابهة
+    """
+    from difflib import SequenceMatcher
+    
+    all_notes = PerfumeNote.query.all()
+    similar_notes = []
+    
+    for note in all_notes:
+        # حساب نسبة التشابه
+        ratio = SequenceMatcher(None, name_en.lower(), note.name_en.lower()).ratio()
+        
+        if ratio >= threshold:
+            similar_notes.append({
+                'id': note.id,
+                'name_en': note.name_en,
+                'name_ar': note.name_ar,
+                'similarity_ratio': round(ratio * 100, 1)
+            })
+    
+    # ترتيب حسب نسبة التشابه (الأعلى أولاً)
+    similar_notes.sort(key=lambda x: x['similarity_ratio'], reverse=True)
+    
+    return similar_notes
