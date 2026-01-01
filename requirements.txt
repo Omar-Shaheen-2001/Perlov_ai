@@ -1,2 +1,6 @@
 Flask
+SQLAlchemy
+Flask-Login
+openai
+python-dotenv
 gunicorn
