@@ -225,8 +225,12 @@ def create_article():
             flash(f'خطأ في توليد المقال: {ai_result.get("error")}', 'error')
             return render_template('admin/article_generator.html')
         
-        slug = re.sub(r'[^\w\s-]', '', topic).strip().replace(' ', '-').lower()
-        slug = slug[:50]
+        base_slug = re.sub(r'[^\w\s-]', '', topic).strip().replace(' ', '-').lower()
+        base_slug = base_slug[:45]
+        
+        # التأكد من تفرد الرابط (Slug) عبر إضافة طابع زمني مصغر
+        import time
+        slug = f"{base_slug}-{int(time.time()) % 10000}"
         
         import json
         suggested_services = json.dumps(ai_result.get('suggested_services', []), ensure_ascii=False)

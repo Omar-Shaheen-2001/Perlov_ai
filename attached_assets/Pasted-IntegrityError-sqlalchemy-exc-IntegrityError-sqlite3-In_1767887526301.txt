@@ -1,0 +1,114 @@
+IntegrityError
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: articles.slug
+[SQL: INSERT INTO articles (title_ar, title_en, slug, content_ar, content_en, summary_ar, summary_en, image_url, topic, keywords, suggested_services, is_published, created_by, created_at, updated_at, published_at, views_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('دور العطر في الانتقال إلى عالمك الآخر', None, 'دور-العطر-في-الانتقال-الى-عالمك-الآخر', '<nav class="toc-box">\n    <h4>📑 فهرس المحتويات</h4>\n    <ol>\n        <li><a href="#section-1">تأثير العطور على النفس</a></li>\n        <li><a href ... (2289 characters truncated) ...  فهو لا يقتصر فقط على الرائحة، بل يعبر عن شخصيتنا ويؤثر في حياتنا بشكلٍ عميق. استثمر في اختيار عطر يتناسب معك، ودع رائحته تأخذك إلى عوالم جديدة. </p>', None, 'يمثل العطر أكثر من مجرد رائحة، فهو أداة قوية تعزز من الحالة النفسية وتعيد تشكيل التجارب الحياتية. تُظهر الدراسات أن الروائح تؤثر بشكل كبير على مشاعرن ... (91 characters truncated) ... لمزاج، وتعزيز الثقة بالنفس. في هذا المقال، سنستعرض كيف يمكن للعطر أن يكون جسرًا بين الواقع والخيال، ويُدخلنا في أجواء جديدة تعزز من تجربتنا الحياتية.', None, None, 'دور العطر في الانتقال الى عالمك الآخر', 'فوائد, العطور, النفسية', '["scent_personality", "custom_perfume", "recommendations", "neuroscience", "habit_planner", "signature"]', 1, 1, '2026-01-08 15:51:35.287328', '2026-01-08 15:51:35.287332', '2026-01-08 15:51:35.286500', 0)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+Traceback (most recent call last)
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+self.dialect.do_execute(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The above exception was the direct cause of the following exception:
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1536, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1514, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/app/routes/admin.py", line 23, in decorated_function
+return f(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/app/routes/admin.py", line 248, in create_article
+db.session.commit()
+^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/scoping.py", line 597, in commit
+return self._proxied.commit()
+       ^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+trans.commit(_to_root=True)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "<string>", line 2, in commit
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+ret_value = fn(self, *arg, **kw)
+            ^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+self._prepare_impl()
+^^^^^^^^^^^^^^^^^^^^
+File "<string>", line 2, in _prepare_impl
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+ret_value = fn(self, *arg, **kw)
+            ^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+self.session.flush()
+^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+self._flush(objects)
+^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+with util.safe_reraise():
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+raise exc_value.with_traceback(exc_tb)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+flush_context.execute()
+^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+rec.execute(self)
+^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+util.preloaded.orm_persistence.save_obj(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+_emit_insert_statements(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+result = connection.execute(
+         
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+return meth(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+return connection._execute_clauseelement(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+ret = self._execute_context(
+      
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+return self._exec_single_context(
+       
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+self._handle_dbapi_exception(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+self.dialect.do_execute(
+^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+cursor.execute(statement, parameters)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: articles.slug
+[SQL: INSERT INTO articles (title_ar, title_en, slug, content_ar, content_en, summary_ar, summary_en, image_url, topic, keywords, suggested_services, is_published, created_by, created_at, updated_at, published_at, views_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('دور العطر في الانتقال إلى عالمك الآخر', None, 'دور-العطر-في-الانتقال-الى-عالمك-الآخر', '<nav class="toc-box">\n <h4>📑 فهرس المحتويات</h4>\n <ol>\n <li><a href="#section-1">تأثير العطور على النفس</a></li>\n <li><a href ... (2289 characters truncated) ... فهو لا يقتصر فقط على الرائحة، بل يعبر عن شخصيتنا ويؤثر في حياتنا بشكلٍ عميق. استثمر في اختيار عطر يتناسب معك، ودع رائحته تأخذك إلى عوالم جديدة. </p>', None, 'يمثل العطر أكثر من مجرد رائحة، فهو أداة قوية تعزز من الحالة النفسية وتعيد تشكيل التجارب الحياتية. تُظهر الدراسات أن الروائح تؤثر بشكل كبير على مشاعرن ... (91 characters truncated) ... لمزاج، وتعزيز الثقة بالنفس. في هذا المقال، سنستعرض كيف يمكن للعطر أن يكون جسرًا بين الواقع والخيال، ويُدخلنا في أجواء جديدة تعزز من تجربتنا الحياتية.', None, None, 'دور العطر في الانتقال الى عالمك الآخر', 'فوائد, العطور, النفسية', '["scent_personality", "custom_perfume", "recommendations", "neuroscience", "habit_planner", "signature"]', 1, 1, '2026-01-08 15:51:35.287328', '2026-01-08 15:51:35.287332', '2026-01-08 15:51:35.286500', 0)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+The debugger caught an exception in your WSGI application. You can now look at the traceback which led to the error.
+To switch between the interactive traceback and the plaintext one, you can click on the "Traceback" headline. From the text traceback you can also create a paste of it.
+
+Brought to you by DON'T PANIC, your friendly Werkzeug powered traceback interpreter.
