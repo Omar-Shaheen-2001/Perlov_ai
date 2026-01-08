@@ -8,7 +8,7 @@ from app.rag_engine import rag_run, get_rag_engine, RAGResult
 from app.validators.rag_validation import validate_and_sanitize, RAGValidator
 from app.constants.default_responses import get_default_response, get_safe_fallback, VALIDATION_FAILED_RESPONSE
 
-AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
 AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
 
 client = OpenAI(
