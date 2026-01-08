@@ -8,13 +8,26 @@ from app.rag_engine import rag_run, get_rag_engine, RAGResult
 from app.validators.rag_validation import validate_and_sanitize, RAGValidator
 from app.constants.default_responses import get_default_response, get_safe_fallback, VALIDATION_FAILED_RESPONSE
 
-AI_INTEGRATIONS_OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
-AI_INTEGRATIONS_OPENAI_BASE_URL = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
+# تهيئة العميل
+def get_openai_client():
+    api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
+    base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
+    
+    if not api_key:
+        # إذا لم يتم العثور على مفتاح، سنحاول القراءة من ملف .env مباشرة للطوارئ
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+            api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
+        except:
+            pass
+            
+    return OpenAI(
+        api_key=api_key or "temporary_key_to_prevent_boot_error",
+        base_url=base_url
+    )
 
-client = OpenAI(
-    api_key=AI_INTEGRATIONS_OPENAI_API_KEY,
-    base_url=AI_INTEGRATIONS_OPENAI_BASE_URL
-)
+client = get_openai_client()
 
 MODULE_INFO = {
     'bio_scent': {'name_ar': 'تحليل الرائحة الحيوية', 'icon': 'bi-soundwave'},
